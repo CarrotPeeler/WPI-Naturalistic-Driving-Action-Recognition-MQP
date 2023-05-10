@@ -1,14 +1,16 @@
-from prepare_data import loadData, UCF101_Dataset
+import os
+import sys
+sys.path.insert(1, os.getcwd())
+from prepare_data import UCF101_Dataset
 from sklearn.model_selection import train_test_split
 import pandas as pd
-import os
 import torch
 from torch.utils.data import DataLoader
 from torchvision.models import VGG16_Weights
 
 # Setup device agnostic code
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(device)
+print(f"Device: {device}")
 
 # Load the organized data from the file system into arrays
 train_1_dir = os.getcwd() + "/train_1"
@@ -33,4 +35,4 @@ test_dataloader = DataLoader(test_data,
                               BATCH_SIZE, 
                               shuffle=False)
 
-print(f"Number of classes: {len(train_df['class'])}")
+print(f"Number of classes: {train_data.num_classes()}")

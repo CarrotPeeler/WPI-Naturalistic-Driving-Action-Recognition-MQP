@@ -22,6 +22,9 @@ class UCF101_Dataset(Dataset):
       image_path = self.img_dir + "/" + self.imgs[index]
       return Image.open(image_path) 
     
+    def num_classes(self):
+      return self.labels.shape[1]
+    
     def __len__(self):
       "Returns the total number of samples."
       return len(self.imgs)
