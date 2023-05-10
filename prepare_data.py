@@ -1,29 +1,42 @@
 import cv2 # capturing videos
 import math
 import pandas as pd
-import keras.utils as image # preprocessing the images
 import numpy as np 
 from skimage.transform import resize # resizing images
 from glob import glob
 from tqdm import tqdm
 import pathlib
+from PIL import Image
 
 # PyTorch Modules
 from torch.utils.data import Dataset
 
 class UCF101_Dataset(Dataset):
-    def __init__(self, images, labels):
-      self.images = images
-      self.labels = labels
+    def __init__(self, dataframe, img_dir, transform=None):
+      self.img_dir = img_dir
+      self.imgs = dataframe['image']
+      self.labels = pd.get_dummies(dataframe['class'])
+
+    def load_image(self, index: int):
+      "Opens an image via a path and returns it."
+      image_path = self.img_dir + "/" + self.imgs[index]
+      return Image.open(image_path) 
     
     def __len__(self):
       "Returns the total number of samples."
-      return len(self.images)
+      return len(self.imgs)
     
     # Returns tuple w/ img tensor and class: (torch.Tensor, int)
     def __getitem__(self, index: int):
       "Returns one sample of data, data and label (X, y)."
-      return self.images[index], self.labels[index] # return data, label (X, y)
+      img = self.load_image(index)
+      label = self.labels[index]
+
+      # perform transform on image if specified
+      if self.transform:
+        return self.transform(img), label
+      else:
+        return img, label
     
 
 # returns a dataframe that stores the video names and their labels, given a raw txt file
@@ -92,25 +105,6 @@ def create_annotation(img_dir, save_dir, annotation_name):
     train_data['class'] = train_classes
 
     train_data.to_csv(save_dir + "/" + annotation_name, header=True, index=False)
-
-# load saved csv and read images into array as indicated by csv filenames
-def loadData(csv_annotation_filepath, img_dir):
-    train = pd.read_csv(csv_annotation_filepath)
-
-    train_images = []
-
-    # create array of image (frame) data to feed into model as x
-    for i in tqdm(range(train.shape[0])):
-        img = image.load_img(img_dir + "/" + train['image'][i], target_size=(224,224,3))
-
-        img = image.img_to_array(img)
-        img /= 255 # normalize pixel values
-
-        train_images.append(img)
-
-    X = np.array(train_images)
-    y = train['class']
-    return X,y
 
 
 
