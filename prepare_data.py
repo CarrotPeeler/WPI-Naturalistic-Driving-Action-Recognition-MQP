@@ -9,8 +9,7 @@ from tqdm import tqdm
 import pathlib
 
 # PyTorch Modules
-import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 
 class UCF101_Dataset(Dataset):
     def __init__(self, images, labels):

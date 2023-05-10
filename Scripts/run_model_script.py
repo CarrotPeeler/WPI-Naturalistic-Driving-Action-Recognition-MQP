@@ -1,26 +1,15 @@
-import pandas as pd
+from prepare_data import loadData, UCF101_Dataset
 from sklearn.model_selection import train_test_split
-from prepare_data import *
+import pandas as pd
 import os
+import torch
+from torch.utils.data import DataLoader
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"\n\nDevice: {device}\n\n")
-
-# Main Code Execution
-filter = ['apply','blowdry','haircut','brushing','typing']
-
-train = createDataFrame('/home/vislab-001/Jared/ucfTrainTestlist/trainlist01.txt')
-test = createDataFrame('/home/vislab-001/Jared/ucfTrainTestlist/testlist01.txt')
-
-filterDataFrame(train,filter)
-filterDataFrame(test,filter)
-
+# Load the organized data from the file system into arrays
 train_1_dir = os.getcwd() + "/train_1"
-
-videoToFrames(train, "/home/vislab-001/Jared/ucf101", train_1_dir)
-create_annotation(train_1_dir, train_1_dir, "train_1_annotation.csv")
 X,y = loadData(train_1_dir + "/train_1_annotation.csv", train_1_dir)
 
+# create a train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=.2, stratify=y)
 
 # Convert string labels for each img into array of width equal to num of categories
