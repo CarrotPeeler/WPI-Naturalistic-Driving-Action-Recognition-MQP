@@ -84,7 +84,7 @@ def create_annotation(img_dir, save_dir, annotation_name):
     train_classes = []
 
     for i in tqdm(range(len(image_filepaths))):
-        filename = image_filepaths[i].split('/')[1]
+        filename = image_filepaths[i].split('/')[-1]
         train_imgnames.append(filename)
         train_classes.append(filename.split('_')[1])
 
@@ -95,8 +95,8 @@ def create_annotation(img_dir, save_dir, annotation_name):
     train_data.to_csv(save_dir + "/" + annotation_name, header=True, index=False)
 
 # load saved csv and read images into array as indicated by csv filenames
-def loadData(csv_annotation_file, img_dir):
-    train = pd.read_csv(csv_annotation_file)
+def loadData(csv_annotation_filepath, img_dir):
+    train = pd.read_csv(csv_annotation_filepath)
 
     train_images = []
 
