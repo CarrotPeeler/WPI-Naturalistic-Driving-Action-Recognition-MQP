@@ -1,5 +1,7 @@
-from prepare_data import *
 import os
+import sys
+sys.path.insert(1, os.getcwd())
+from prepare_data import *
 import torch
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
