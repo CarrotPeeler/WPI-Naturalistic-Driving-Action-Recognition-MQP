@@ -80,3 +80,6 @@ end_time = timer()
 total_time = end_time - start_time
 
 print(f"Total Training Time: {total_time:.2f} seconds")
+
+# Save results as csv file for later graphing/comparison, etc.
+pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)
