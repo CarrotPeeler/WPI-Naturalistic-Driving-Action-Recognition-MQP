@@ -5,6 +5,7 @@ from torch import nn
 class VGG16_Mod(nn.Module):
     def __init__(self, output_shape, device) -> None:
         super().__init__()
+        self.output_shape = output_shape
         self.device = device
         
         model = vgg16(weights=VGG16_Weights.IMAGENET1K_V1)
