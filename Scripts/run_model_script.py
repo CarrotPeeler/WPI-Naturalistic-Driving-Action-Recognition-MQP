@@ -29,6 +29,10 @@ train_1_df = pd.read_csv(train_1_dir + "/train_1_annotation.csv")
 # create a train-test split
 train_df, test_df = train_test_split(train_1_df, random_state=42, test_size=.2, stratify=train_1_df['class'])
 
+# reset indexes after split
+train_df.reset_index(inplace=True)
+test_df.reset_index(inplace=True)
+
 # Create UFC101_Dataset objects
 train_data = UCF101_Dataset(train_df, img_dir=train_1_dir, transform=VGG16_Weights.IMAGENET1K_V1.transforms())
 test_data = UCF101_Dataset(test_df, img_dir=train_1_dir, transform=VGG16_Weights.IMAGENET1K_V1.transforms())
@@ -49,37 +53,38 @@ print(f"Number of classes: {train_data.num_classes()}")
 
 num_classes = train_data.num_classes()
 
-####################################### RUNNING THE MODEL ######################################
+###################################### RUNNING THE MODEL ######################################
 
-# Load the model
-model = VGG16_Mod(num_classes, device)
+# # Load the model
+# model = VGG16_Mod(num_classes).to(device)
+# #model = torch.compile(model_uncompiled) # pytorch 2.0 speed increase
 
-# Print a summary using torchinfo 
-summary(model=model, 
-        input_size=(32, 3, 224, 224), # (batch_size, 3 (RGB), 224 (H), 224 (W))
-        # col_names=["input_size"], # uncomment for smaller output
-        col_names=["input_size", "output_size", "num_params", "trainable"],
-        col_width=20,
-        row_settings=["var_names"]
-) 
+# # Print a summary using torchinfo 
+# summary(model=model, 
+#         input_size=(32, 3, 224, 224), # (batch_size, 3 (RGB), 224 (H), 224 (W))
+#         # col_names=["input_size"], # uncomment for smaller output
+#         col_names=["input_size", "output_size", "num_params", "trainable"],
+#         col_width=20,
+#         row_settings=["var_names"]
+# ) 
 
-# Define loss and optimizer
-loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+# # Define loss and optimizer
+# loss_fn = nn.CrossEntropyLoss()
+# optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-start_time = timer()
-results = train_model(model=model,
-                      train_dataloader=train_dataloader,
-                      test_dataloader=test_dataloader,
-                      loss_fn=loss_fn,
-                      optimizer=optimizer,
-                      epochs=200,
-                      device=device)
-end_time = timer()
+# start_time = timer()
+# results = train_model(model=model,
+#                       train_dataloader=train_dataloader,
+#                       test_dataloader=test_dataloader,
+#                       loss_fn=loss_fn,
+#                       optimizer=optimizer,
+#                       epochs=200,
+#                       device=device)
+# end_time = timer()
 
-total_time = end_time - start_time
+# total_time = end_time - start_time
 
-print(f"Total Training Time: {total_time:.2f} seconds")
+# print(f"Total Training Time: {total_time:.2f} seconds")
 
-# Save results as csv file for later graphing/comparison, etc.
-pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)
+# # Save results as csv file for later graphing/comparison, etc.
+# pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)

@@ -16,6 +16,7 @@ class UCF101_Dataset(Dataset):
       self.img_dir = img_dir
       self.imgs = dataframe['image']
       self.labels = pd.get_dummies(dataframe['class'])
+      self.transform = transform
 
     def load_image(self, index: int):
       "Opens an image via a path and returns it."
@@ -33,7 +34,7 @@ class UCF101_Dataset(Dataset):
     def __getitem__(self, index: int):
       "Returns one sample of data, data and label (X, y)."
       img = self.load_image(index)
-      label = self.labels[index]
+      label = self.labels.loc[[index]].values.flatten().tolist()
 
       # perform transform on image if specified
       if self.transform:

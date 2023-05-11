@@ -12,7 +12,7 @@ def train_step(model: torch.nn.Module,
     model.train()
     train_loss, train_acc = 0,0
 
-    for batch, (X,y) in enumerate(dataloader):
+    for X,y in dataloader:
         X, y = X.to(device), y.to(device)
 
         y_pred = model(X)
@@ -39,20 +39,20 @@ def test_step(model: torch.nn.Module,
                 dataloader: torch.utils.data.DataLoader,
                 loss_fn: torch.nn.Module,
                 device: torch.device):
-  model.eval()
-  test_loss, test_acc = 0,0
+    model.eval()
+    test_loss, test_acc = 0,0
 
-  with torch.inference_mode():
-    for X,y in dataloader:
-        X,y = X.to(device), y.to(device)
+    with torch.inference_mode():
+        for X,y in dataloader:
+            X,y = X.to(device), y.to(device)
 
-        y_pred = model(X)
-        loss = loss_fn(y_pred, y)
+            y_pred = model(X)
+            loss = loss_fn(y_pred, y)
 
-        test_loss += loss
+            test_loss += loss
 
-        test_pred_labels = y_pred.argmax(dim=1)
-        test_acc += (test_pred_labels == y).sum().item()/len(test_pred_labels)
+            test_pred_labels = y_pred.argmax(dim=1)
+            test_acc += (test_pred_labels == y).sum().item()/len(test_pred_labels)
 
     test_loss /= len(dataloader)
     test_acc /= len(dataloader)
@@ -69,13 +69,13 @@ def train_model(model: torch.nn.Module,
       
     results = {
         "train_loss": [],
-        "train_accuracy": [],
+        "train_acc": [],
         "test_loss": [],
-        "test_accuracy": []
+        "test_acc": []
     }
     
     for epoch in tqdm(range(epochs)):
-        print(f"\nEpoch: {epoch}\n--------------------")
+        print(f"\n\nEpoch: {epoch}\n--------------------")
 
         train_loss, train_acc = train_step(model=model,
                                             dataloader=train_dataloader,
@@ -92,7 +92,7 @@ def train_model(model: torch.nn.Module,
         print(f"Avg Test Loss: {test_loss:.3f} | Avg Test Acc: {test_acc:.3f}%")
 
         results["train_loss"].append(train_loss)
-        results["train_accuracy"].append(train_acc)
+        results["train_acc"].append(train_acc)
         results["test_loss"].append(test_loss)
-        results["test_accuracy"].append(test_acc)
+        results["test_acc"].append(test_acc)
     return results
