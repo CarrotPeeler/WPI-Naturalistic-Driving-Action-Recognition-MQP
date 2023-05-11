@@ -16,7 +16,7 @@ class UCF101_Dataset(Dataset):
     def __init__(self, dataframe, img_dir, transform=None):
       self.img_dir = img_dir
       self.imgs = dataframe['image']
-      self.labels = pd.get_dummies(dataframe['class'])
+      self.labels = pd.get_dummies(dataframe['class'], dtype=float)
       self.transform = transform
 
     def load_image(self, index: int):

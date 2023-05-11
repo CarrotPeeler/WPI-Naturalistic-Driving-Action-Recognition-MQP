@@ -53,38 +53,53 @@ print(f"Number of classes: {train_data.num_classes()}")
 
 num_classes = train_data.num_classes()
 
+X,y = train_data.__getitem__(3314)
+X,y = X.to(device), y.to(device)
+
+model = VGG16_Mod(num_classes).to(device)
+loss_fn = nn.CrossEntropyLoss()
+
+y_pred = model(X)
+
+loss = loss_fn(y_pred, y)
+
+test_pred_label = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
+print((test_pred_label == y).sum().item()/len(test_pred_label))
+
 ###################################### RUNNING THE MODEL ######################################
 
-# Load the model
-model = VGG16_Mod(num_classes).to(device)
-#model = torch.compile(model_uncompiled) # pytorch 2.0 speed increase
+# # Load the model
+# model = VGG16_Mod(num_classes).to(device)
+# #model = torch.compile(model_uncompiled) # pytorch 2.0 speed increase
 
-# Print a summary using torchinfo 
-summary(model=model, 
-        input_size=(32, 3, 224, 224), # (batch_size, 3 (RGB), 224 (H), 224 (W))
-        # col_names=["input_size"], # uncomment for smaller output
-        col_names=["input_size", "output_size", "num_params", "trainable"],
-        col_width=20,
-        row_settings=["var_names"]
-) 
+# # Print a summary using torchinfo 
+# summary(model=model, 
+#         input_size=(32, 3, 224, 224), # (batch_size, 3 (RGB), 224 (H), 224 (W))
+#         # col_names=["input_size"], # uncomment for smaller output
+#         col_names=["input_size", "output_size", "num_params", "trainable"],
+#         col_width=20,
+#         row_settings=["var_names"]
+# ) 
 
-# Define loss and optimizer
-loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+# # Define loss and optimizer
+# loss_fn = nn.CrossEntropyLoss()
+# optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-start_time = timer()
-results = train_model(model=model,
-                      train_dataloader=train_dataloader,
-                      test_dataloader=test_dataloader,
-                      loss_fn=loss_fn,
-                      optimizer=optimizer,
-                      epochs=200,
-                      device=device)
-end_time = timer()
+# torch.autograd.set_detect_anomaly(True)
 
-total_time = end_time - start_time
+# start_time = timer()
+# results = train_model(model=model,
+#                       train_dataloader=train_dataloader,
+#                       test_dataloader=test_dataloader,
+#                       loss_fn=loss_fn,
+#                       optimizer=optimizer,
+#                       epochs=200,
+#                       device=device)
+# end_time = timer()
 
-print(f"Total Training Time: {total_time:.2f} seconds")
+# total_time = end_time - start_time
 
-# Save results as csv file for later graphing/comparison, etc.
-pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)
+# print(f"Total Training Time: {total_time:.2f} seconds")
+
+# # Save results as csv file for later graphing/comparison, etc.
+# pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)

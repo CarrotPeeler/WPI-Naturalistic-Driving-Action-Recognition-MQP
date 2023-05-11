@@ -17,19 +17,19 @@ class VGG16_Mod(nn.Module):
             # output from the layer before (25088 units, found from summary()) = input units
             torch.nn.Linear(in_features=25088, out_features=1024), 
             torch.nn.ReLU(),
-            torch.nn.Dropout(p=0.5, inplace=True), 
+            torch.nn.Dropout(p=0.5), 
             
             torch.nn.Linear(in_features=1024, out_features=512), 
             torch.nn.ReLU(),
-            torch.nn.Dropout(p=0.5, inplace=True), 
+            torch.nn.Dropout(p=0.5), 
 
             torch.nn.Linear(in_features=512, out_features=256), 
             torch.nn.ReLU(),
-            torch.nn.Dropout(p=0.5, inplace=True), 
+            torch.nn.Dropout(p=0.5), 
 
             torch.nn.Linear(in_features=256, out_features=128), 
             torch.nn.ReLU(),
-            torch.nn.Dropout(p=0.5, inplace=True), 
+            torch.nn.Dropout(p=0.5), 
 
             torch.nn.Linear(in_features=128, out_features=self.output_shape)) # num of classes
 
