@@ -35,7 +35,8 @@ class UCF101_Dataset(Dataset):
     def __getitem__(self, index: int):
       "Returns one sample of data, data and label (X, y)."
       img = self.load_image(index)
-      label = torch.tensor(self.labels.loc[[index]].values)
+      label_arr = self.labels.loc[[index]].values # retrieve specified row from dataframe -> convert to numpy array
+      label = torch.tensor(label_arr).squeeze() # convert numpy array to tensor -> squeeze to remove extra dim
 
       # perform transform on image if specified
       if self.transform:
