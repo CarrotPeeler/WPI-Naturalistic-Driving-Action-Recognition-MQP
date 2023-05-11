@@ -111,7 +111,7 @@ if __name__ == '__main__':
                         test_dataloader=test_dataloader,
                         loss_fn=loss_fn,
                         optimizer=optimizer,
-                        epochs=200,
+                        epochs=50,
                         device=device)
     end_time = timer()
 
