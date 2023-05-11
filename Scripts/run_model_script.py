@@ -7,10 +7,18 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from torchvision.models import VGG16_Weights
+from torchinfo import summary
+from train_functions import train_model
+from torch import nn
 
 # Setup device agnostic code
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"Device: {device}")
+print(f"Device: {device} | Torch Version: {torch.__version__}")
+
+torch.manual_seed(42)
+torch.cuda.manual_seed(42)
+
+######################################## LOADING THE DATA ############################################
 
 # Load the organized data from the file system into arrays
 train_1_dir = os.getcwd() + "/train_1"
@@ -36,3 +44,21 @@ test_dataloader = DataLoader(test_data,
                               shuffle=False)
 
 print(f"Number of classes: {train_data.num_classes()}")
+
+####################################### RUNNING THE MODEL ######################################
+
+# Load the model
+
+
+# Print a summary using torchinfo 
+summary(model=model, 
+        input_size=(32, 3, 224, 224), # (batch_size, 3 (RGB), 224 (H), 224 (W))
+        # col_names=["input_size"], # uncomment for smaller output
+        col_names=["input_size", "output_size", "num_params", "trainable"],
+        col_width=20,
+        row_settings=["var_names"]
+) 
+
+# Define loss and optimizer
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
