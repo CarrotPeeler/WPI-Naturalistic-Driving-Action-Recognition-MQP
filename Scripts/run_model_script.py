@@ -9,7 +9,9 @@ from torch.utils.data import DataLoader
 from torchvision.models import VGG16_Weights
 from torchinfo import summary
 from train_functions import train_model
+from models import VGG16_Mod
 from torch import nn
+from timeit import default_timer as timer 
 
 # Setup device agnostic code
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -45,10 +47,12 @@ test_dataloader = DataLoader(test_data,
 
 print(f"Number of classes: {train_data.num_classes()}")
 
+num_classes = train_data.num_classes()
+
 ####################################### RUNNING THE MODEL ######################################
 
 # Load the model
-
+model = VGG16_Mod(num_classes, device)
 
 # Print a summary using torchinfo 
 summary(model=model, 
@@ -62,3 +66,17 @@ summary(model=model,
 # Define loss and optimizer
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+start_time = timer()
+results = train_model(model=model,
+                      train_dataloader=train_dataloader,
+                      test_dataloader=test_dataloader,
+                      loss_fn=loss_fn,
+                      optimizer=optimizer,
+                      epochs=200,
+                      device=device)
+end_time = timer()
+
+total_time = end_time - start_time
+
+print(f"Total Training Time: {total_time:.2f} seconds")

@@ -14,10 +14,25 @@ class VGG16_Mod(nn.Module):
 
         # mod the last classifier layer of VGG16
         model.classifier = torch.nn.Sequential(
-            torch.nn.Dropout(p=0.2, inplace=True), 
-            torch.nn.Linear(in_features=1280, # output from the layer before, so keep the same
-                            out_features=self.output_shape, # num of classes
-                            bias=True)).to(self.device)
+            # output from the layer before (1280 units) = input units
+            torch.nn.Linear(in_features=1280, out_features=640), 
+            torch.nn.ReLU(),
+            torch.nn.Dropout(p=0.5, inplace=True), 
+            
+            torch.nn.Linear(in_features=640, out_features=320), 
+            torch.nn.ReLU(),
+            torch.nn.Dropout(p=0.5, inplace=True), 
+
+            torch.nn.Linear(in_features=160, out_features=80), 
+            torch.nn.ReLU(),
+            torch.nn.Dropout(p=0.5, inplace=True), 
+
+            torch.nn.Linear(in_features=80, out_features=40), 
+            torch.nn.ReLU(),
+            torch.nn.Dropout(p=0.5, inplace=True), 
+
+            torch.nn.Linear(in_features=40, out_features=self.output_shape, # num of classes
+                            )).to(self.device)
         
         self.model = torch.compile(model)
 
