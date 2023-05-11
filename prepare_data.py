@@ -7,6 +7,7 @@ from glob import glob
 from tqdm import tqdm
 import pathlib
 from PIL import Image
+import torch
 
 # PyTorch Modules
 from torch.utils.data import Dataset
@@ -34,7 +35,7 @@ class UCF101_Dataset(Dataset):
     def __getitem__(self, index: int):
       "Returns one sample of data, data and label (X, y)."
       img = self.load_image(index)
-      label = self.labels.loc[[index]].values.flatten().tolist()
+      label = torch.tensor(self.labels.loc[[index]].values)
 
       # perform transform on image if specified
       if self.transform:
