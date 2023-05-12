@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
     # Define loss and optimizer
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.003)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 
     torch.autograd.set_detect_anomaly(True)
 
@@ -111,7 +111,7 @@ if __name__ == '__main__':
                         test_dataloader=test_dataloader,
                         loss_fn=loss_fn,
                         optimizer=optimizer,
-                        epochs=50,
+                        epochs=10,
                         device=device)
     end_time = timer()
 
