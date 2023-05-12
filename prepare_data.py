@@ -98,7 +98,7 @@ def videoToFrames(dataframe, video_dir, frame_dir, truncate_size):
             if(imageExists == False):
                 break
 
-            if(frameId in selected_frames): # only 
+            if(frameId in selected_frames): # evenly samples frames at truncate_size interval 
                 save_location = frame_dir + "/" +  vid_file_name + f'_frame{count}.jpg'
                 count += 1
                 cv2.imwrite(save_location, frameImg)
