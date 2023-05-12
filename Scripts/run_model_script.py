@@ -6,10 +6,10 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
-from torchvision.models import vgg16,VGG16_Weights
+from torchvision.models import VGG16_Weights
 from torchinfo import summary
 from train_functions import train_model
-from models import VGG16_Mod
+from models import * 
 from torch import nn
 from timeit import default_timer as timer 
 
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     train_df.reset_index(inplace=True)
     test_df.reset_index(inplace=True)
 
-    # Create UFC101_Dataset objects
+    # Create UFC101_Dataset objects (NOTE: change the transform according to input expected by model)
     train_data = UCF101_Dataset(train_df, img_dir=train_1_dir, transform=VGG16_Weights.IMAGENET1K_V1.transforms())
     test_data = UCF101_Dataset(test_df, img_dir=train_1_dir, transform=VGG16_Weights.IMAGENET1K_V1.transforms())
 
@@ -87,6 +87,7 @@ if __name__ == '__main__':
     ##################################### RUNNING THE MODEL ######################################
 
     # Load the model
+    #model = Resnt18Rnn(num_classes, dropout_rate=.5, rnn_hidden_size=100, rnn_num_layers=1, batch_size=BATCH_SIZE).to(device)
     model = VGG16_Mod(num_classes).to(device)
     #model = torch.compile(model_uncompiled) # pytorch 2.0 speed increase
 
@@ -99,25 +100,25 @@ if __name__ == '__main__':
             row_settings=["var_names"]
     ) 
 
-    # Define loss and optimizer
-    loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+    # # Define loss and optimizer
+    # loss_fn = nn.CrossEntropyLoss()
+    # optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-    torch.autograd.set_detect_anomaly(True)
+    # torch.autograd.set_detect_anomaly(True)
 
-    start_time = timer()
-    results = train_model(model=model,
-                        train_dataloader=train_dataloader,
-                        test_dataloader=test_dataloader,
-                        loss_fn=loss_fn,
-                        optimizer=optimizer,
-                        epochs=10,
-                        device=device)
-    end_time = timer()
+    # start_time = timer()
+    # results = train_model(model=model,
+    #                     train_dataloader=train_dataloader,
+    #                     test_dataloader=test_dataloader,
+    #                     loss_fn=loss_fn,
+    #                     optimizer=optimizer,
+    #                     epochs=10,
+    #                     device=device)
+    # end_time = timer()
 
-    total_time = end_time - start_time
+    # total_time = end_time - start_time
 
-    print(f"Total Training Time: {total_time:.2f} seconds")
+    # print(f"Total Training Time: {total_time:.2f} seconds")
 
-    # Save results as csv file for later graphing/comparison, etc.
-    pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)
+    # # Save results as csv file for later graphing/comparison, etc.
+    # pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)
