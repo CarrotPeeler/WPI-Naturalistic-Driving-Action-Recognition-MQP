@@ -100,25 +100,25 @@ if __name__ == '__main__':
             row_settings=["var_names"]
     ) 
 
-    # # Define loss and optimizer
-    # loss_fn = nn.CrossEntropyLoss()
-    # optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    # Define loss and optimizer
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-    # torch.autograd.set_detect_anomaly(True)
+    torch.autograd.set_detect_anomaly(True)
 
-    # start_time = timer()
-    # results = train_model(model=model,
-    #                     train_dataloader=train_dataloader,
-    #                     test_dataloader=test_dataloader,
-    #                     loss_fn=loss_fn,
-    #                     optimizer=optimizer,
-    #                     epochs=10,
-    #                     device=device)
-    # end_time = timer()
+    start_time = timer()
+    results = train_model(model=model,
+                        train_dataloader=train_dataloader,
+                        test_dataloader=test_dataloader,
+                        loss_fn=loss_fn,
+                        optimizer=optimizer,
+                        epochs=10,
+                        device=device)
+    end_time = timer()
 
-    # total_time = end_time - start_time
+    total_time = end_time - start_time
 
-    # print(f"Total Training Time: {total_time:.2f} seconds")
+    print(f"Total Training Time: {total_time:.2f} seconds")
 
-    # # Save results as csv file for later graphing/comparison, etc.
-    # pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)
+    # Save results as csv file for later graphing/comparison, etc.
+    pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)
