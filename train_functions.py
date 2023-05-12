@@ -42,7 +42,7 @@ def test_step(model: torch.nn.Module,
     model.eval()
     test_loss, test_acc = 0,0
 
-    with torch.no_grad(): # torch.inference_mode() not working w/ PyTorch 2.0
+    with torch.inference_mode(): # torch.inference_mode() not working w/ PyTorch 2.0 compile(); use torch.no_grad() instead
         for X,y in dataloader:
             X,y = X.to(device), y.to(device)
 
