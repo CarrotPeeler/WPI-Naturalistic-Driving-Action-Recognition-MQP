@@ -34,15 +34,10 @@ if __name__ == '__main__':
 
 ######################################### PREPARE DATA ########################################
 
-    # Filter the UCF101 dataset by action types
-    filter = ['apply','blowdry','haircut','brushing','typing']
+    user_data_dirs = os.listdir("/home/vislab-001/Jared/SET-A1")
 
-    # Create train and test dataframes
-    train = createDataFrame('/home/vislab-001/Jared/ucfTrainTestlist/trainlist01.txt')
-    test = createDataFrame('/home/vislab-001/Jared/ucfTrainTestlist/testlist01.txt')
-
-    filterDataFrame(train,filter)
-    filterDataFrame(test,filter)
+    for user_data in user_data_dirs:
+        
 
     train_1_dir = os.getcwd() + "/train_1"
 
