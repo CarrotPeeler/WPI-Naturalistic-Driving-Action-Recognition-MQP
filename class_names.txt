@@ -1,0 +1,15 @@
+Class 1,Drinking
+Class 2,Phone Call(right)
+Class 3,Phone Call(left)
+Class 4,Eating
+Class 5,Text (Right)
+Class 6,Text (Left)
+Class 7,Reaching behind
+Class 8,Adjust control panel
+Class 9,Pick up from floor (Driver)
+Class 10,Pick up from floor (Passenger)
+Class 11,Talk to passenger at the right
+Class 12,Talk to passenger at backseat
+Class 13,Yawning
+Class 14,Hand on head
+Class 15,Singing or dancing with music

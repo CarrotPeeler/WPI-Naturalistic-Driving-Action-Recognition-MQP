@@ -1,5 +1,5 @@
-# UCF101-Model
+# Naturalistic-Driving-Action-Recognition-MQP
 
-## Repository for Testing and Experimenting on Action Recognition/Video Classification Models for the UCF101 Dataset 
+## Repository for Developing Video Classification/Action Recognition Models for the AI City Track Challenge #3 (2023)
  
 Done as part of my MQP for WPI (Summer 2023)

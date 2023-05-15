@@ -1,5 +1,4 @@
 import cv2 # capturing videos
-import math
 import pandas as pd
 import numpy as np 
 from skimage.transform import resize # resizing images
@@ -8,6 +7,7 @@ from tqdm import tqdm
 import pathlib
 from PIL import Image
 import torch
+import os
 
 # PyTorch Modules
 from torch.utils.data import Dataset
@@ -43,65 +43,64 @@ class UCF101_Dataset(Dataset):
             return self.transform(img), label
         else:
             return img, label
-        
 
-# returns a dataframe that stores the video names and their labels, given a raw txt file
-def createDataFrame(txt_file_location):
-    file = open(txt_file_location, 'r')
-    video_names = file.read().split('\n')
-    dataframe = pd.DataFrame()
-    dataframe['video_name'] = video_names
 
-    labels =[]
-    for i in tqdm(range(dataframe.shape[0])):
-        labels.append(dataframe['video_name'][i].split('/')[0])
+# given text file with class indices and corresponding name/activity, create dictionary for key-val pairs
+# pass delimiter parameter that separates key-val pairs in text file
+def getClassNamesDict(class_names_txt_path, delimiter):
+    d = dict()
+    with open(class_names_txt_path) as txt:
+        for line in txt:
+            (key, val) = line.strip().split(delimiter)
+            d[key] = val
+    return d
 
-    dataframe['label'] = labels
-
-    return dataframe
-
-def filterDataFrame(dataframe, filterList):
-    for index, row in tqdm(dataframe.iterrows()):
-        if not any([keyword in row['label'].lower() for keyword in filterList]):
-            dataframe.drop(index, inplace=True)
-    dataframe.reset_index(drop=True, inplace=True)
 
 # Break down videos into frames, save frames to selected directory
 """
-dataframe: pandas.DataFrame
-    dataframe made from the annotation file (video names with their class names)
+NOTE: For this function to work, annotation files must be stored as a csv in the same dir as the videos
+      This allows the data dir to have multiple subdirs, each with a set of videos and an associated annotation file
 
 video_dir: str
-    path to directory where videos stored
+    path to directory where videos stored; 
 
 frame_dir: str
     path to directory where frames will be saved
 
+video_extension: str
+    video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
+    
 truncate_size: int
     number of frames each video will be truncated to
 """
-def videoToFrames(dataframe, video_dir, frame_dir, truncate_size):
-    for i in tqdm(range(dataframe.shape[0])):
-        count = 0
-        vid_file_name = dataframe['video_name'][i].split(' ')[0].split('/')[1]
+def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
+    csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
 
-        capture = cv2.VideoCapture(video_dir + "/" + vid_file_name)
-        num_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT)) # get the total number of frames in the video
+    for i in tqdm(range(len(csv_filepaths))): # for each csv file corresponding to a group of videos, split each video into frames
+        annotation_df = pd.read_csv(csv_filepaths[i])
+        videos = glob(csv_filepaths[i].rpartition('/')[0] + "/*" + video_extension)
 
-        # select truncate_size num of frames from each video, evenly spaced out
-        selected_frames = np.linspace(start=0, stop=num_frames-1, num=truncate_size, dtype=np.int16) 
+        for j in range(len(videos)):
+            count = 0
 
-        while(capture.isOpened()):
-            frameId = capture.get(1) # curr frame num
-            imageExists, frameImg = capture.read()
+            capture = cv2.VideoCapture(videos[j])
+            num_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT)) # get the total number of frames in the video
+            frame_rate = int(capture.get(cv2.CAP_PROP_FPS)) # get the frames per second
 
-            if(imageExists == False):
-                break
+            # select truncate_size num of frames from each video, evenly spaced out
+            selected_frames = np.linspace(start=0, stop=num_frames-1, num=truncate_size, dtype=np.int16) 
 
-            if(frameId in selected_frames): # evenly samples frames at truncate_size interval 
-                save_location = frame_dir + "/" +  vid_file_name + f'_frame{count}.jpg'
-                count += 1
-                cv2.imwrite(save_location, frameImg)
+            while(capture.isOpened()):
+                frameId = capture.get(1) # curr frame num
+                imageExists, frameImg = capture.read()
+
+                if(imageExists == False):
+                    break
+
+                if(frameId in selected_frames): # evenly samples frames at truncate_size interval 
+                    save_location = frame_dir + "/" +  vid_file_name + f'_frame{count}.jpg'
+                    count += 1
+                    cv2.imwrite(save_location, frameImg)
         
         capture.release()
 
@@ -111,7 +110,7 @@ img_dir: directory where frames are stored
 save_dir: where to save annotation
 annotation_name: name to save annotation under
 """
-def create_annotation(img_dir, save_dir, annotation_name):
+def get_frames_annotation(img_dir, save_dir, annotation_name):
     image_filepaths = glob(img_dir + "/*.jpg")
 
     train_imgnames = []
