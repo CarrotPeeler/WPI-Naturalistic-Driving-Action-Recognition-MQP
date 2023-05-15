@@ -9,6 +9,8 @@ from PIL import Image
 import torch
 import os
 
+pd.options.mode.chained_assignment = None
+
 # PyTorch Modules
 from torch.utils.data import Dataset
 
@@ -83,6 +85,8 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
         for j in range(len(videos)):
             count = 0
 
+            parsed_video_data = parse_data_from_csv(videos[j], annotation_df)
+
             capture = cv2.VideoCapture(videos[j])
             num_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT)) # get the total number of frames in the video
             frame_rate = int(capture.get(cv2.CAP_PROP_FPS)) # get the frames per second
@@ -126,6 +130,39 @@ def get_frames_annotation(img_dir, save_dir, annotation_name):
     train_data['class'] = train_classes
 
     train_data.to_csv(save_dir + "/" + annotation_name, header=True, index=False)
+
+# returns only the relevant data from the annotation csv file for the video requested
+# each annotation file has multiple videos, each with their own data; the goal is to parse data for individual videos
+def parse_data_from_csv(video_filepath, annotation_filepath):
+    df = pd.read_csv(annotation_filepath)
+
+    video_view = video_filepath.split('_')[0] # retrieve camera view angle
+    video_endnum = video_filepath.split('_')[-1] # retrieve block appearance number (last number in the file name)
+
+    video_start_rows = df.loc[df["Filename"].notnull()] # create dataframe with only rows having non-null file names
+    video_start_rows.reset_index(inplace=True)
+
+    for index, row in video_start_rows.iterrows(): # rename each row; only include the camera view type and block number
+        video_start_rows["Filename"][index] = row["Filename"].partition('_')[0] + "_" + row["Filename"].rpartition('_')[-1]
+
+    # with sub-dataframe, retrieve zero-based index for the current video 
+    video_index = video_start_rows.index[video_start_rows["Filename"].str.contains(video_view, case=False) &
+                                        video_start_rows["Filename"].str.contains(video_endnum, case=False)].to_list()[0]
+    
+    video_index_orig = video_start_rows.iloc[[video_index]]["index"].to_list()[0] # find the original dataframe index 
+
+    next_video_index_orig = -1
+
+    if video_index + 1 < len(video_start_rows): # if there's data for other videos after this video, grab the index where the next video's data starts
+        next_video_index_orig = video_start_rows.iloc[[video_index + 1]]["index"].to_list()[0]
+    else:
+        next_video_index_orig = len(df) - 1 # otherwise, this video's data is last in the csv, simply set the 
+
+    parsed_video_data = df.iloc[video_index_orig:next_video_index_orig] # create a sub-dataframe of the original with only this video's data
+
+    return parsed_video_data
+
+
 
 
 
