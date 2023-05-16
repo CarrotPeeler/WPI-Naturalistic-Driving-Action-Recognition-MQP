@@ -101,7 +101,7 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
                 class_label = row_data['Label (Primary)'].to_list()[0] 
 
                 # extract only the portion of the video between start_time and end_time
-                trimmed_video_filepath = dump_path + "/trim_" + k + "_" + class_label 
+                trimmed_video_filepath = dump_path + f"/trim_{k}" + "_" + class_label 
                 os.system(f"ffmpeg -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
 
                 images, labels = splitVideoClip(trimmed_video_filepath, class_label, frame_dir, truncate_size)
@@ -120,11 +120,11 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
 
 # returns only the relevant data from the annotation csv file for the video requested
 # each annotation file has multiple videos, each with their own data; the goal is to parse data for individual videos
-def parse_data_from_csv(video_filepath, annotation_filepath):
-    df = pd.read_csv(annotation_filepath)
+def parse_data_from_csv(video_filepath, annotation_dataframe):
+    df = annotation_dataframe
 
-    video_view = video_filepath.split('_')[0] # retrieve camera view angle
-    video_endnum = video_filepath.split('_')[-1] # retrieve block appearance number (last number in the file name)
+    video_view = video_filepath.rpartition('/')[-1].partition('_')[0] # retrieve camera view angle
+    video_endnum = video_filepath.rpartition('_')[-1].partition('.')[0] # retrieve block appearance number (last number in the file name)
 
     video_start_rows = df.loc[df["Filename"].notnull()] # create dataframe with only rows having non-null file names
     video_start_rows.reset_index(inplace=True)
