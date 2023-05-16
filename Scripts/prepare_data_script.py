@@ -34,15 +34,7 @@ if __name__ == '__main__':
 
 ######################################### PREPARE DATA ########################################
 
-    user_data_dirs = os.listdir("/home/vislab-001/Jared/SET-A1")
-
-    for user_data in user_data_dirs:
-        
-
-    train_1_dir = os.getcwd() + "/train_1"
+    image_dir = os.getcwd() + "/image_data"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
-    videoToFrames(train, "/home/vislab-001/Jared/ucf101", train_1_dir, truncate_size=16)
-
-    # Create annotation file (lists all frame filenames and their labels)
-    create_annotation(train_1_dir, train_1_dir, "train_1_annotation.csv")
+    videosToFrames(train, "/home/vislab-001/Jared/ucf101", image_dir, truncate_size=16)
