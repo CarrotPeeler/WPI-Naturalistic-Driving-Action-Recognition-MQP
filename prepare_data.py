@@ -91,6 +91,7 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
         videos = glob(csv_filepaths[i].rpartition('/')[0] + "/*" + video_extension)
 
         for j in range(len(videos)): # for each video, parse out its individual csv data from the original csv 
+            video_filename = videos[j].rpartition('/')[-1].partition('.')[0] 
             parsed_video_data = parse_data_from_csv(videos[j], annotation_df)
 
             for k in range(len(parsed_video_data)): # for each row in the parsed csv file, extract video clip based on timestamps; split clip into frames
@@ -101,7 +102,7 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
                 class_label = row_data['Label (Primary)'].to_list()[0] 
 
                 # extract only the portion of the video between start_time and end_time
-                trimmed_video_filepath = dump_path + f"/trim_{k}" + "_" + class_label.replace(" ","") + ".MP4"
+                trimmed_video_filepath = dump_path + f"/{video_filename}_" + class_label.replace(" ","") + f"_trim{k}" + ".MP4"
                 os.system(f"ffmpeg -loglevel quiet -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
 
                 images, labels = splitVideoClip(trimmed_video_filepath, class_label, frame_dir, truncate_size)
