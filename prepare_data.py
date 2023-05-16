@@ -9,7 +9,16 @@ from PIL import Image
 import torch
 import os
 import shutil
+import numba
+from numba import jit, cuda
+from numba.core.errors import NumbaDeprecationWarning, NumbaPendingDeprecationWarning
+import warnings
 
+# suppress numba deprecation warnings
+warnings.simplefilter('ignore', category=NumbaDeprecationWarning)
+warnings.simplefilter('ignore', category=NumbaPendingDeprecationWarning)
+
+# suppress pandas chain assignment warnings
 pd.options.mode.chained_assignment = None
 
 # PyTorch Modules
@@ -77,6 +86,7 @@ video_extension: str
 truncate_size: int
     number of frames each video will be truncated to
 """
+@jit(target_backend='cuda', nopython=True)
 def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     image_filenames = [] # stores image (frame) names
@@ -120,7 +130,8 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
 
 
 # returns only the relevant data from the annotation csv file for the video requested
-# each annotation file has multiple videos, each with their own data; the goal is to parse data for individual videos
+# each annotation file has multiple videos, each with their own data; the goal is to parse data for individual videos\
+@jit(target_backend='cuda', nopython=True)
 def parse_data_from_csv(video_filepath, annotation_dataframe):
     df = annotation_dataframe
 
@@ -168,6 +179,7 @@ truncate_size: int
 
 Returns tuple containing a list of image names and a list of classes associated with them
 """
+@jit(target_backend='cuda', nopython=True)
 def splitVideoClip(video_filepath, class_label, frame_dir, truncate_size):
     capture = cv2.VideoCapture(video_filepath)
     num_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT)) # get the total number of frames in the video
