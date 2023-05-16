@@ -9,7 +9,6 @@ from PIL import Image
 import torch
 import os
 import shutil
-from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 pd.options.mode.chained_assignment = None
 
@@ -77,8 +76,6 @@ video_extension: str
     
 truncate_size: int
     number of frames each video will be truncated to
-
-Returns an annotation csv with file names and labels for each frame
 """
 def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
@@ -105,7 +102,7 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
 
                 # extract only the portion of the video between start_time and end_time
                 trimmed_video_filepath = dump_path + "/trim_" + k + "_" + class_label 
-                ffmpeg_extract_subclip(videos[j], start_time, end_time, targetname=trimmed_video_filepath)
+                os.system(f"ffmpeg -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
 
                 images, labels = splitVideoClip(trimmed_video_filepath, class_label, frame_dir, truncate_size)
                 image_filenames.extend(images)
@@ -119,7 +116,6 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
     data['image'] = image_filenames
     data['class'] = classes   
     data.to_csv(frame_dir + "/annotation.csv", header=True, index=False)
-    return data
 
 
 # returns only the relevant data from the annotation csv file for the video requested

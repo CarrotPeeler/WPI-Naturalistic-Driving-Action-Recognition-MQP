@@ -37,4 +37,4 @@ if __name__ == '__main__':
     image_dir = os.getcwd() + "/image_data"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
-    videosToFrames(train, "/home/vislab-001/Jared/ucf101", image_dir, truncate_size=16)
+    videosToFrames(video_dir="/home/vislab-001/Jared/SET-A1", frame_dir=image_dir, video_extension=".MP4", truncate_size=16)
