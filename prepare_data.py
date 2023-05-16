@@ -101,8 +101,8 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
                 class_label = row_data['Label (Primary)'].to_list()[0] 
 
                 # extract only the portion of the video between start_time and end_time
-                trimmed_video_filepath = dump_path + f"/trim_{k}" + "_" + class_label 
-                os.system(f"ffmpeg -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
+                trimmed_video_filepath = dump_path + f"/trim_{k}" + "_" + class_label.replace(" ","") + ".MP4"
+                os.system(f"ffmpeg -loglevel quiet -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
 
                 images, labels = splitVideoClip(trimmed_video_filepath, class_label, frame_dir, truncate_size)
                 image_filenames.extend(images)
