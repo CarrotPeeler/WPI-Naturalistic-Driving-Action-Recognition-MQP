@@ -82,6 +82,7 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     image_filenames = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
+    blockers = [] # stores types of block appearance
 
     # dump path for trimmed video clips
     dump_path = os.getcwd() + "/trimmed_video_dump"
@@ -101,14 +102,16 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
                 start_time = row_data['Start Time'].to_list()[0]
                 end_time = row_data['End Time'].to_list()[0]
                 class_label = row_data['Label (Primary)'].to_list()[0] 
+                block_type = row_data['Appearance Block'].to_list()[0]
 
                 # extract only the portion of the video between start_time and end_time
                 trimmed_video_filepath = dump_path + f"/{video_filename}_" + class_label.replace(" ","") + f"_trim{k}" + ".MP4"
                 os.system(f"ffmpeg -loglevel quiet -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
 
-                images, labels = splitVideoClip(trimmed_video_filepath, class_label, frame_dir, truncate_size)
+                images, labels, block_types = splitVideoClip(trimmed_video_filepath, class_label, block_type, frame_dir, truncate_size)
                 image_filenames.extend(images)
                 classes.extend(labels)
+                blockers.extend(block_types)
 
     # delete trimmed video dump dir.
     shutil.rmtree(dump_path, ignore_errors=True)
@@ -117,6 +120,7 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
     data = pd.DataFrame()
     data['image'] = image_filenames
     data['class'] = classes   
+    data['blocker'] = blockers
     data.to_csv(frame_dir + "/annotation.csv", header=True, index=False)
 
 
@@ -161,6 +165,9 @@ video_filepath: str
 class_label: str
     the class or label associated with the action/activity
 
+appearance_block: str
+    type of appearance block
+
 frame_dir: str
     path to directory where frames will be saved
 
@@ -169,7 +176,7 @@ truncate_size: int
 
 Returns tuple containing a list of image names and a list of classes associated with them
 """
-def splitVideoClip(video_filepath, class_label, frame_dir, truncate_size):
+def splitVideoClip(video_filepath, class_label, appearance_block, frame_dir, truncate_size):
     capture = cv2.VideoCapture(video_filepath)
     num_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT)) # get the total number of frames in the video
     
@@ -180,6 +187,7 @@ def splitVideoClip(video_filepath, class_label, frame_dir, truncate_size):
 
     image_filenames = []
     classes = []
+    appearance_blocks = []
 
     count = 0
     while(capture.isOpened()):
@@ -195,6 +203,7 @@ def splitVideoClip(video_filepath, class_label, frame_dir, truncate_size):
             # append image and class names
             image_filenames.append(frame_filename) 
             classes.append(class_label)
+            appearance_blocks.append(appearance_block)
 
             # Save the image to specified directory
             save_location = frame_dir + "/" +  frame_filename
@@ -202,7 +211,7 @@ def splitVideoClip(video_filepath, class_label, frame_dir, truncate_size):
             count += 1 # keep track of how many frames have been selected within the truncate_size
 
     capture.release()
-    return image_filenames, classes
+    return image_filenames, classes, appearance_blocks
 
 
 
