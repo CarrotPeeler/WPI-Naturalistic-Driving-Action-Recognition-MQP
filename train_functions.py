@@ -75,7 +75,7 @@ def train_model(model: torch.nn.Module,
     }
     
     for epoch in tqdm(range(epochs)):
-        print(f"\n\nEpoch: {epoch}\n--------------------")
+        print(f"\n\nEpoch: {epoch+1}\n--------------------")
 
         train_loss, train_acc = train_step(model=model,
                                             dataloader=train_dataloader,
