@@ -47,8 +47,8 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(42)
 
     # Load the organized data from the file system into arrays
-    train_1_dir = os.getcwd() + "/train_1"
-    train_1_df = pd.read_csv(train_1_dir + "/train_1_annotation.csv")
+    train_1_dir = os.getcwd() + "/image_data"
+    train_1_df = pd.read_csv(train_1_dir + "/annotation.csv")
 
     # create a train-test split
     train_df, test_df = train_test_split(train_1_df, random_state=42, test_size=.2, stratify=train_1_df['class'])
@@ -80,9 +80,9 @@ if __name__ == '__main__':
                                 num_workers=NUM_WORKERS,
                                 generator=torch.Generator(device=device))
 
-    print(f"Number of classes: {train_data.num_classes()}")
-
     num_classes = train_data.num_classes()
+
+    print(f"Number of classes: {num_classes}")
 
     ##################################### RUNNING THE MODEL ######################################
 
