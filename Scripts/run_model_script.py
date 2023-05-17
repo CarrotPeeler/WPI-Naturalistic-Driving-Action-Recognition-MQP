@@ -50,6 +50,9 @@ if __name__ == '__main__':
     train_1_dir = os.getcwd() + "/image_data"
     train_1_df = pd.read_csv(train_1_dir + "/annotation.csv")
 
+    # Remove duplicate Class 1 label named 'Class 01' (Mistake in data labeling)
+    train_1_df['class'].replace("Class 01", "Class 1", inplace=True)
+
     # create a train-test split
     train_df, test_df = train_test_split(train_1_df, random_state=42, test_size=.2, stratify=train_1_df['class'])
 
