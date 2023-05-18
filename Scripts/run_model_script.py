@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
-from torchvision.models import VGG16_Weights
+from torchvision.models import ViT_B_32_Weights
 from torchinfo import summary
 from train_functions import train_model
 from models import * 
@@ -61,8 +61,8 @@ if __name__ == '__main__':
     test_df.reset_index(inplace=True)
 
     # Create UFC101_Dataset objects (NOTE: change the transform according to input expected by model)
-    train_data = UCF101_Dataset(train_df, img_dir=train_1_dir, transform=VGG16_Weights.IMAGENET1K_V1.transforms())
-    test_data = UCF101_Dataset(test_df, img_dir=train_1_dir, transform=VGG16_Weights.IMAGENET1K_V1.transforms())
+    train_data = UCF101_Dataset(train_df, img_dir=train_1_dir, transform=ViT_B_32_Weights.IMAGENET1K_V1.transforms())
+    test_data = UCF101_Dataset(test_df, img_dir=train_1_dir, transform=ViT_B_32_Weights.IMAGENET1K_V1.transforms())
 
     # Setup the batch size hyper param (128 when RAM > 16 GB; 32 when RAM < 16 GB)
     BATCH_SIZE = 128
@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     # Load the model
     #model = Resnt18Rnn(num_classes, dropout_rate=.5, rnn_hidden_size=100, rnn_num_layers=1, batch_size=BATCH_SIZE).to(device)
-    model = VGG16_Mod(num_classes).to(device)
+    model = ViT_CLIP(num_classes).to(device)
     #model = torch.compile(model_uncompiled) # pytorch 2.0 speed increase
 
     # Print a summary using torchinfo 
