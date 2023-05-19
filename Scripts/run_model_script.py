@@ -133,7 +133,7 @@ if __name__ == '__main__':
                         test_dataloader=test_dataloader,
                         loss_fn=loss_fn,
                         optimizer=optimizer,
-                        epochs=10,
+                        epochs=20,
                         device=device)
     end_time = timer()
 
@@ -142,4 +142,4 @@ if __name__ == '__main__':
     print(f"Total Training Time: {total_time:.2f} seconds")
 
     # Save results as csv file for later graphing/comparison, etc.
-    pd.DataFrame.from_dict(results).to_csv(os.getcwd + "/Evaluation", header=True, index=False)
+    pd.DataFrame.from_dict(results).to_csv(os.getcwd() + "/Evaluation", header=True, index=False)
