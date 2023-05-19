@@ -2,6 +2,7 @@ import os
 import sys
 sys.path.insert(1, os.getcwd())
 from prepare_data import UCF101_Dataset
+from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold, train_test_split
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
@@ -46,15 +47,40 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(42)
 
     # Load the organized data from the file system into arrays
-    train_1_dir = os.getcwd() + "/image_data"
-    train_1_df = pd.read_csv(train_1_dir + "/annotation.csv")
+    data_dir = os.getcwd() + "/image_data"
+    data_df = pd.read_csv(data_dir + "/annotation.csv")
 
     # Remove duplicate Class 1 label named 'Class 01' (Mistake in data labeling)
-    train_1_df['class'].replace("Class 01", "Class 1", inplace=True)
+    data_df['class'].replace("Class 01", "Class 1", inplace=True)
+
+    # turn labels into on
+
+    # create a train-test split
+    # however, we must group frames belonging to the same trimmed video clip and assign ids to these groups
+    num_video_clips = len(data_df['image'].str.rpartition('_')[0].unique())
+    num_frames = len(data_df)
+    num_frames_per_clip = int(num_frames/num_video_clips)
+
+    # create a list of group ids for the number of video clips; ids will be duplicated for the number of frames per video
+    group_ids = [i for i in range(num_video_clips) for j in range(num_frames_per_clip)]
+
+    data_df['groupID'] = group_ids
+
+    # split data into train and test sets using the group ids
+    splitter = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state = 42)
+    split = splitter.split(X=data_df['image'], y=data_df['class'], groups=data_df['groupID'])
+    train_indexes, test_indexes = next(split)
+
+    train_df = data_df.iloc[train_indexes]
+    test_df = data_df.iloc[test_indexes]
+
+    # reset indexes after split
+    train_df.reset_index(inplace=True)
+    test_df.reset_index(inplace=True)
 
     # Create UFC101_Dataset objects (NOTE: change the transform according to input expected by model)
-    train_data = UCF101_Dataset(train_df, img_dir=train_1_dir, transform=ViT_B_32_Weights.IMAGENET1K_V1.transforms())
-    test_data = UCF101_Dataset(test_df, img_dir=train_1_dir, transform=ViT_B_32_Weights.IMAGENET1K_V1.transforms())
+    train_data = UCF101_Dataset(train_df, img_dir=data_dir, transform=ViT_B_32_Weights.IMAGENET1K_V1.transforms())
+    test_data = UCF101_Dataset(test_df, img_dir=data_dir, transform=ViT_B_32_Weights.IMAGENET1K_V1.transforms())
 
     # Setup the batch size hyper param (128 when RAM > 16 GB; 32 when RAM < 16 GB)
     BATCH_SIZE = 128
@@ -79,7 +105,7 @@ if __name__ == '__main__':
 
     print(f"Number of classes: {num_classes}")
 
-    ##################################### RUNNING THE MODEL ######################################
+    #################################### RUNNING THE MODEL ######################################
 
     # Load the model
     #model = Resnt18Rnn(num_classes, dropout_rate=.5, rnn_hidden_size=100, rnn_num_layers=1, batch_size=BATCH_SIZE).to(device)
