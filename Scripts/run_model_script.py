@@ -2,7 +2,6 @@ import os
 import sys
 sys.path.insert(1, os.getcwd())
 from prepare_data import UCF101_Dataset
-from sklearn.model_selection import train_test_split
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
@@ -52,13 +51,6 @@ if __name__ == '__main__':
 
     # Remove duplicate Class 1 label named 'Class 01' (Mistake in data labeling)
     train_1_df['class'].replace("Class 01", "Class 1", inplace=True)
-
-    # create a train-test split
-    train_df, test_df = train_test_split(train_1_df, random_state=42, test_size=.2, stratify=train_1_df['class'])
-
-    # reset indexes after split
-    train_df.reset_index(inplace=True)
-    test_df.reset_index(inplace=True)
 
     # Create UFC101_Dataset objects (NOTE: change the transform according to input expected by model)
     train_data = UCF101_Dataset(train_df, img_dir=train_1_dir, transform=ViT_B_32_Weights.IMAGENET1K_V1.transforms())
