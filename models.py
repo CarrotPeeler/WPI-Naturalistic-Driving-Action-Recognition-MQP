@@ -2,7 +2,7 @@ import torch
 from torchvision.models import vit_b_32, ViT_B_32_Weights
 from torch import nn
 
-class ViT_CLIP(nn.Module):
+class ViT(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
         self.num_classes = num_classes

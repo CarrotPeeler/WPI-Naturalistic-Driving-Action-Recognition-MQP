@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
     # Load the model
     #model = Resnt18Rnn(num_classes, dropout_rate=.5, rnn_hidden_size=100, rnn_num_layers=1, batch_size=BATCH_SIZE).to(device)
-    model = ViT_CLIP(num_classes).to(device)
+    model = ViT(num_classes).to(device)
     #model = torch.compile(model_uncompiled) # pytorch 2.0 speed increase
 
     # Print a summary using torchinfo 
