@@ -1,2 +1,2 @@
-image_data/*.jpg
+data/image_data/*.jpg
 trimmed_video_dump/
