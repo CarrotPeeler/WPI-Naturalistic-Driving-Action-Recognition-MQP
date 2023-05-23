@@ -1,7 +1,6 @@
 import os
 import sys
-sys.path.insert(1, os.getcwd())
-from prepare_data import *
+from tools.prepare_data import *
 import torch
 
 #################################### SYSTEM PERFORMANCE ######################################
@@ -33,8 +32,8 @@ if __name__ == '__main__':
         torch.backends.cuda.matmul.allow_tf32 = False
 
 ######################################### PREPARE DATA ########################################
-
-    image_dir = os.getcwd() + "/image_data"
+    
+    image_dir = os.getcwd() + "/data"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
-    videosToFrames(video_dir="/home/vislab-001/Jared/SET-A1", frame_dir=image_dir, video_extension=".MP4", truncate_size=16)
+    videosToFrames(video_dir="/home/vislab-001/Jared/SET-A1", frame_dir=image_dir, video_extension=".MP4")

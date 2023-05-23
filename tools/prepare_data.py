@@ -1,4 +1,4 @@
-import mmcv # capturing videos
+import cv2 # capturing videos
 import pandas as pd
 import numpy as np 
 from skimage.transform import resize # resizing images
@@ -78,7 +78,7 @@ num_samples: int
 video_extension: str
     video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
 """
-def videosToFrames(video_dir, frame_dir, video_extension, num_samples):
+def videosToFrames(video_dir, frame_dir, video_extension, num_samples=None):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     image_filenames = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
@@ -109,8 +109,8 @@ def videosToFrames(video_dir, frame_dir, video_extension, num_samples):
 
                 images = splitVideoClip(trimmed_video_filepath, frame_dir, num_samples)
                 image_filenames.extend(images)
-                classes += num_samples * [class_label]
-                video_idxs += num_samples * [j]
+                classes += len(images) * [class_label]
+                video_idxs += len(images) * [j]
 
     # delete trimmed video dump dir.
     shutil.rmtree(dump_path, ignore_errors=True)
@@ -169,11 +169,11 @@ num_samples: int
 
 Returns tuple containing a list of image names and a list of classes associated with them
 """
-def splitVideoClip(video_filepath, class_label, frame_dir, num_samples=None):
-    videoclip_frames = mmcv.VideoReader(video_filepath)
+def splitVideoClip(video_filepath, frame_dir, num_samples=None):
+    videoclip_frames = cv2.VideoCapture(video_filepath)
     
     video_filename = video_filepath.rpartition('/')[-1].rpartition('.')[0]
-    num_frames = videoclip_frames.frame_cnt
+    num_frames = int(videoclip_frames.get(cv2.CAP_PROP_FRAME_COUNT))
 
     # if no sample number given, default to sample every frame
     if(num_samples == None): 
@@ -185,17 +185,25 @@ def splitVideoClip(video_filepath, class_label, frame_dir, num_samples=None):
     image_filenames = []
 
     count = 0
-    for i, frame_img in enumerate(videoclip_frames):
-        if(i in sampled_frame_idxs):
+    while(videoclip_frames.isOpened()):
+        frameId = videoclip_frames.get(1) # curr frame num
+        imageExists, frameImg = videoclip_frames.read()
+
+        if(imageExists == False):
+            break
+
+        if(frameId in sampled_frame_idxs): # evenly samples frames at truncate_size interval 
             frame_filename = video_filename + f'_frame{count}.jpg'
 
-            # append image
+            # append image and class names
             image_filenames.append(frame_filename) 
 
             # Save the image to specified directory
             save_location = frame_dir + "/" +  frame_filename
-            mmcv.imwrite(frame_img, save_location)
-            count += 1
+            cv2.imwrite(save_location, frameImg)
+            count += 1 # keep track of how many frames have been selected within the truncate_size
+
+    videoclip_frames.release()
 
     return image_filenames
 

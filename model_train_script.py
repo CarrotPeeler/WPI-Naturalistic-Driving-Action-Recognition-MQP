@@ -1,15 +1,14 @@
 import os
 import sys
-sys.path.insert(1, os.getcwd())
-from prepare_data import UCF101_Dataset
+from tools.prepare_data import UCF101_Dataset
 from sklearn.model_selection import GroupShuffleSplit, StratifiedGroupKFold, train_test_split
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from torchvision.models import ViT_B_32_Weights
 from torchinfo import summary
-from train_functions import train_model
-from models import * 
+from tools.train_functions import train_model
+from tools.models import * 
 from torch import nn
 from timeit import default_timer as timer 
 
@@ -47,7 +46,7 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(42)
 
     # Load the organized data from the file system into arrays
-    data_dir = os.getcwd() + "/image_data"
+    data_dir = os.getcwd() + "/data"
     data_df = pd.read_csv(data_dir + "/annotation.csv")
 
     # Remove duplicate Class 1 label named 'Class 01' (Mistake in data labeling)
