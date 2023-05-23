@@ -1,4 +1,4 @@
-import cv2 # capturing videos
+import mmcv # capturing videos
 import pandas as pd
 import numpy as np 
 from skimage.transform import resize # resizing images
@@ -72,17 +72,17 @@ video_dir: str
 frame_dir: str
     path to directory where frames will be saved
 
+num_samples: int
+    number of frames to sample for each action video clip
+
 video_extension: str
     video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
-    
-truncate_size: int
-    number of frames each video will be truncated to
 """
-def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
+def videosToFrames(video_dir, frame_dir, video_extension, num_samples):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     image_filenames = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
-    blockers = [] # stores types of block appearance
+    video_idxs = [] # indices that indicate which video a frame came from
 
     # dump path for trimmed video clips
     dump_path = os.getcwd() + "/trimmed_video_dump"
@@ -102,16 +102,15 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
                 start_time = row_data['Start Time'].to_list()[0]
                 end_time = row_data['End Time'].to_list()[0]
                 class_label = row_data['Label (Primary)'].to_list()[0] 
-                block_type = row_data['Appearance Block'].to_list()[0]
 
                 # extract only the portion of the video between start_time and end_time
                 trimmed_video_filepath = dump_path + f"/{video_filename}_" + class_label.replace(" ","") + f"_trim{k}" + ".MP4"
                 os.system(f"ffmpeg -loglevel quiet -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
 
-                images, labels, block_types = splitVideoClip(trimmed_video_filepath, class_label, block_type, frame_dir, truncate_size)
+                images = splitVideoClip(trimmed_video_filepath, frame_dir, num_samples)
                 image_filenames.extend(images)
-                classes.extend(labels)
-                blockers.extend(block_types)
+                classes += num_samples * [class_label]
+                video_idxs += num_samples * [j]
 
     # delete trimmed video dump dir.
     shutil.rmtree(dump_path, ignore_errors=True)
@@ -120,7 +119,7 @@ def videosToFrames(video_dir, frame_dir, video_extension, truncate_size):
     data = pd.DataFrame()
     data['image'] = image_filenames
     data['class'] = classes   
-    data['blocker'] = blockers
+    data['video_index'] = video_idxs
     data.to_csv(frame_dir + "/annotation.csv", header=True, index=False)
 
 
@@ -157,61 +156,48 @@ def parse_data_from_csv(video_filepath, annotation_dataframe):
 
 
 """
-Splits a video clip containing a single action/activity into several frames; saves frames to 'frame_dir' location
+Splits a video clip containing a single action/activity into frames; saves frames to 'frame_dir' location
 
 video_filepath: str
     path to where video file is stored; 
 
-class_label: str
-    the class or label associated with the action/activity
-
-appearance_block: str
-    type of appearance block
-
 frame_dir: str
     path to directory where frames will be saved
 
-truncate_size: int
-    number of frames each video will be truncated to
+num_samples: int
+    number of frames to sample from each video
 
 Returns tuple containing a list of image names and a list of classes associated with them
 """
-def splitVideoClip(video_filepath, class_label, appearance_block, frame_dir, truncate_size):
-    capture = cv2.VideoCapture(video_filepath)
-    num_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT)) # get the total number of frames in the video
+def splitVideoClip(video_filepath, class_label, frame_dir, num_samples=None):
+    videoclip_frames = mmcv.VideoReader(video_filepath)
     
     video_filename = video_filepath.rpartition('/')[-1].rpartition('.')[0]
+    num_frames = videoclip_frames.frame_cnt
 
-    # select truncate_size num of frames from each video, evenly spaced out
-    selected_frames = np.linspace(start=0, stop=num_frames-1, num=truncate_size, dtype=np.int16) 
+    # if no sample number given, default to sample every frame
+    if(num_samples == None): 
+        num_samples = num_frames
+
+    # evenly sample frames from a video following the given 
+    sampled_frame_idxs = torch.linspace(start=0, end=num_frames-1, steps=num_samples, dtype=torch.int16) 
 
     image_filenames = []
-    classes = []
-    appearance_blocks = []
 
     count = 0
-    while(capture.isOpened()):
-        frameId = capture.get(1) # curr frame num
-        imageExists, frameImg = capture.read()
-
-        if(imageExists == False):
-            break
-
-        if(frameId in selected_frames): # evenly samples frames at truncate_size interval 
+    for i, frame_img in enumerate(videoclip_frames):
+        if(i in sampled_frame_idxs):
             frame_filename = video_filename + f'_frame{count}.jpg'
 
-            # append image and class names
+            # append image
             image_filenames.append(frame_filename) 
-            classes.append(class_label)
-            appearance_blocks.append(appearance_block)
 
             # Save the image to specified directory
             save_location = frame_dir + "/" +  frame_filename
-            cv2.imwrite(save_location, frameImg)
-            count += 1 # keep track of how many frames have been selected within the truncate_size
+            mmcv.imwrite(frame_img, save_location)
+            count += 1
 
-    capture.release()
-    return image_filenames, classes, appearance_blocks
+    return image_filenames
 
 
 

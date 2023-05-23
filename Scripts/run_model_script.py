@@ -47,7 +47,7 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(42)
 
     # Load the organized data from the file system into arrays
-    data_dir = os.getcwd() + "/data/image_data"
+    data_dir = os.getcwd() + "/image_data"
     data_df = pd.read_csv(data_dir + "/annotation.csv")
 
     # Remove duplicate Class 1 label named 'Class 01' (Mistake in data labeling)
