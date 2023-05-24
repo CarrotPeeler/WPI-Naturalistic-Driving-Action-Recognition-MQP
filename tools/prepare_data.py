@@ -1,6 +1,6 @@
 import cv2 # capturing videos
 import pandas as pd
-import numpy as np 
+import math
 from skimage.transform import resize # resizing images
 from glob import glob
 from tqdm import tqdm
@@ -9,6 +9,8 @@ from PIL import Image
 import torch
 import os
 import shutil
+import datetime
+import time
 
 # suppress pandas chain assignment warnings
 pd.options.mode.chained_assignment = None
@@ -49,8 +51,10 @@ class UCF101_Dataset(Dataset):
             return img, label
 
 
-# given text file with class indices and corresponding name/activity, create dictionary for key-val pairs
-# pass delimiter parameter that separates key-val pairs in text file
+"""
+Given text file with class indices and corresponding name/activity, create dictionary for key-val pairs
+pass delimiter parameter that separates key-val pairs in text file
+"""
 def getClassNamesDict(class_names_txt_path, delimiter):
     d = dict()
     with open(class_names_txt_path) as txt:
@@ -61,32 +65,33 @@ def getClassNamesDict(class_names_txt_path, delimiter):
 
 
 """
-Breaks down videos into frames, save them to given dir., and creates an annotation csv with frame file names and their labels
+Converts timestamp in string format "hh:mm:ss" to total seconds
+Returns an integer representing total seconds
+"""
+def timestamp_to_seconds(timestamp:str):
+    struct = time.strptime(timestamp.split(',')[0],'%H:%M:%S')
+    return int(datetime.timedelta(hours=struct.tm_hour,
+                              minutes=struct.tm_min,
+                              seconds=struct.tm_sec).total_seconds())
+
+
+"""
+Breaks down videos into clips, each having 1 action in them
+
+Clips saved to given dir. and creates an annotation csv with clip file names and their labels
 
 NOTE: For this function to work, annotation files must be stored as a csv in the same dir as the videos
       This allows the data dir to have multiple subdirs, each with a set of videos and an associated annotation file
 
-video_dir: str
-    path to directory where videos stored; 
-
-frame_dir: str
-    path to directory where frames will be saved
-
-stride: int
-    number of frames to sample per frame rate (i.e. with 30 fps and stride = 4 => 4 frames sampled every 30 frames)
-
-video_extension: str
-    video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
+video_dir: path to directory where videos stored
+clip_dir: path to directory where clips will be saved
+video_extension: video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
 """
-def videosToFrames(video_dir, frame_dir, video_extension, stride):
+def videosToClips(video_dir: str, clip_dir: str, video_extension: str):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
-    image_filenames = [] # stores image (frame) names
+    clip_filenames = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
     video_idxs = [] # indices that indicate which video a frame came from
-
-    # dump path for trimmed video clips
-    dump_path = os.getcwd() + "/trimmed_video_dump"
-    pathlib.Path(dump_path).mkdir(parents=True, exist_ok=True)
 
     for i in tqdm(range(len(csv_filepaths))): # for each csv file corresponding to a group of videos, split each video into frames
         annotation_df = pd.read_csv(csv_filepaths[i])
@@ -104,16 +109,12 @@ def videosToFrames(video_dir, frame_dir, video_extension, stride):
                 class_label = row_data['Label (Primary)'].to_list()[0] 
 
                 # extract only the portion of the video between start_time and end_time
-                trimmed_video_filepath = dump_path + f"/{video_filename}_" + class_label.replace(" ","") + f"_trim{k}" + ".MP4"
+                trimmed_video_filepath = os.getcwd() + "/data" + f"/{video_filename}_" + class_label.replace(" ","") + f"_trim{k}" + ".MP4"
                 os.system(f"ffmpeg -loglevel quiet -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
 
-                images = splitVideoClip(trimmed_video_filepath, frame_dir, stride)
                 image_filenames.extend(images)
                 classes += len(images) * [class_label]
                 video_idxs += len(images) * [j]
-
-    # delete trimmed video dump dir.
-    shutil.rmtree(dump_path, ignore_errors=True)
 
     # create annotation csv to store image names and their labels
     data = pd.DataFrame()
@@ -122,9 +123,10 @@ def videosToFrames(video_dir, frame_dir, video_extension, stride):
     data['video_index'] = video_idxs
     data.to_csv(frame_dir + "/annotation.csv", header=True, index=False)
 
-
-# returns only the relevant data from the annotation csv file for the video requested
-# each annotation file has multiple videos, each with their own data; the goal is to parse data for individual videos\
+"""
+Parses out the data for a single video, given its file path and the entire annotation csv for the user recorded in the video
+NOTE: each annotation file has multiple videos, each with their own data
+"""
 def parse_data_from_csv(video_filepath, annotation_dataframe):
     df = annotation_dataframe
 
@@ -153,62 +155,6 @@ def parse_data_from_csv(video_filepath, annotation_dataframe):
     parsed_video_data = df.iloc[video_index_orig:next_video_index_orig] # create a sub-dataframe of the original with only this video's data
 
     return parsed_video_data
-
-
-"""
-Splits a video clip containing a single action/activity into frames; saves frames to 'frame_dir' location
-
-video_filepath: str
-    path to where video file is stored; 
-
-frame_dir: str
-    path to directory where frames will be saved
-
-stride: int
-    number of frames to sample per frame rate 
-
-Returns tuple containing a list of image names and a list of classes associated with them
-"""
-def splitVideoClip(video_filepath, frame_dir, stride):
-    videoclip_frames = cv2.VideoCapture(video_filepath)
-    
-    video_filename = video_filepath.rpartition('/')[-1].rpartition('.')[0]
-    num_frames = int(videoclip_frames.get(cv2.CAP_PROP_FRAME_COUNT))
-    num_samples = num_frames / stride
-
-    # if no sample number given, default to sample every frame
-    if(num_samples == None): 
-        num_samples = num_frames
-
-    # evenly sample frames from a video following the given 
-    sampled_frame_idxs = torch.linspace(start=0, end=num_frames-1, steps=num_samples, dtype=torch.int16) 
-
-    image_filenames = []
-
-    count = 0
-    while(videoclip_frames.isOpened()):
-        frameId = videoclip_frames.get(1) # curr frame num
-        imageExists, frameImg = videoclip_frames.read()
-
-        if(imageExists == False):
-            break
-
-        if(frameId in sampled_frame_idxs): # evenly samples frames at truncate_size interval 
-            frame_filename = video_filename + f'_frame{count}.jpg'
-
-            # append image and class names
-            image_filenames.append(frame_filename) 
-
-            # Save the image to specified directory
-            save_location = frame_dir + "/" +  frame_filename
-            cv2.imwrite(save_location, frameImg)
-            count += 1 # keep track of how many frames have been selected within the truncate_size
-
-    videoclip_frames.release()
-
-    return image_filenames
-
-
 
 
 
