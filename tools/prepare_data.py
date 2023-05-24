@@ -72,13 +72,13 @@ video_dir: str
 frame_dir: str
     path to directory where frames will be saved
 
-num_samples: int
-    number of frames to sample for each action video clip
+stride: int
+    number of frames to sample per frame rate (i.e. with 30 fps and stride = 4 => 4 frames sampled every 30 frames)
 
 video_extension: str
     video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
 """
-def videosToFrames(video_dir, frame_dir, video_extension, num_samples=None):
+def videosToFrames(video_dir, frame_dir, video_extension, stride):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     image_filenames = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
@@ -107,7 +107,7 @@ def videosToFrames(video_dir, frame_dir, video_extension, num_samples=None):
                 trimmed_video_filepath = dump_path + f"/{video_filename}_" + class_label.replace(" ","") + f"_trim{k}" + ".MP4"
                 os.system(f"ffmpeg -loglevel quiet -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
 
-                images = splitVideoClip(trimmed_video_filepath, frame_dir, num_samples)
+                images = splitVideoClip(trimmed_video_filepath, frame_dir, stride)
                 image_filenames.extend(images)
                 classes += len(images) * [class_label]
                 video_idxs += len(images) * [j]
@@ -164,16 +164,17 @@ video_filepath: str
 frame_dir: str
     path to directory where frames will be saved
 
-num_samples: int
-    number of frames to sample from each video
+stride: int
+    number of frames to sample per frame rate 
 
 Returns tuple containing a list of image names and a list of classes associated with them
 """
-def splitVideoClip(video_filepath, frame_dir, num_samples=None):
+def splitVideoClip(video_filepath, frame_dir, stride):
     videoclip_frames = cv2.VideoCapture(video_filepath)
     
     video_filename = video_filepath.rpartition('/')[-1].rpartition('.')[0]
     num_frames = int(videoclip_frames.get(cv2.CAP_PROP_FRAME_COUNT))
+    num_samples = num_frames / stride
 
     # if no sample number given, default to sample every frame
     if(num_samples == None): 
