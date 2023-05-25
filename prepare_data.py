@@ -115,7 +115,9 @@ def parse_data_from_csv(video_filepath, annotation_dataframe):
 
 
 
+if __name__ == '__main__':
+    
+    clips_savepath = os.getcwd() + "/data"
 
-
-
-
+    # truncate each train video into frames (truncate_size = num of frames per video)
+    videosToClips(video_dir="/home/vislab-001/Jared/SET-A1", clip_dir=clips_savepath, video_extension=".MP4")
