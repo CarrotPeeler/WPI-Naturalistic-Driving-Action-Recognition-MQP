@@ -1,55 +1,12 @@
-import cv2 # capturing videos
 import pandas as pd
-import math
-from skimage.transform import resize # resizing images
 from glob import glob
 from tqdm import tqdm
-import pathlib
-from PIL import Image
-import torch
 import os
-import shutil
 import datetime
 import time
 
 # suppress pandas chain assignment warnings
 pd.options.mode.chained_assignment = None
-
-# PyTorch Modules
-from torch.utils.data import Dataset
-
-class UCF101_Dataset(Dataset):
-    def __init__(self, dataframe, img_dir, transform=None):
-        self.img_dir = img_dir
-        self.imgs = dataframe['image']
-        self.labels = pd.get_dummies(dataframe['class'], dtype=float)
-        self.transform = transform
-
-    def load_image(self, index: int):
-        "Opens an image via a path and returns it."
-        image_path = self.img_dir + "/" + self.imgs[index]
-        return Image.open(image_path) 
-
-    def num_classes(self):
-        return self.labels.shape[1]
-
-    def __len__(self):
-        "Returns the total number of samples."
-        return len(self.imgs)
-  
-    # Returns tuple w/ img tensor and class: (torch.Tensor, int)
-    def __getitem__(self, index: int):
-        "Returns one sample of data, data and label (X, y)."
-        img = self.load_image(index)
-        label_arr = self.labels.loc[[index]].values # retrieve specified row from dataframe -> convert to numpy array
-        label = torch.tensor(label_arr).squeeze() # convert numpy array to tensor -> squeeze to remove extra dim
-
-        # perform transform on image if specified
-        if self.transform:
-            return self.transform(img), label
-        else:
-            return img, label
-
 
 """
 Given text file with class indices and corresponding name/activity, create dictionary for key-val pairs
