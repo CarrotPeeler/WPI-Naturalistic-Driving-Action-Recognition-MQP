@@ -31,6 +31,7 @@ def check_system_performance():
 
 # Always run the start method inside this if-statement
 if __name__ == '__main__':      
+    # add arg parser here and then create bash script to execute this script with given args; ppl won't have to touch this code directly
     check_system_performance()
 
     clips_savepath = os.getcwd() + "/data"
