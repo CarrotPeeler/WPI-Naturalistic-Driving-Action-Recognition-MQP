@@ -3,10 +3,7 @@ import sys
 from tools.prepare_data import *
 import torch
 
-#################################### SYSTEM PERFORMANCE ######################################
-
-# Always run the start method inside this if-statement
-if __name__ == '__main__':      
+def check_system_performance():
     print("Setting Multiprocessing Start Method to 'Spawn'")
     # spawn start method instead of fork for CUDA usage
     torch.multiprocessing.set_start_method('spawn')
@@ -31,9 +28,13 @@ if __name__ == '__main__':
         print(f"[INFO] Using GPU with score: {GPU_SCORE}, TensorFloat32 (TF32) not available, to use it you need a GPU with score >= (8, 0)")
         torch.backends.cuda.matmul.allow_tf32 = False
 
-######################################### PREPARE DATA ########################################
-    
-    image_dir = os.getcwd() + "/data"
+
+# Always run the start method inside this if-statement
+if __name__ == '__main__':      
+    # add arg parser here and then create bash script to execute this script with given args; ppl won't have to touch this code directly
+    check_system_performance()
+
+    clips_savepath = os.getcwd() + "/data"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
-    videosToClips(video_dir="/home/vislab-001/Jared/SET-A1", frame_dir=image_dir, video_extension=".MP4", stride=8)
+    videosToClips(video_dir="/home/vislab-001/Jared/SET-A1", clip_dir=clips_savepath, video_extension=".MP4")
