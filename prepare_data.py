@@ -1,24 +1,25 @@
 import pandas as pd
-from glob import glob
-from tqdm import tqdm
 import os
 import datetime
 import time
+from glob import glob
+from tqdm import tqdm
+from sklearn.model_selection import StratifiedGroupKFold
 
 # suppress pandas chain assignment warnings
 pd.options.mode.chained_assignment = None
 
 """
 Given text file with class indices and corresponding name/activity, create dictionary for key-val pairs
-pass delimiter parameter that separates key-val pairs in text file
 """
-def getClassNamesDict(class_names_txt_path, delimiter):
+def getClassNamesDict(class_names_txt_path):
     d = dict()
     with open(class_names_txt_path) as txt:
         for line in txt:
-            (key, val) = line.strip().split(delimiter)
-            d[key] = val
+            (key, val) = line.strip().split(",")
+            d[int(key)] = val
     return d
+
 
 
 """
@@ -32,6 +33,66 @@ def timestamp_to_seconds(timestamp:str):
                               seconds=struct.tm_sec).total_seconds())
 
 
+
+"""
+Extract video duration in seconds 
+"""
+def extract_video_duration_seconds(video_filepath:str):
+    video_metadata = os.popen(f'ffmpeg -i {video_filepath} 2>&1 | grep "Duration"').read()
+    timestamp = video_metadata.partition('.')[0].partition(':')[-1].strip()
+    return timestamp_to_seconds(timestamp)
+
+
+
+"""
+If a video is not fully labeled (i.e., not every segment of the video has an action label, then fill in empty segments with labels)
+
+start_times: list of start times when action labels occur for a video segment (each time must be in integer seconds, not hh:mm:ss format)
+end_times: list of end times when action labels end for a video segment (each time must be in integer seconds, not hh:mm:ss format)
+labels: class ids that classify every segment of the video (must be an integer 0-15)
+video_duration: duration of the video in seconds
+
+Returns a list of tuples (start_time, end_time, class_id_label) that classify every segment of the video under an action id
+or returns None if operation failed
+"""
+def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list, video_duration:int):
+    
+    # create a list of tuples (start_time, end_time, class_id) for the video
+    video_action_labels = [(start_times[i], end_times[i], labels[i]) for i in range(0, len(labels))]
+
+    corrected_video_action_labels = [] # includes labels and timestamps for unlabeled non-distracted behavior segments in the video
+
+    # add labels and timestamps for unlabeled non-distracted behavior segments of the video (categorized as class 0 - normal driving)
+    for i, tuple in enumerate(video_action_labels):
+        # first action segment does not occur at start of video => add normal driving tuple before this action tuple
+        if(i == 0 and tuple[0] > 0):
+            corrected_video_action_labels.append((0, tuple[0], 0)) # class id of 0 => normal driving
+            corrected_video_action_labels.append(tuple)
+
+        # last action segment does not last till end of video duration => add normal driving tuple after this distracted action tuple
+        elif(i == len(video_action_labels)-1 and tuple[1] < video_duration):
+            corrected_video_action_labels.append(tuple)
+            corrected_video_action_labels.append((tuple[1], video_duration, 0))
+
+        # time gap between when this action occurs and the next labeled action = > add action tuple for normal driving after this tuple
+        if(i+1 < len(video_action_labels) and video_action_labels[i+1][0] - tuple[1] > 0):
+            if(i != 0): # prevent first action tuple from being duplicated if first 'if' statement True
+                corrected_video_action_labels.append(tuple)
+            corrected_video_action_labels.append((tuple[1], video_action_labels[i+1][0], 0))
+
+    # check that there are timestamps and labels for every segment of the video
+    sum = corrected_video_action_labels[-1][1] # == video duration
+    for i, tuple in enumerate(corrected_video_action_labels):
+        if(i+1 < len(corrected_video_action_labels)):
+            sum += (corrected_video_action_labels[i+1][0] - tuple[1])
+
+    if(sum == video_duration):
+        return corrected_video_action_labels
+    else:
+        return None
+
+
+
 """
 Breaks down videos into clips, each having 1 action in them
 
@@ -43,48 +104,54 @@ NOTE: For this function to work, annotation files must be stored as a csv in the
 video_dir: path to directory where videos stored
 clip_dir: path to directory where clips will be saved
 video_extension: video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
+annotation_filename: name to save annotation under (you must supply the extension type)
 """
-def videosToClips(video_dir: str, clip_dir: str, video_extension: str):
+def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
-    clip_filenames = [] # stores image (frame) names
+    clip_filepaths = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
-    video_idxs = [] # indices that indicate which video a frame came from
 
-    for i in tqdm(range(len(csv_filepaths))): # for each csv file corresponding to a group of videos, split each video into frames
+    for i in tqdm(range(len(csv_filepaths))): # for each csv file corresponding to a group of videos, split each video into clips
         annotation_df = pd.read_csv(csv_filepaths[i])
         videos = glob(csv_filepaths[i].rpartition('/')[0] + "/*" + video_extension)
 
-        for j in range(len(videos)): # for each video, parse out its individual csv data from the original csv 
+        for j in range(len(videos)): # for each video, parse out its individual csv data from the original csv for the group of videos 
             video_filename = videos[j].rpartition('/')[-1].partition('.')[0] 
-            parsed_video_data = parse_data_from_csv(videos[j], annotation_df)
+            parsed_video_df = parse_data_from_csv(videos[j], annotation_df)
+            video_duration = extract_video_duration_seconds(videos[j]) # video duration in total seconds elapsed
 
-            for k in range(len(parsed_video_data)): # for each row in the parsed csv file, extract video clip based on timestamps; split clip into frames
-                row_data = parsed_video_data.iloc[[k]] # extract a single row in the csv
+            # extract start and end timestamps from df and convert each to seconds
+            start_times = list(map(timestamp_to_seconds, parsed_video_df['Start Time'].to_list()))
+            end_times = list(map(timestamp_to_seconds, parsed_video_df['End Time'].to_list()))
+            labels = list(map(lambda str:int(str.rpartition(' ')[-1]), parsed_video_df['Label (Primary)'].to_list()))
 
-                start_time = row_data['Start Time'].to_list()[0]
-                end_time = row_data['End Time'].to_list()[0]
-                class_label = row_data['Label (Primary)'].to_list()[0] 
+            video_action_labels = fill_unlabeled_video_segments(start_times=start_times, 
+                                                                end_times=end_times, 
+                                                                labels=labels, 
+                                                                video_duration=video_duration)
+
+            for action_tuple in video_action_labels: # for each action in the video, extract video clip of action based on timestamps
 
                 # extract only the portion of the video between start_time and end_time
-                trimmed_video_filepath = os.getcwd() + "/data" + f"/{video_filename}_" + class_label.replace(" ","") + f"_trim{k}" + ".MP4"
-                os.system(f"ffmpeg -loglevel quiet -i {videos[j]} -ss {start_time} -to {end_time} -c:v copy {trimmed_video_filepath}")
+                clip_filepath = os.getcwd() + "/data" + f"/{video_filename}" + f"_start{action_tuple[0]}" + f"_end{action_tuple[1]}" + ".MP4"
+                os.system(f"ffmpeg -loglevel quiet -i {videos[j]} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}")
 
-                image_filenames.extend(images)
-                classes += len(images) * [class_label]
-                video_idxs += len(images) * [j]
+                clip_filepaths.append(clip_filepath)
+                classes.append(action_tuple[2])
 
-    # create annotation csv to store image names and their labels
+    # create annotation csv to store clip file paths and their labels
     data = pd.DataFrame()
-    data['image'] = image_filenames
-    data['class'] = classes   
-    data['video_index'] = video_idxs
-    data.to_csv(frame_dir + "/annotation.csv", header=True, index=False)
+    data['clip'] = clip_filepaths
+    data['class'] = classes  
+    data.to_csv(clip_dir + "/" + annotation_filename, header=False, index=False)
+
+
 
 """
 Parses out the data for a single video, given its file path and the entire annotation csv for the user recorded in the video
 NOTE: each annotation file has multiple videos, each with their own data
 """
-def parse_data_from_csv(video_filepath, annotation_dataframe):
+def parse_data_from_csv(video_filepath:str, annotation_dataframe:pd.DataFrame):
     df = annotation_dataframe
 
     video_view = video_filepath.rpartition('/')[-1].partition('_')[0] # retrieve camera view angle
@@ -116,8 +183,27 @@ def parse_data_from_csv(video_filepath, annotation_dataframe):
 
 
 if __name__ == '__main__':
-    
+
     clips_savepath = os.getcwd() + "/data"
+    annotation_filename = "annotation.csv"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
-    videosToClips(video_dir="/home/vislab-001/Jared/SET-A1", clip_dir=clips_savepath, video_extension=".MP4")
+    videosToClips(video_dir="/home/vislab-001/Jared/SET-A1", 
+                  clip_dir=clips_savepath, 
+                  video_extension=".MP4", 
+                  annotation_filename=annotation_filename)
+
+    df = pd.read_csv(clips_savepath + "/" + annotation_filename, sep=" ", names=["clip", "class"])
+
+    print("All videos have been successfully procesed into clips. Annotation file created.")
+
+    # split data into train and test sets using groups based on video name
+    splitter = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state = 42)
+    split = splitter.split(X=df['clip'], y=df['class'], groups=df['clip'].str.partition('-')[0].str.rpartition('/')[2])
+    train_indexes, test_indexes = next(split)
+
+    train_df = df.iloc[train_indexes]
+    test_df = df.iloc[test_indexes]
+
+    train_df.to_csv("A1_train.csv", sep=" ", header=False, index=False)
+    test_df.to_csv("A1_test.csv", sep=" ", header=False, index=False)
