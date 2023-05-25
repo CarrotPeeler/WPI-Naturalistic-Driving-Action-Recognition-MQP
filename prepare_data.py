@@ -129,6 +129,9 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
                                                                 end_times=end_times, 
                                                                 labels=labels, 
                                                                 video_duration=video_duration)
+            
+            if(video_action_labels == None): 
+                print(f"Failed to auto-generate labels for unlabeled video segments for:\n{videos[j]}")
 
             for action_tuple in video_action_labels: # for each action in the video, extract video clip of action based on timestamps
 

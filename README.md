@@ -9,11 +9,11 @@ Done as part of my MQP for WPI (Summer 2023)
 videosToClips:
 - before splitting videos into clips using ffmpeg, 
     need to also check video length &
-    create clips for empty durations where no distracted behavior happens and label them with -1
+    create clips for empty durations where no distracted behavior happens and label them with -1(DONE)
 
-    get GNU parallel working for FFmpeg using os.get_cpu()
+- get GNU parallel working for FFmpeg using os.get_cpu() (WIP)
 
-- annotation file should only have video clip file path and label (format the file as csv but delimit path and label by a ' ')
+- annotation file should only have video clip file path and label (format the file as csv but delimit path and label by a ' ') (DONE)
 
 - change model_train script to go back to using train_test_split on video clip data
 
