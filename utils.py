@@ -1,7 +1,6 @@
 import os
 import pandas as pd
-import time
-import datetime
+from tqdm import tqdm
 from sklearn.model_selection import StratifiedGroupKFold
 from glob import glob
 from torchinfo import summary
@@ -58,39 +57,41 @@ def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list,
     video_action_labels = [(start_times[i], end_times[i], labels[i]) for i in range(0, len(labels))]
     
     # sort list of tuples by start time
-    video_action_labels.sort(key=lambda tuple: tuple[0])
-
-    print(f"{video_action_labels}\n")
+    video_action_labels.sort(key=lambda tuple: tuple[0]) 
 
     corrected_video_action_labels = [] # includes labels and timestamps for unlabeled non-distracted behavior segments in the video
 
     # add labels and timestamps for unlabeled non-distracted behavior segments of the video (categorized as class 0 - normal driving)
-    for i, tuple in enumerate(video_action_labels):
-        # first action segment does not occur at start of video => add normal driving tuple before this action tuple
-        if(i == 0 and tuple[0] > 0):
-            corrected_video_action_labels.append((0, tuple[0], 0)) # class id of 0 => normal driving
-            corrected_video_action_labels.append(tuple)
-            print(f"Correct start: {corrected_video_action_labels}\n")
+    curr_start_time = 0 
+    for i, action_tuple in enumerate(video_action_labels):
 
-        # last action segment does not last till end of video duration => add normal driving tuple after this distracted action tuple
-        elif(i == len(video_action_labels)-1 and tuple[1] < video_duration):
-            corrected_video_action_labels.append(tuple)
-            corrected_video_action_labels.append((tuple[1], video_duration, 0))
-            print(f"Correct end: {corrected_video_action_labels}\n")
+        if(action_tuple[0] == curr_start_time):
+            corrected_video_action_labels.append(action_tuple)
 
-        # time gap between when this action occurs and the next labeled action = > add action tuple for normal driving after this tuple
-        if(i+1 < len(video_action_labels) and video_action_labels[i+1][0] - tuple[1] > 0):
-            if(i != 0): # prevent first action tuple from being duplicated if first 'if' statement True
-                corrected_video_action_labels.append(tuple)
-            corrected_video_action_labels.append((tuple[1], video_action_labels[i+1][0], 0))
-            print(f"Correct end: {corrected_video_action_labels}\n")
+        else:
+            corrected_video_action_labels.append((curr_start_time, action_tuple[0], 0))
+            corrected_video_action_labels.append(action_tuple)
 
+        if(i == len(video_action_labels)-1 and action_tuple[1] < video_duration):
+            corrected_video_action_labels.append((action_tuple[1], video_duration, 0))
+
+        curr_start_time = action_tuple[1]
+
+    # check if last tuple's end_time has a 1-sec discrepancy with the video duration (at least a few videos do)
+    if(abs(corrected_video_action_labels[-1][1] - video_duration) == 1):
+        action_tuple = corrected_video_action_labels[-1]
+        new_tuple = (action_tuple[0], video_duration, action_tuple[2])
+        del corrected_video_action_labels[-1]
+        corrected_video_action_labels.append(new_tuple)
+        
+        
     # check that action tuples are sequenced in the list correctly based on their timestamps
     sum = corrected_video_action_labels[-1][1] # == video duration
     for i, tuple in enumerate(corrected_video_action_labels):
         if(i+1 < len(corrected_video_action_labels)):
             sum += (corrected_video_action_labels[i+1][0] - tuple[1])
 
+    # videos might have a 1 sec diff. with their annotations (only for 86952_11)
     if(sum == video_duration):
         return True, corrected_video_action_labels
     else:
@@ -99,33 +100,39 @@ def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list,
 
 if __name__ == '__main__':
 
-    workers = os.cpu_count()
-    csv_path = glob("/home/vislab-001/Jared/SET-A1/user_id_30932/*.csv")[0]
-    video_path = "/home/vislab-001/Jared/SET-A1/user_id_30932/Dashboard_user_id_30932_NoAudio_5.MP4"
+    csvs = glob("/home/vislab-001/Jared/SET-A1/**/*.csv", recursive=True)
 
-    video_metadata = os.popen(f'ffmpeg -i {video_path} 2>&1 | grep "Duration"').read()
-    timestamp = video_metadata.partition('.')[0].partition(':')[-1].strip()
-    video_duration = timestamp_to_seconds(timestamp)
-    
-    df = pd.read_csv(csv_path)
-    parsed_df = parse_data_from_csv(video_filepath=video_path, annotation_dataframe=df)
-    start_times = list(map(timestamp_to_seconds, df['Start Time'].to_list()))
-    end_times = list(map(timestamp_to_seconds, df['End Time'].to_list()))
-    labels = list(map(lambda str:int(str.rpartition(' ')[-1]), parsed_df['Label (Primary)'].to_list()))
+    for i in tqdm(range(len(csvs))):
+        videos = glob(csvs[i].rpartition('/')[0] + "**/*.MP4", recursive=True)
 
-    print(fill_unlabeled_video_segments(start_times=start_times, end_times=end_times, labels=labels, video_duration=video_duration))
+        for video in videos:
+            video_metadata = os.popen(f'ffmpeg -i {video} 2>&1 | grep "Duration"').read()
+            timestamp = video_metadata.partition('.')[0].partition(':')[-1].strip()
+            video_duration = timestamp_to_seconds(timestamp)
 
-    # df = pd.read_csv("tets.csv", sep=" ", names=["clip", "class"])
+            df = pd.read_csv(csvs[i])
+            parsed_df = parse_data_from_csv(video_filepath=video, annotation_dataframe=df)
+            start_times = list(map(timestamp_to_seconds, parsed_df['Start Time'].to_list()))
+            end_times = list(map(timestamp_to_seconds, parsed_df['End Time'].to_list()))
+            labels = list(map(lambda str:int(str.rpartition(' ')[-1]), parsed_df['Label (Primary)'].to_list()))
 
-    # # split data into train and test sets using the group ids
-    # splitter = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state = 42)
-    # split = splitter.split(X=df['clip'], y=df['class'], groups=df['clip'].str.partition('-')[0].str.rpartition('/')[2])
-    # train_indexes, test_indexes = next(split)
+            _, actions = fill_unlabeled_video_segments(start_times=start_times, end_times=end_times, labels=labels, video_duration=video_duration)
+            if(_ == False): 
+                print(f"{parsed_df}\n\nVideo: {video}\n\n{video_metadata}\n\n{video_duration}\n\nCorrected: {actions}\n\n")
 
-    # train_df = df.iloc[train_indexes]
-    # test_df = df.iloc[test_indexes]
+    # i = 10
+    # video = glob(csvs[i].rpartition('/')[0] + "**/*.MP4", recursive=True)[0]
+    # video_metadata = os.popen(f'ffmpeg -i {video} 2>&1 | grep "Duration"').read()
+    # timestamp = video_metadata.partition('.')[0].partition(':')[-1].strip()
+    # video_duration = timestamp_to_seconds(timestamp)
+    # print(f"Video Duration: {video_duration} seconds")
 
-    # train_df.to_csv("tets_train", sep=" ", header=False, index=False)
-    # test_df.to_csv("tets_test", sep=" ", header=False, index=False)
+    # df = pd.read_csv(csvs[i])
+    # parsed_df = parse_data_from_csv(video_filepath=video, annotation_dataframe=df)
+    # start_times = list(map(timestamp_to_seconds, df['Start Time'].to_list()))
+    # end_times = list(map(timestamp_to_seconds, df['End Time'].to_list()))
+    # labels = list(map(lambda str:int(str.rpartition(' ')[-1]), parsed_df['Label (Primary)'].to_list()))
 
-    
+    # _, actions, actions_orig = fill_unlabeled_video_segments(start_times=start_times, end_times=end_times, labels=labels, video_duration=video_duration)
+    # if(_ == False): 
+    #     print(f"Before: {actions_orig}\n\nCorrected: {actions}\n\n")
