@@ -142,6 +142,8 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
 
                 # extract only the portion of the video between start_time and end_time
                 clip_filepath = os.getcwd() + "/data" + f"/{video_filename}" + f"_start{action_tuple[0]}" + f"_end{action_tuple[1]}" + ".MP4"
+                
+                # currently using hardware accel with CUDA GPU and h264.nvenc codec (may need to change based on comp. setup/specs)
                 os.system(f"ffmpeg -loglevel quiet -y -hwaccel cuda -hwaccel_output_format cuda -i {videos[j]} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v h264_nvenc {clip_filepath}")
 
                 clip_filepaths.append(clip_filepath)
