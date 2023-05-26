@@ -8,10 +8,8 @@ from torchinfo import summary
 pd.options.mode.chained_assignment = None
 
 def timestamp_to_seconds(timestamp:str):
-    struct = time.strptime(timestamp.split(',')[0],'%H:%M:%S')
-    return int(datetime.timedelta(hours=struct.tm_hour,
-                              minutes=struct.tm_min,
-                              seconds=struct.tm_sec).total_seconds())
+    hours, mins, secs = timestamp.split(':')
+    return int(hours)*3600 + int(mins)*60 + int(secs)
 
 def parse_data_from_csv(video_filepath, annotation_dataframe):
     df = annotation_dataframe
@@ -116,7 +114,6 @@ if __name__ == '__main__':
     labels = list(map(lambda str:int(str.rpartition(' ')[-1]), parsed_df['Label (Primary)'].to_list()))
 
     print(fill_unlabeled_video_segments(start_times=start_times, end_times=end_times, labels=labels, video_duration=video_duration))
-
 
     # df = pd.read_csv("tets.csv", sep=" ", names=["clip", "class"])
 

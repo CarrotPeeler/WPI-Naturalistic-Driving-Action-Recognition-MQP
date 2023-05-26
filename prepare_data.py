@@ -27,10 +27,9 @@ Converts timestamp in string format "hh:mm:ss" to total seconds
 Returns an integer representing total seconds
 """
 def timestamp_to_seconds(timestamp:str):
-    struct = time.strptime(timestamp.split(',')[0],'%H:%M:%S')
-    return int(datetime.timedelta(hours=struct.tm_hour,
-                              minutes=struct.tm_min,
-                              seconds=struct.tm_sec).total_seconds())
+    hours, mins, secs = timestamp.split(':')
+    return int(hours)*3600 + int(mins)*60 + int(secs)
+
 
 
 
