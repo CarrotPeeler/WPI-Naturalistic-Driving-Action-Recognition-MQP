@@ -108,7 +108,7 @@ video_dir: path to directory where videos stored
 clip_dir: path to directory where clips will be saved
 video_extension: video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
 annotation_filename: name to save annotation under (you must supply the extension type)
-clip_resolution: i.e., -2:540
+clip_resolution: i.e., -2:540, 720x540, etc. (setting either width or height negative maintains aspect ratio with FFmpeg)
 """
 def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, clip_resolution:str):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
@@ -142,7 +142,7 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
 
                 # extract only the portion of the video between start_time and end_time
                 clip_filepath = os.getcwd() + "/data" + f"/{video_filename}" + f"_start{action_tuple[0]}" + f"_end{action_tuple[1]}" + ".MP4"
-                os.system(f"ffmpeg -loglevel quiet -y -i {videos[j]} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v libx264 {clip_filepath}")
+                os.system(f"ffmpeg -loglevel quiet -y -hwaccel cuda -hwaccel_output_format cuda -i {videos[j]} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v h264_nvenc {clip_filepath}")
 
                 clip_filepaths.append(clip_filepath)
                 classes.append(action_tuple[2])
