@@ -52,13 +52,16 @@ end_times: list of end times when action labels end for a video segment (each ti
 labels: class ids that classify every segment of the video (must be an integer 0-15)
 video_duration: duration of the video in seconds
 
-Returns a list of tuples (start_time, end_time, class_id_label) that classify every segment of the video under an action id
-or returns None if operation failed
+Returns a list of tuples (start_time, end_time, class_id_label) and True if operation was successful
+Else, returns the list and False is operation failed
 """
 def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list, video_duration:int):
     
     # create a list of tuples (start_time, end_time, class_id) for the video
     video_action_labels = [(start_times[i], end_times[i], labels[i]) for i in range(0, len(labels))]
+
+    # sort list of tuples by start time
+    video_action_labels.sort(key=lambda tuple: tuple[0])
 
     corrected_video_action_labels = [] # includes labels and timestamps for unlabeled non-distracted behavior segments in the video
 
@@ -80,16 +83,16 @@ def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list,
                 corrected_video_action_labels.append(tuple)
             corrected_video_action_labels.append((tuple[1], video_action_labels[i+1][0], 0))
 
-    # check that there are timestamps and labels for every segment of the video
-    sum = corrected_video_action_labels[-1][1] # == video duration
+    # check that action tuples are sequenced in the list correctly based on their timestamps
+    sum = corrected_video_action_labels[-1][1] # set sum as last end time in list
     for i, tuple in enumerate(corrected_video_action_labels):
         if(i+1 < len(corrected_video_action_labels)):
             sum += (corrected_video_action_labels[i+1][0] - tuple[1])
 
     if(sum == video_duration):
-        return corrected_video_action_labels
+        return True, corrected_video_action_labels
     else:
-        return None
+        return False, corrected_video_action_labels
 
 
 
@@ -105,8 +108,9 @@ video_dir: path to directory where videos stored
 clip_dir: path to directory where clips will be saved
 video_extension: video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
 annotation_filename: name to save annotation under (you must supply the extension type)
+clip_resolution: i.e., -2:540
 """
-def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str):
+def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, clip_resolution:str):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     clip_filepaths = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
@@ -125,19 +129,20 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
             end_times = list(map(timestamp_to_seconds, parsed_video_df['End Time'].to_list()))
             labels = list(map(lambda str:int(str.rpartition(' ')[-1]), parsed_video_df['Label (Primary)'].to_list()))
 
-            video_action_labels = fill_unlabeled_video_segments(start_times=start_times, 
+            retval, video_action_labels = fill_unlabeled_video_segments(start_times=start_times, 
                                                                 end_times=end_times, 
                                                                 labels=labels, 
                                                                 video_duration=video_duration)
             
-            if(video_action_labels == None): 
-                print(f"Failed to auto-generate labels for unlabeled video segments for:\n{videos[j]}")
+            if(retval == False): 
+                print(f"Failed to auto-generate labels for unlabeled video segments for:\n{videos[j]}\nResult:{video_action_labels}")
+                return
 
             for action_tuple in video_action_labels: # for each action in the video, extract video clip of action based on timestamps
 
                 # extract only the portion of the video between start_time and end_time
                 clip_filepath = os.getcwd() + "/data" + f"/{video_filename}" + f"_start{action_tuple[0]}" + f"_end{action_tuple[1]}" + ".MP4"
-                os.system(f"ffmpeg -loglevel quiet -i {videos[j]} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}")
+                os.system(f"ffmpeg -loglevel quiet -y -i {videos[j]} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v libx264 {clip_filepath}")
 
                 clip_filepaths.append(clip_filepath)
                 classes.append(action_tuple[2])
@@ -194,7 +199,8 @@ if __name__ == '__main__':
     videosToClips(video_dir="/home/vislab-001/Jared/SET-A1", 
                   clip_dir=clips_savepath, 
                   video_extension=".MP4", 
-                  annotation_filename=annotation_filename)
+                  annotation_filename=annotation_filename,
+                  clip_resolution="-2:540")
 
     df = pd.read_csv(clips_savepath + "/" + annotation_filename, sep=" ", names=["clip", "class"])
 

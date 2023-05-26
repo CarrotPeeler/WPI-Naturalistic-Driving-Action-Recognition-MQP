@@ -51,13 +51,18 @@ end_times: list of end times when action labels end for a video segment (each ti
 labels: class ids that classify every segment of the video (must be an integer 0-15)
 video_duration: duration of the video in seconds
 
-Returns a list of tuples (start_time, end_time, class_id_label) that classify every segment of the video under an action id
-or returns None if operation failed
+Returns a list of tuples (start_time, end_time, class_id_label) and True if operation was successful
+Else, returns the list and False is operation failed
 """
 def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list, video_duration:int):
     
     # create a list of tuples (start_time, end_time, class_id) for the video
     video_action_labels = [(start_times[i], end_times[i], labels[i]) for i in range(0, len(labels))]
+    
+    # sort list of tuples by start time
+    video_action_labels.sort(key=lambda tuple: tuple[0])
+
+    print(f"{video_action_labels}\n")
 
     corrected_video_action_labels = [] # includes labels and timestamps for unlabeled non-distracted behavior segments in the video
 
@@ -67,35 +72,38 @@ def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list,
         if(i == 0 and tuple[0] > 0):
             corrected_video_action_labels.append((0, tuple[0], 0)) # class id of 0 => normal driving
             corrected_video_action_labels.append(tuple)
+            print(f"Correct start: {corrected_video_action_labels}\n")
 
         # last action segment does not last till end of video duration => add normal driving tuple after this distracted action tuple
         elif(i == len(video_action_labels)-1 and tuple[1] < video_duration):
             corrected_video_action_labels.append(tuple)
             corrected_video_action_labels.append((tuple[1], video_duration, 0))
+            print(f"Correct end: {corrected_video_action_labels}\n")
 
         # time gap between when this action occurs and the next labeled action = > add action tuple for normal driving after this tuple
         if(i+1 < len(video_action_labels) and video_action_labels[i+1][0] - tuple[1] > 0):
             if(i != 0): # prevent first action tuple from being duplicated if first 'if' statement True
                 corrected_video_action_labels.append(tuple)
             corrected_video_action_labels.append((tuple[1], video_action_labels[i+1][0], 0))
+            print(f"Correct end: {corrected_video_action_labels}\n")
 
-    # check that there are timestamps and labels for every segment of the video
+    # check that action tuples are sequenced in the list correctly based on their timestamps
     sum = corrected_video_action_labels[-1][1] # == video duration
     for i, tuple in enumerate(corrected_video_action_labels):
         if(i+1 < len(corrected_video_action_labels)):
             sum += (corrected_video_action_labels[i+1][0] - tuple[1])
 
     if(sum == video_duration):
-        return corrected_video_action_labels
+        return True, corrected_video_action_labels
     else:
-        return None
+        return False, corrected_video_action_labels
 
 
 if __name__ == '__main__':
 
     workers = os.cpu_count()
-    csv_path = glob("/home/vislab-001/Jared/SET-A1/**/*.csv")[0]
-    video_path = glob(csv_path.rpartition("/")[0]+"/*.MP4")[0]
+    csv_path = glob("/home/vislab-001/Jared/SET-A1/user_id_30932/*.csv")[0]
+    video_path = "/home/vislab-001/Jared/SET-A1/user_id_30932/Dashboard_user_id_30932_NoAudio_5.MP4"
 
     video_metadata = os.popen(f'ffmpeg -i {video_path} 2>&1 | grep "Duration"').read()
     timestamp = video_metadata.partition('.')[0].partition(':')[-1].strip()
