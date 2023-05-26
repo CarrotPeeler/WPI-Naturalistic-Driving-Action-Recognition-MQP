@@ -108,9 +108,10 @@ video_dir: path to directory where videos stored
 clip_dir: path to directory where clips will be saved
 video_extension: video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
 annotation_filename: name to save annotation under (you must supply the extension type)
-clip_resolution: i.e., -2:540, 720x540, etc. (setting either width or height negative maintains aspect ratio with FFmpeg)
+re_encode: true to enable re-encoding (uses CUDA hardware accel), false otherwise
+clip_resolution: i.e., -2:540, 720x540, etc.; only applied when re_encode = True
 """
-def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, clip_resolution:str):
+def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, re_encode:bool, clip_resolution:str):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     clip_filepaths = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
@@ -143,8 +144,12 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
                 # extract only the portion of the video between start_time and end_time
                 clip_filepath = os.getcwd() + "/data" + f"/{video_filename}" + f"_start{action_tuple[0]}" + f"_end{action_tuple[1]}" + ".MP4"
                 
-                # currently using hardware accel with CUDA GPU and h264.nvenc codec (may need to change based on comp. setup/specs)
-                os.system(f"ffmpeg -loglevel quiet -y -hwaccel cuda -hwaccel_output_format cuda -i {videos[j]} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v h264_nvenc {clip_filepath}")
+                # no re-encoding (typically much faster than with re-encoding)
+                if(re_encode == False):
+                    os.system(f"ffmpeg -loglevel quiet -y -i {videos[j]} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}")
+                else:
+                    # uses hardware accel with CUDA GPU and h264.nvenc codec (may need to change based on comp. setup/specs)
+                    os.system(f"ffmpeg -loglevel quiet -y -hwaccel cuda -hwaccel_output_format cuda -i {videos[j]} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v h264_nvenc {clip_filepath}")
 
                 clip_filepaths.append(clip_filepath)
                 classes.append(action_tuple[2])
@@ -202,6 +207,7 @@ if __name__ == '__main__':
                   clip_dir=clips_savepath, 
                   video_extension=".MP4", 
                   annotation_filename=annotation_filename,
+                  re_encode=False,
                   clip_resolution="-2:540")
 
     df = pd.read_csv(clips_savepath + "/" + annotation_filename, sep=" ", names=["clip", "class"])
