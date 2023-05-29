@@ -84,14 +84,12 @@ def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list,
         del corrected_video_action_labels[-1]
         corrected_video_action_labels.append(new_tuple)
         
-        
     # check that action tuples are sequenced in the list correctly based on their timestamps
     sum = corrected_video_action_labels[-1][1] # == video duration
     for i, tuple in enumerate(corrected_video_action_labels):
         if(i+1 < len(corrected_video_action_labels)):
             sum += (corrected_video_action_labels[i+1][0] - tuple[1])
 
-    # videos might have a 1 sec diff. with their annotations (only for 86952_11)
     if(sum == video_duration):
         return True, corrected_video_action_labels
     else:
@@ -111,7 +109,7 @@ video_dir: path to directory where videos stored
 clip_dir: path to directory where clips will be saved
 video_extension: video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
 annotation_filename: name to save annotation under (you must supply the extension type)
-re_encode: true to enable re-encoding (uses CUDA hardware accel), false otherwise
+re_encode: true to enable re-encoding (uses CUDA hardware accel, improves model training), false otherwise
 clip_resolution: i.e., -2:540, 720x540, etc.; only applied when re_encode = True
 
 Returns True if operation suceeded; else, False if it failed
@@ -151,11 +149,11 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
                 clip_filepath = clip_dir + f"/{video_filename}" + f"-start{action_tuple[0]}" + f"-end{action_tuple[1]}" + ".MP4"
                 
                 # # no re-encoding (typically much faster than with re-encoding)
-                # if(re_encode == False):
-                #     os.system(f"ffmpeg -loglevel quiet -y -i {videos[j]} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}")
-                # else:
-                #     # uses hardware accel with CUDA GPU and h264.nvenc codec (may need to change based on comp. setup/specs)
-                #     os.system(f"ffmpeg -loglevel quiet -y -hwaccel cuda -hwaccel_output_format cuda -i {videos[j]} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v h264_nvenc {clip_filepath}")
+                if(re_encode == False):
+                    os.system(f"ffmpeg -loglevel quiet -y -i {videos[j]} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}")
+                else:
+                    # uses hardware accel with CUDA GPU and h264.nvenc codec (may need to change based on comp. setup/specs)
+                    os.system(f"ffmpeg -loglevel quiet -y -hwaccel cuda -hwaccel_output_format cuda -i {videos[j]} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v h264_nvenc {clip_filepath}")
 
                 clip_filepaths.append(clip_filepath)
                 classes.append(action_tuple[2])
@@ -214,16 +212,16 @@ if __name__ == '__main__':
                   clip_dir=clips_savepath, 
                   video_extension=".MP4", 
                   annotation_filename=annotation_filename,
-                  re_encode=False,
+                  re_encode=True, # improves model training
                   clip_resolution="-2:540")):
+
+        print("All videos have been successfully processed into clips. Creating annotation split...")
 
         df = pd.read_csv(clips_savepath + "/" + annotation_filename, sep=" ", names=["clip", "class"])
 
-        print("All videos have been successfully procesed into clips. Annotation file created.")
-
-        # split data into train and test sets using groups based on video name
+        # split data into train and test sets via grouping by video name
         splitter = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state = 42)
-        split = splitter.split(X=df['clip'], y=df['class'], groups=df['clip'].str.partition('-')[0].str.rpartition('/')[2])
+        split = splitter.split(X=df['clip'], y=df['class'], groups=df['clip'].str.rpartition('/')[2].str.partition('-')[0])
         train_indexes, test_indexes = next(split)
 
         train_df = df.iloc[train_indexes]
@@ -231,3 +229,6 @@ if __name__ == '__main__':
 
         train_df.to_csv(clips_savepath + "/A1_train.csv", sep=" ", header=False, index=False)
         test_df.to_csv(clips_savepath + "/A1_test.csv", sep=" ", header=False, index=False)
+
+    else:
+        print("Video processing was unsuccessful.")
