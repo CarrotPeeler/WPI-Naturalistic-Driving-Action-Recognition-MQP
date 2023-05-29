@@ -109,7 +109,7 @@ video_dir: path to directory where videos stored
 clip_dir: path to directory where clips will be saved
 video_extension: video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
 annotation_filename: name to save annotation under (you must supply the extension type)
-re_encode: true to enable re-encoding (uses CUDA hardware accel, improves model training), false otherwise
+re_encode: true to enable re-encoding (improves model training), false otherwise
 clip_resolution: i.e., -2:540, 720x540, etc.; only applied when re_encode = True
 
 Returns True if operation suceeded; else, False if it failed
@@ -151,10 +151,9 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
                 # # no re-encoding (typically much faster than with re-encoding)
                 if(re_encode == False):
                     os.system(f"ffmpeg -loglevel quiet -y -i {video} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}")
-                else:
-                    # uses hardware accel with CUDA GPU and h264.nvenc codec (may need to change based on comp. setup/specs)
-                    os.system(f"ffmpeg -loglevel quiet -y -hwaccel cuda -hwaccel_output_format cuda -i {video} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v h264_nvenc {clip_filepath}")
-
+                else:       
+                    os.system(f"ffmpeg -loglevel quiet -y -i {video} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v libx264 {clip_filepath}")
+                
                 clip_filepaths.append(clip_filepath)
                 classes.append(action_tuple[2])
 
@@ -212,7 +211,7 @@ if __name__ == '__main__':
                   clip_dir=clips_savepath, 
                   video_extension=".MP4", 
                   annotation_filename=annotation_filename,
-                  re_encode=True, # improves model training
+                  re_encode=True,
                   clip_resolution="-2:540")):
 
         print("All videos have been successfully processed into clips. Creating annotation split...")
