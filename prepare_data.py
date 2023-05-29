@@ -150,10 +150,10 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
                 
                 # # no re-encoding (typically much faster than with re-encoding)
                 if(re_encode == False):
-                    os.system(f"ffmpeg -loglevel quiet -y -i {videos[j]} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}")
+                    os.system(f"ffmpeg -loglevel quiet -y -i {video} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}")
                 else:
                     # uses hardware accel with CUDA GPU and h264.nvenc codec (may need to change based on comp. setup/specs)
-                    os.system(f"ffmpeg -loglevel quiet -y -hwaccel cuda -hwaccel_output_format cuda -i {videos[j]} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v h264_nvenc {clip_filepath}")
+                    os.system(f"ffmpeg -loglevel quiet -y -hwaccel cuda -hwaccel_output_format cuda -i {video} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v h264_nvenc {clip_filepath}")
 
                 clip_filepaths.append(clip_filepath)
                 classes.append(action_tuple[2])
