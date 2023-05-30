@@ -109,12 +109,13 @@ video_dir: path to directory where videos stored
 clip_dir: path to directory where clips will be saved
 video_extension: video extension type (.avi, .MP4, etc.) -- include the '.' char and beware of cases!
 annotation_filename: name to save annotation under (you must supply the extension type)
-re_encode: true to enable re-encoding (improves model training), false otherwise
+re_encode: true for re-encoding, false otherwise
 clip_resolution: i.e., -2:540, 720x540, etc.; only applied when re_encode = True
+encode_speed: "default" for preset speed; else, use any ffmpeg speed param
 
 Returns True if operation suceeded; else, False if it failed
 """
-def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, re_encode:bool, clip_resolution:str):
+def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, re_encode:bool, clip_resolution:str, encode_speed:str):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     clip_filepaths = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
@@ -138,24 +139,36 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
                                                                 labels=labels, 
                                                                 video_duration=video_duration)
             
+            # if creating labels for unlabeled segments failed, halt process
             if(retval == False): 
                 print(parsed_video_df)
                 print(f"Failed to auto-generate labels for unlabeled video segments for:\n{video}\nResult:{video_action_labels}")
                 return False
-
-            for action_tuple in video_action_labels: # for each action in the video, extract video clip of action based on timestamps
-
-                # extract only the portion of the video between start_time and end_time
-                clip_filepath = clip_dir + f"/{video_filename}" + f"-start{action_tuple[0]}" + f"-end{action_tuple[1]}" + ".MP4"
                 
-                # # no re-encoding (typically much faster than with re-encoding)
-                if(re_encode == False):
-                    os.system(f"ffmpeg -loglevel quiet -y -i {video} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}")
-                else:       
-                    os.system(f"ffmpeg -loglevel quiet -y -i {video} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v libx264 {clip_filepath}")
-                
-                clip_filepaths.append(clip_filepath)
-                classes.append(action_tuple[2])
+            # write ffmpeg commands to bash script for parallel execution & add labels and file paths to lists for annotation 
+            with open(clip_dir + "/ffmpeg_commands.sh", 'a+') as f:
+
+                for action_tuple in video_action_labels: # for each action in the video, extract video clip of action based on timestamps
+
+                    # extract only the portion of the video between start_time and end_time
+                    clip_filepath = clip_dir + f"/{video_filename}" + f"-start{action_tuple[0]}" + f"-end{action_tuple[1]}" + ".MP4"
+
+                    if(encode_speed == "default"): 
+                        preset = ""
+                    else:
+                        preset = "-preset " + encode_speed + " "
+                    
+                    # # no re-encoding (typically much faster than with re-encoding)
+                    if(re_encode == False):
+                        f.writelines(f"ffmpeg -loglevel quiet -y -i {video} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v copy {clip_filepath}\n")
+                    else:       
+                        f.writelines(f"ffmpeg -loglevel quiet -y -i {video} -vf scale={clip_resolution} -ss {action_tuple[0]} -to {action_tuple[1]} -c:v libx264 {preset}{clip_filepath}\n")
+                    
+                    clip_filepaths.append(clip_filepath)
+                    classes.append(action_tuple[2])
+    
+    # parallelize ffmpeg commands
+    os.system(f"parallel --eta < {clip_dir}/ffmpeg_commands.sh")
 
     # create annotation csv to store clip file paths and their labels
     data = pd.DataFrame()
@@ -212,7 +225,8 @@ if __name__ == '__main__':
                   video_extension=".MP4", 
                   annotation_filename=annotation_filename,
                   re_encode=True,
-                  clip_resolution="-2:540")):
+                  encode_speed = "ultrafast",
+                  clip_resolution="512:512")):
 
         print("All videos have been successfully processed into clips. Creating annotation split...")
 

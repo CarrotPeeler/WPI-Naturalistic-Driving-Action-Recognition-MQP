@@ -4,6 +4,10 @@
  
 Done as part of my MQP for WPI (Summer 2023)
 
+### Requirements
+- Python >= 3.8.10, pandas, tqdm, scikit-learn, pytorch >= 2.0.1
+- FFmpeg >= 4.2.7
+- GNU Parallel 
 
 ### TODO
 videosToClips:
