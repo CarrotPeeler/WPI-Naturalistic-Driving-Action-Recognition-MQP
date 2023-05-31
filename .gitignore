@@ -1,1 +1,2 @@
-data/*.MP4
+data/*
+training/checkpoints/*.pkl
