@@ -10,12 +10,14 @@ Done as part of my MQP for WPI (Summer 2023)
 - GNU Parallel 
 
 ### Setup
-- Follow the PySlowFast installation instructions (INSTALL.md)
+- Download the data for track #3 ['here'](https://www.aicitychallenge.org/2023-data-and-evaluation/)
 - Download the checkpoint (SLOWFAST_8x8_R50) from the MODEL_ZOO.md and place file in checkpoints folder
+- create an empty folder within the repo where the video clips will be dumped 
+- in prepare_data.py, edit line 219 with the path of this empty folder and line 220 with the path of the A1 folder
 
 ### Training
 `cd slowfast`
-`python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR ~/Jared/Naturalistic-Driving-Action-Recognition-MQP/data`
+`python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR /home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data`
 
 ### TODO
 videosToClips:

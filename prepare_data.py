@@ -216,11 +216,12 @@ def parse_data_from_csv(video_filepath, annotation_dataframe):
 
 if __name__ == '__main__':
 
+    videos_loadpath = "/home/vislab-001/Jared/SET-A1"
     clips_savepath = os.getcwd() + "/data"
     annotation_filename = "annotation.csv"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
-    if(videosToClips(video_dir="/home/vislab-001/Jared/SET-A1", 
+    if(videosToClips(video_dir=videos_loadpath, 
                   clip_dir=clips_savepath, 
                   video_extension=".MP4", 
                   annotation_filename=annotation_filename,
@@ -240,8 +241,8 @@ if __name__ == '__main__':
         train_df = df.iloc[train_indexes]
         test_df = df.iloc[test_indexes]
 
-        train_df.to_csv(clips_savepath + "/train.csv", sep=" ", header=False, index=False)
-        test_df.to_csv(clips_savepath + "/val.csv", sep=" ", header=False, index=False)
+        train_df.to_csv(os.getcwd() + "/slowfast/train.csv", sep=" ", header=False, index=False)
+        test_df.to_csv(os.getcwd() + "/slowfast/val.csv", sep=" ", header=False, index=False)
 
     else:
         print("Video processing was unsuccessful.")

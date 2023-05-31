@@ -7,4 +7,4 @@ from torchinfo import summary
 import torch
 pd.options.mode.chained_assignment = None
 
-print(os.cpu_count())
+print(os.getcwd())
