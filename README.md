@@ -13,6 +13,9 @@ Done as part of my MQP for WPI (Summer 2023)
 - Follow the PySlowFast installation instructions (INSTALL.md)
 - Download the checkpoint (SLOWFAST_8x8_R50) from the MODEL_ZOO.md and place file in checkpoints folder
 
+### Training
+`python3 training/tools/run_net.py --cfg training/configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR data`
+
 ### TODO
 videosToClips:
 - before splitting videos into clips using ffmpeg, 
