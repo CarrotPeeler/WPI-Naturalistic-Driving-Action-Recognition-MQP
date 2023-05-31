@@ -240,8 +240,8 @@ if __name__ == '__main__':
         train_df = df.iloc[train_indexes]
         test_df = df.iloc[test_indexes]
 
-        train_df.to_csv(clips_savepath + "/A1_train.csv", sep=" ", header=False, index=False)
-        test_df.to_csv(clips_savepath + "/A1_test.csv", sep=" ", header=False, index=False)
+        train_df.to_csv(clips_savepath + "/train.csv", sep=" ", header=False, index=False)
+        test_df.to_csv(clips_savepath + "/val.csv", sep=" ", header=False, index=False)
 
     else:
         print("Video processing was unsuccessful.")
