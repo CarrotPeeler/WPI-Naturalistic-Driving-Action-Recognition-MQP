@@ -9,6 +9,10 @@ Done as part of my MQP for WPI (Summer 2023)
 - FFmpeg >= 4.2.7
 - GNU Parallel 
 
+### Setup
+- Follow the PySlowFast installation instructions (INSTALL.md)
+- Download the checkpoint (SLOWFAST_8x8_R50) from the MODEL_ZOO.md and place file in checkpoints folder
+
 ### TODO
 videosToClips:
 - before splitting videos into clips using ffmpeg, 
