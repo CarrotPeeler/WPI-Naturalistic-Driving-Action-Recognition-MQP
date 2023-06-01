@@ -241,6 +241,10 @@ if __name__ == '__main__':
 
         df = pd.read_csv(clips_savepath + "/" + annotation_filename, sep=" ", names=["clip", "class"])
 
+        # clean data for videos with no time duration
+        zero_sec_clips = df.index[df['clip'].str.rpartition("start")[2].str.partition('-')[0] == df['clip'].str.rpartition("end")[2].str.partition('.')[0]].to_list()
+        df.drop(zero_sec_clips, inplace=True)
+
         # split data into train and test sets via grouping by video name
         splitter = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state = 42)
         split = splitter.split(X=df['clip'], y=df['class'], groups=df['clip'].str.rpartition('/')[2].str.partition('-')[0])
