@@ -64,18 +64,20 @@ def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list,
     # add labels and timestamps for unlabeled non-distracted behavior segments of the video (categorized as class 0 - normal driving)
     curr_start_time = 0 
     for i, action_tuple in enumerate(video_action_labels):
-
-        if(action_tuple[0] == curr_start_time):
+        # last tuple's end time matches this tuple's start time OR edge case where tuple's have overlapping time frames
+        if(action_tuple[0] <= curr_start_time):
             corrected_video_action_labels.append(action_tuple)
 
-        else:
+        # last tup end time does not equal this tup start time (time gap)
+        else:    
             corrected_video_action_labels.append((curr_start_time, action_tuple[0], 0))
             corrected_video_action_labels.append(action_tuple)
 
         if(i == len(video_action_labels)-1 and action_tuple[1] < video_duration):
             corrected_video_action_labels.append((action_tuple[1], video_duration, 0))
 
-        curr_start_time = action_tuple[1]
+        # take the max for tuples that have overlapping time frames, where the 2nd tuple may have a smaller end time than the 1st
+        curr_start_time = max(curr_start_time, action_tuple[1])
 
     # check if last tuple's end_time has a 1-sec discrepancy with the video duration (at least a few videos do)
     if(abs(corrected_video_action_labels[-1][1] - video_duration) == 1):
@@ -86,15 +88,18 @@ def fill_unlabeled_video_segments(start_times:list, end_times:list, labels:list,
         
     # check that action tuples are sequenced in the list correctly based on their timestamps
     sum = corrected_video_action_labels[-1][1] # == video duration
-    for i, tuple in enumerate(corrected_video_action_labels):
+    end_time_list = [0]
+    for i, action_tuple in enumerate(corrected_video_action_labels):
         if(i+1 < len(corrected_video_action_labels)):
-            sum += (corrected_video_action_labels[i+1][0] - tuple[1])
+            if(corrected_video_action_labels[i+1][0] >= action_tuple[1] and corrected_video_action_labels[i+1][0] > max(end_time_list)):
+                sum += (corrected_video_action_labels[i+1][0] - action_tuple[1])
+        end_time_list.append(action_tuple[1])
 
     if(sum == video_duration):
         return True, corrected_video_action_labels
     else:
         return False, corrected_video_action_labels
-
+    
 
 
 """
@@ -213,7 +218,10 @@ def parse_data_from_csv(video_filepath, annotation_dataframe):
     return parsed_video_data
 
 
-
+"""
+Because of encoding, the videos may take several hours to process; use the command below to run the script in the background:
+python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
+"""
 if __name__ == '__main__':
 
     videos_loadpath = "/home/vislab-001/Jared/SET-A1"
