@@ -2,10 +2,10 @@
 
 ## Repository for Developing Video Classification/Action Recognition Models for the AI City Track Challenge #3 (2023)
  
-Done as part of my MQP for WPI (Summer 2023)
+Completed as part of my Major Qualifying Project for Worcester Polytechnic Institute (Summer 2023)
 
 ### Requirements
-- Python >= 3.8.10, pandas, tqdm, scikit-learn, pytorch >= 2.0.1
+- Python >= 3.8.10, pandas, tqdm, scikit-learn, pytorch == 1.8.0+c111, tensorrt (may have to upgrade pip3 first)
 - FFmpeg >= 4.2.7
 - GNU Parallel 
 
@@ -15,9 +15,12 @@ Done as part of my MQP for WPI (Summer 2023)
 - create an empty folder within the repo where the video clips will be dumped 
 - in prepare_data.py, edit line 219 with the path of this empty folder and line 220 with the path of the A1 folder
 
+### Data Preparation
+- make sure you cd into this repo first, then run prepare_data.py after changing params as mentioned above
+
 ### Training
-`cd slowfast`
-`python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR /home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data`
+- cd into the slowfast folder and run the following:
+`python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR .`
 
 ### TODO
 videosToClips:
