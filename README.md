@@ -13,6 +13,7 @@ for video_reader to work, torchvision MUST be compiled & built from source (used
 - clone the torchvision repo or specific version
 - add this line to top of setup.py: sys.path.append("/home/vislab-001/.local/lib/python3.8/site-packages")
 - use chmod 777 on repo to gain permissions if setup.py won't work
+- make sure the repo builds with FFmpeg, otherwise torchvision decoder backend won't work
 
 ### Setup
 - Download the data for track #3 ['here'](https://www.aicitychallenge.org/2023-data-and-evaluation/)
