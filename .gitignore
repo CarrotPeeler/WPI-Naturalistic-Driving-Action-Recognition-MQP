@@ -2,3 +2,4 @@ data/*
 data_prev/*
 slowfast/checkpoints/*.pkl
 slowfast/*.csv
+slowfast/stdout.log

@@ -5,9 +5,14 @@
 Completed as part of my Major Qualifying Project for Worcester Polytechnic Institute (Summer 2023)
 
 ### Requirements
-- Python >= 3.8.10, pandas, tqdm, scikit-learn, pytorch == 1.8.0+c111, tensorrt (may have to upgrade pip3 first)
+- Python >= 3.8.10, pandas, tqdm, scikit-learn, decord, pytorch == 1.13.1+c117, tensorrt (may have to upgrade pip3 first)
 - FFmpeg >= 4.2.7
 - GNU Parallel 
+
+for video_reader to work, torchvision MUST be compiled & built from source (used v0.14.1): 
+- clone the torchvision repo or specific version
+- add this line to top of setup.py: sys.path.append("/home/vislab-001/.local/lib/python3.8/site-packages")
+- use chmod 777 on repo to gain permissions if setup.py won't work
 
 ### Setup
 - Download the data for track #3 ['here'](https://www.aicitychallenge.org/2023-data-and-evaluation/)
