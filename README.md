@@ -11,11 +11,18 @@ Completed as part of my Major Qualifying Project for Worcester Polytechnic Insti
 
 For video and decoder functionality to work, torchvision MUST be compiled & built from source (used v0.14.1+c117): 
 - uninstall FFmpeg if you already have it, then reinstall it with the following command:
-`apt install ffmpeg libavutil-dev libavcodec-dev libavformat-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev libswresample-dev libpostproc-dev libjpeg-dev libpng-dev`
+```console
+apt install ffmpeg libavutil-dev libavcodec-dev libavformat-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev libswresample-dev libpostproc-dev libjpeg-dev libpng-dev
+```
 - clone the torchvision release compatible with your pytorch version
-- add this line to top of setup.py: sys.path.append("/home/vislab-001/.local/lib/python3.8/site-packages")
+- add this line to top of setup.py: 
+```python
+sys.path.append("/home/vislab-001/.local/lib/python3.8/site-packages")
+```
 - to make sure the setup.py has full permissions, use the following command:
-`sudo chmod 777 {path to torchvision repo}` 
+```console
+sudo chmod 777 {path to torchvision repo}
+```
 - run the setup.py, if there are more permission errors, simply chmod 777 the folder location indicated by the errors
 
 
@@ -35,10 +42,13 @@ clips_savepath = "/path_to_data/data_dir"
 ### Training
 - edit the config in slowfast/slowfast/configs
 - cd into the slowfast folder and run the following:
-`python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR .`
+```console
+python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR .
+```
+
+### Inference
 
 ### TODO
-videosToClips:
 - before splitting videos into clips using ffmpeg, 
     need to also check video length &
     create clips for empty durations where no distracted behavior happens and label them with -1 :heavy_check_mark:
@@ -51,7 +61,7 @@ videosToClips:
 
 - edit eval output to show train and val accuracy and specify what top1 and top5 error apply to (train or val) :o:
 
-- create proposal generation and post-processing scripts to handle inference and temporal action localization output/accuracy: :o:
+- create proposal generation and post-processing scripts to handle inference on A2 and temporal action localization output/accuracy: :o:
     - create video_proposals_dataset(video_path, frame_length, frame_stride, proposal_stride, etc. params) (torch.dataset) class
         - for a single untrimmed video, use cv2 to convert video into frames, save frames to self.frames
         - proposal length = frame_length * frame_stride
