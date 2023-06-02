@@ -452,73 +452,6 @@ def pyav_decode(
     return frames, fps, decode_all_video
 
 
-"""
-Adapted from https://github.com/JunweiLiang/aicity_action
-"""
-def decord_decode(
-    container,
-    sampling_rate,
-    num_frames,
-    clip_idx,
-    num_clips=10,
-    target_fps=30,
-    use_offset=False,
-):
-    """
-    Convert the video from its original fps to the target_fps. If the video
-    support selective decoding (contain decoding information in the video head),
-    the perform temporal selective decoding and sample a clip from the video
-    with the decord decoder. If the video does not support selective decoding,
-    decode the entire video.
-
-    Args:
-        container (container): pyav container.
-        sampling_rate (int): frame sampling rate (interval between two sampled
-            frames.
-        num_frames (int): number of frames to sample.
-        clip_idx (int): if clip_idx is -1, perform random temporal sampling. If
-            clip_idx is larger than -1, uniformly split the video to num_clips
-            clips, and select the clip_idx-th video clip.
-        num_clips (int): overall number of clips to uniformly sample from the
-            given video.
-        target_fps (int): the input video may has different fps, convert it to
-            the target video fps before frame sampling.
-    Returns:
-        frames (tensor): decoded frames from the video. Return None if the no
-            video stream was found.
-        fps (float): the number of frames per second of the video.
-        decode_all_video (bool): If True, the entire video was decoded.
-    """
-    # Try to fetch the decoding information from the video head. Some of the
-    # videos does not support fetching the decoding information, for that case
-    # it will get None duration.
-    fps = float(container.get_avg_fps())
-    frames_length = len(container)
-    clip_size = sampling_rate * num_frames / target_fps * fps
-
-    #duration = frames_length / fps
-    decode_all_video = False
-    start_idx, end_idx, clip_position = get_start_end_idx(
-        frames_length,
-        clip_size,
-        clip_idx,
-        num_clips,
-        use_offset=use_offset,
-    )
-
-    # these might be out-of-bound
-    start_idx, end_idx = int(start_idx), int(end_idx)
-    start_idx = min(start_idx, frames_length - 2)
-    end_idx = min(end_idx, frames_length - 1)
-
-    # ok to have len(frames) < num_frames, will set it in temporal_sampling
-    frames = container.get_batch(range(start_idx, end_idx + 1)).asnumpy()
-
-    frames = torch.as_tensor(frames)
-    # close video?
-    return frames, fps, decode_all_video
-
-
 
 def decode(
     container,
@@ -608,16 +541,6 @@ def decode(
                 use_offset=use_offset,
                 min_delta=min_delta,
                 max_delta=max_delta,
-            )
-        elif backend == "decord":
-            frames_decoded, fps, decode_all_video = decord_decode(
-                container,
-                sampling_rate,
-                num_frames,
-                clip_idx,
-                num_clips_uniform,
-                target_fps,
-                use_offset=use_offset,
             )
         else:
             raise NotImplementedError(

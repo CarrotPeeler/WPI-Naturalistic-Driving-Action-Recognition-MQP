@@ -51,7 +51,28 @@ videosToClips:
 
 - edit eval output to show train and val accuracy and specify what top1 and top5 error apply to (train or val) :o:
 
-- create proposal generation and post-processing scripts to handle inference and temporal action localization output/accuracy :o:
+- create proposal generation and post-processing scripts to handle inference and temporal action localization output/accuracy: :o:
+    - create video_proposals_dataset(video_path, frame_length, frame_stride, proposal_stride, etc. params) (torch.dataset) class
+        - for a single untrimmed video, use cv2 to convert video into frames, save frames to self.frames
+        - proposal length = frame_length * frame_stride
+        - def func to generate list of proposal tuples (start_idx, end_idx) given prop. length and prop. stride
+        - def func to subsample {frame_length} # of frames, evenly spaced, for a single proposal; return list of subsampled frame idxs
+        - self.proposals = list of proposals (each proposal is a list of subsampled frame idxs retrieved from func above)
+
+        - for __get__item(): retrieve proposal (list) in self.proposals; return frames from self.frames using idxs in subsampled list 
+        - __get__item() may also be modified to crop or perform other image transforms for later use
+    
+    - create ActionClassifier class that uses trained model to make inferences on given set of frames in a batch
+        - for {frame_length} # of frames, average probs over all frames for a proposal, then take argmax to find class idx
+        - return batch of idxs
+
+    - inference script
+        - for each untrimmed video path, create a video_proposals_dataset and dataloader for it
+        - for each dataloader, feed batch of frames into model for predictions
+        - for each proposal frame set in the batch, append (pred, start, end) to list of preds
+
+    - post-processing script to piece together all proposals back into the full untrimmed video and align action preds with timestamps
+    in the video; multiple proposals that are consecutive in temporal space, having the same action pred, should be combined into one start and end timestamp
 
 - add data augmentation (color/flip images horizontally to add more data) :o:
 
