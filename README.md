@@ -42,12 +42,13 @@ clips_savepath = "/path_to_data/data_dir"
 ### Training
 - edit the config in slowfast/slowfast/configs
 - cd into the slowfast folder and run the following:
-`python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR .`
+```console
+python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR .
+```
 
 ### Inference
 
 ### TODO
-videosToClips:
 - before splitting videos into clips using ffmpeg, 
     need to also check video length &
     create clips for empty durations where no distracted behavior happens and label them with -1 :heavy_check_mark:
