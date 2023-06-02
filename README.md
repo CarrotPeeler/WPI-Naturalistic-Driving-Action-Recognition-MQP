@@ -51,7 +51,7 @@ videosToClips:
 
 - edit eval output to show train and val accuracy and specify what top1 and top5 error apply to (train or val) :o:
 
-- create post-processing scripts to handle inference and temporal action localization output/accuracy :o:
+- create proposal generation and post-processing scripts to handle inference and temporal action localization output/accuracy :o:
 
 - add data augmentation (color/flip images horizontally to add more data) :o:
 
