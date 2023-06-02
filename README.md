@@ -15,7 +15,10 @@ For video and decoder functionality to work, torchvision MUST be compiled & buil
 apt install ffmpeg libavutil-dev libavcodec-dev libavformat-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev libswresample-dev libpostproc-dev libjpeg-dev libpng-dev
 ```
 - clone the torchvision release compatible with your pytorch version
-- add this line to top of setup.py: sys.path.append("/home/vislab-001/.local/lib/python3.8/site-packages")
+- add this line to top of setup.py: 
+```python
+sys.path.append("/home/vislab-001/.local/lib/python3.8/site-packages")
+```
 - to make sure the setup.py has full permissions, use the following command:
 ```console
 sudo chmod 777 {path to torchvision repo}
