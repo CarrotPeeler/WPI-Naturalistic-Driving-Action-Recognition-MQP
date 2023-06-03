@@ -5,9 +5,10 @@
 Completed as part of my Major Qualifying Project for Worcester Polytechnic Institute (Summer 2023)
 
 ### Requirements
-- Python >= 3.8.10, pandas, tqdm, scikit-learn, decord, pytorch == 1.13.1+c117, tensorrt (may have to upgrade pip3 first)
+- Python >= 3.8.10, pytorch == 1.13.1+c117, pandas, tqdm, mmcv, scikit-learn, decord, tensorrt (may have to upgrade pip3 first)
 - FFmpeg >= 4.2.7 
 - GNU Parallel 
+- Follow PySlowFast INSTALL.md 
 
 For video and decoder functionality to work, torchvision MUST be compiled & built from source (used v0.14.1+c117): 
 - uninstall FFmpeg if you already have it, then reinstall it with the following command:
@@ -41,12 +42,14 @@ clips_savepath = "/path_to_data/data_dir"
 
 ### Training
 - edit the config in slowfast/slowfast/configs
-- cd into the slowfast folder and run the following:
+- cd into outermost slowfast folder and run the following:
 ```console
 python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR .
 ```
 
 ### Inference
+- cd into outermost slowfast folder
+- run inference.py
 
 ### TODO
 - before splitting videos into clips using ffmpeg, 
