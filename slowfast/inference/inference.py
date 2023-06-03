@@ -1,6 +1,7 @@
 import os
 import torch
 import mmcv
+import pandas as pd
 import slowfast.utils.checkpoint as cu
 from slowfast.models import build_model
 from slowfast.config.defaults import assert_and_infer_cfg
@@ -9,6 +10,7 @@ from glob import glob
 from tqdm import tqdm
 from torch.utils.data import DataLoader
 from typing import List
+
 
 class VideoProposalDataset(torch.utils.data.Dataset):
     def __init__(self, video_path, frame_length, frame_stride, proposal_stride, transform=None):
@@ -65,6 +67,22 @@ class VideoProposalDataset(torch.utils.data.Dataset):
 
 
 """
+Returns dict of video_ids and their corresponding video file names
+"""
+def get_video_ids_dict(path_to_csv):
+    video_ids_dict = dict()
+    df = pd.read_csv(path_to_csv)
+
+    for idx, row in df.iterrows():
+        key = int(row['video_id'])
+        val = row[df.columns[1:4]].to_list()
+        video_ids_dict[int(key)] = val
+
+    return video_ids_dict
+
+
+
+"""
 Returns a loaded model with last saved checkpoint given a config file
 """
 def load_model(cfg):
@@ -83,6 +101,7 @@ def make_prediction(model, batch_frames):
 
 
 if __name__ == '__main__':
+
     path_to_config = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/configs/SLOWFAST_8x8_R50.yaml"
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
     frame_length = 16
@@ -92,6 +111,7 @@ if __name__ == '__main__':
     num_workers = os.cpu_count()
     batch_size = 1
 
+    video_ids_dict = get_video_ids_dict(os.getcwd() + "/inference/video_ids.csv")
     video_paths = glob(A2_data_path + "/**/*.MP4")
     args = parse_args()
     cfg = load_config(args, path_to_config)
@@ -103,14 +123,19 @@ if __name__ == '__main__':
         proposals_dataset = VideoProposalDataset(video_paths[i], frame_length, frame_stride, proposal_stride, transform)
         proposals_dataloader = DataLoader(dataset=proposals_dataset, batch_size=batch_size, num_workers=num_workers)
 
-        model.eval()
-        with torch.inference_mode():
-            for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in enumerate(proposals_dataloader):
-                # prediction = make_prediction(model, batch_frames)
+        video_name = video_paths[i].rpartition('/')[2]
+        video_id =  {i for i in video_ids_dict if video_name in video_ids_dict[i]}
+        video_id = list(video_id)[0]
 
-                # # each batch has many proposals => we iterate through each proposal in a batch
-                # for proposal_idx in enumerate(batch_frames.shape[0]):
-                #     # write prob, start_frame_idx, end_frame_idx to file
-                #     with open("/post_process/predictions.txt", "a+") as f:
-                #         f.writelines(f"{prediction[proposal_idx]}, {start_frame_idxs[proposal_idx]}, {end_frame_idxs[proposal_idx]}")
+        # model.eval()
+        # with torch.inference_mode():
+        #     for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in enumerate(proposals_dataloader):
+        #         pass
+        #         prediction = make_prediction(model, batch_frames)
+
+        #         # each batch has many proposals => we iterate through each proposal in a batch
+        #         for proposal_idx in enumerate(batch_frames.shape[0]):
+        #             # write prob, start_frame_idx, end_frame_idx to file
+        #             with open("/post_process/predictions.txt", "a+") as f:
+                        # f.writelines(f"{video_id} {prediction[proposal_idx]} {start_frame_idxs[proposal_idx]} {end_frame_idxs[proposal_idx]}")
         
