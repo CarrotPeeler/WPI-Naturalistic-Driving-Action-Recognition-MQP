@@ -58,6 +58,9 @@ class VideoProposalDataset(torch.utils.data.Dataset):
     
     """
     Returns temporally sampled frames given list of frames, start_frame_idx, end_frame_idx, number of frames to sample
+    
+    Returns:
+        sampled_frames (Tensor[N, H, W, C]) - batch size, height, width, color channels
     """
     def temporal_sampling(self, frames, start_frame_idx, end_frame_idx, num_samples):
         frames_batch = frames.get_batch(list(range(start_frame_idx, end_frame_idx + 1))).asnumpy()
@@ -120,94 +123,94 @@ class VideoProposalDataset(torch.utils.data.Dataset):
         # spatial_sample_index is in [0, 1, 2]. Corresponding to left,
         # center, or right if width is larger than height, and top, middle,
         # or bottom if height is larger than width.
-        spatial_sample_index = 1
 
-        min_scale, max_scale, crop_size = (
-            [self.cfg.DATA.TEST_CROP_SIZE] * 3
-            if self.cfg.TEST.NUM_SPATIAL_CROPS > 1
-            else [self.cfg.DATA.TRAIN_JITTER_SCALES[0]] * 2
-            + [self.cfg.DATA.TEST_CROP_SIZE]
-        )
-        min_scale, max_scale, crop_size = [min_scale], [max_scale], [crop_size]\
+        # spatial_sample_index = 1 # may need to fix this b/c I don't have spatial temp clip duplication for random cropping setup; also lower ensemble views in yaml inf
+
+        # min_scale, max_scale, crop_size = (
+        #     [self.cfg.DATA.TEST_CROP_SIZE] * 3
+        #     if self.cfg.TEST.NUM_SPATIAL_CROPS > 1
+        #     else [self.cfg.DATA.TRAIN_JITTER_SCALES[0]] * 2
+        #     + [self.cfg.DATA.TEST_CROP_SIZE]
+        # )
+        # min_scale, max_scale, crop_size = [min_scale], [max_scale], [crop_size]
         
         # get proposal (frames, start_frame_idx, end_frame_idx)
         proposal = self.proposals[index]
-        frames_decoded = proposal[0]
+        frames_decoded = [proposal[0]]
 
-        num_decode = 1 # num of spatial crops
         num_aug = 1
-        num_out = num_aug * num_decode
+        num_out = num_aug
         
         f_out = [None] * num_out
         idx = -1
 
-        for i in range(num_decode):
-            for _ in range(num_aug):
-                idx += 1
-                f_out[idx] = frames_decoded[i].clone()
-                f_out[idx] = f_out[idx].float()
-                f_out[idx] = f_out[idx] / 255.0
+        for _ in range(num_aug):
+            idx += 1
+            f_out[idx] = frames_decoded[i].clone()
+            f_out[idx] = f_out[idx].float()
+            f_out[idx] = f_out[idx] / 255.0
 
-                if self.aug and self.cfg.AUG.AA_TYPE:
-                    aug_transform = create_random_augment(
-                        input_size=(f_out[idx].size(1), f_out[idx].size(2)),
-                        auto_augment=self.cfg.AUG.AA_TYPE,
-                        interpolation=self.cfg.AUG.INTERPOLATION,
-                    )
-                    # T H W C -> T C H W.
-                    f_out[idx] = f_out[idx].permute(0, 3, 1, 2)
-                    list_img = self._frame_to_list_img(f_out[idx])
-                    list_img = aug_transform(list_img)
-                    f_out[idx] = self._list_img_to_frames(list_img)
-                    f_out[idx] = f_out[idx].permute(0, 2, 3, 1)
-
-                # Perform color normalization.
-                f_out[idx] = utils.tensor_normalize(
-                    f_out[idx], self.cfg.DATA.MEAN, self.cfg.DATA.STD
+            if self.aug and self.cfg.AUG.AA_TYPE:
+                aug_transform = create_random_augment(
+                    input_size=(f_out[idx].size(1), f_out[idx].size(2)),
+                    auto_augment=self.cfg.AUG.AA_TYPE,
+                    interpolation=self.cfg.AUG.INTERPOLATION,
                 )
+                # T H W C -> T C H W.
+                f_out[idx] = f_out[idx].permute(0, 3, 1, 2)
+                list_img = self._frame_to_list_img(f_out[idx])
+                list_img = aug_transform(list_img)
+                f_out[idx] = self._list_img_to_frames(list_img)
+                f_out[idx] = f_out[idx].permute(0, 2, 3, 1)
 
-                # T H W C -> C T H W.
-                f_out[idx] = f_out[idx].permute(3, 0, 1, 2)
+            # Perform color normalization.
+            f_out[idx] = utils.tensor_normalize(
+                f_out[idx], self.cfg.DATA.MEAN, self.cfg.DATA.STD
+            )
 
-                scl, asp = (
-                    self.cfg.DATA.TRAIN_JITTER_SCALES_RELATIVE,
-                    self.cfg.DATA.TRAIN_JITTER_ASPECT_RELATIVE,
+            # T H W C -> C T H W.
+            f_out[idx] = f_out[idx].permute(3, 0, 1, 2)
+
+            # scl, asp = (
+            #     self.cfg.DATA.TRAIN_JITTER_SCALES_RELATIVE,
+            #     self.cfg.DATA.TRAIN_JITTER_ASPECT_RELATIVE,
+            # )
+            # relative_scales = None
+            # relative_aspect = None
+            
+            # f_out[idx] = utils.spatial_sampling(
+            #     f_out[idx],
+            #     spatial_idx=spatial_sample_index,
+            #     min_scale=min_scale[i],
+            #     max_scale=max_scale[i],
+            #     crop_size=crop_size[i],
+            #     random_horizontal_flip=self.cfg.DATA.RANDOM_FLIP,
+            #     inverse_uniform_sampling=self.cfg.DATA.INV_UNIFORM_SAMPLE,
+            #     aspect_ratio=relative_aspect,
+            #     scale=relative_scales,
+            #     motion_shift=False,
+            # )
+
+            if self.rand_erase:
+                erase_transform = RandomErasing(
+                    self.cfg.AUG.RE_PROB,
+                    mode=self.cfg.AUG.RE_MODE,
+                    max_count=self.cfg.AUG.RE_COUNT,
+                    num_splits=self.cfg.AUG.RE_COUNT,
+                    device="cpu",
                 )
-                relative_scales = None
-                relative_aspect = None
-                
-                f_out[idx] = utils.spatial_sampling(
-                    f_out[idx],
-                    spatial_idx=spatial_sample_index,
-                    min_scale=min_scale[i],
-                    max_scale=max_scale[i],
-                    crop_size=crop_size[i],
-                    random_horizontal_flip=self.cfg.DATA.RANDOM_FLIP,
-                    inverse_uniform_sampling=self.cfg.DATA.INV_UNIFORM_SAMPLE,
-                    aspect_ratio=relative_aspect,
-                    scale=relative_scales,
-                    motion_shift=False,
-                )
+                f_out[idx] = erase_transform(
+                    f_out[idx].permute(1, 0, 2, 3)
+                ).permute(1, 0, 2, 3)
 
-                if self.rand_erase:
-                    erase_transform = RandomErasing(
-                        self.cfg.AUG.RE_PROB,
-                        mode=self.cfg.AUG.RE_MODE,
-                        max_count=self.cfg.AUG.RE_COUNT,
-                        num_splits=self.cfg.AUG.RE_COUNT,
-                        device="cpu",
-                    )
-                    f_out[idx] = erase_transform(
-                        f_out[idx].permute(1, 0, 2, 3)
-                    ).permute(1, 0, 2, 3)
+            f_out[idx] = utils.pack_pathway_output(self.cfg, f_out[idx])
 
-                f_out[idx] = utils.pack_pathway_output(self.cfg, f_out[idx])
-                if self.cfg.AUG.GEN_MASK_LOADER:
-                    mask = self._gen_mask()
-                    f_out[idx] = f_out[idx] + [torch.Tensor(), mask]
+            if self.cfg.AUG.GEN_MASK_LOADER:
+                mask = self._gen_mask()
+                f_out[idx] = f_out[idx] + [torch.Tensor(), mask]
 
         frames = f_out[0] if num_out == 1 else f_out
-    
+
         # return proposal tuple with new frame modifications
         return (frames, proposal[1], proposal[2])
         
@@ -255,7 +258,7 @@ if __name__ == '__main__':
     frame_stride = 4
     proposal_stride = frame_length * frame_stride # for non-overlapping proposals; set smaller num for overlapping 
     transform = None
-    num_workers = 8 #os.cpu_count()
+    num_workers = 2 #os.cpu_count()
     batch_size = 1
     ############################################
     path_to_config = os.getcwd() + "/configs/SLOWFAST_8x8_R50_inf.yaml"
@@ -281,8 +284,9 @@ if __name__ == '__main__':
         model.eval()
         with torch.inference_mode():
             for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in enumerate(proposals_dataloader):
-                prediction = make_prediction(model, batch_frames)
-                print(prediction)
+                print(batch_frames[0])
+                # prediction = make_prediction(model, batch_frames)
+                # print(prediction)
                 # # each batch has many proposals => we iterate through each proposal in a batch
                 # for proposal_idx in enumerate(batch_frames.shape[0]):
                 #     # write prob, start_frame_idx, end_frame_idx to file
