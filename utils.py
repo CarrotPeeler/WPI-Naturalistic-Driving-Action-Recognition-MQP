@@ -23,9 +23,10 @@ def temporal_sampling_3(frames, start_frame_idx, end_frame_idx, num_samples):
     return sampled_frames
 
 def temporal_sampling_2(frames, start_frame_idx, end_frame_idx, num_samples):
-    idxs = torch.linspace(start_frame_idx, end_frame_idx, num_samples, dtype=torch.int16)
-    idxs = torch.clamp(idxs, 0, len(frames) - 1)
-    sampled_frames = [frames[int(i)] for i in idxs]
+    frames_batch = frames.get_batch(list(range(start_frame_idx, end_frame_idx + 1))).asnumpy()
+    idxs = torch.linspace(0, len(frames_batch) - 1, num_samples)
+    idxs = torch.clamp(idxs, 0, len(frames_batch) - 1).long()
+    sampled_frames = torch.index_select(torch.from_numpy(frames_batch), 0, idxs)
     return sampled_frames
 
 # Always run the start method inside this if-statement

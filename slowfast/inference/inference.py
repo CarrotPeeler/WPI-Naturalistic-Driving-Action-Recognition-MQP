@@ -13,13 +13,13 @@ from typing import List
 
 
 class VideoProposalDataset(torch.utils.data.Dataset):
-    def __init__(self, video_path, frame_length, frame_stride, proposal_stride, transform=None):
+    def __init__(self, video_path, frame_length, frame_stride, proposal_stride, transform=None, num_workers=1):
         self.video_path = video_path
         self.frame_length = frame_length
         self.transform = transform
         self.proposals = []
         
-        frames = decord.VideoReader(self.video_path)
+        frames = decord.VideoReader(self.video_path, num_threads=num_workers)
         proposal_length = frame_length * frame_stride
 
         # list of proposal tuples (start_frame_idx, end_frame_idx)
@@ -46,10 +46,12 @@ class VideoProposalDataset(torch.utils.data.Dataset):
     Returns temporally sampled frames given list of frames, start_frame_idx, end_frame_idx, number of frames to sample
     """
     def temporal_sampling(self, frames, start_frame_idx, end_frame_idx, num_samples):
-        idxs = torch.linspace(start_frame_idx, end_frame_idx, num_samples, dtype=torch.int16)
-        idxs = torch.clamp(idxs, 0, len(frames) - 1)
-        #sampled_frames = [frames[int(i)] for i in idxs]
-        sampled_frames = frames.get_batch(idxs)
+        frames_batch = frames.get_batch(list(range(start_frame_idx, end_frame_idx + 1))).asnumpy()
+
+        idxs = torch.linspace(0, len(frames_batch) - 1, num_samples)
+        idxs = torch.clamp(idxs, 0, len(frames_batch) - 1).long()
+        
+        sampled_frames = torch.index_select(torch.from_numpy(frames_batch), 0, idxs)
         return sampled_frames
         
     def __len__(self):
@@ -122,8 +124,10 @@ if __name__ == '__main__':
 
     model = load_model(cfg)
 
+    print(f"Number of threads: {num_workers}")
+
     for i in tqdm(range(len(video_paths))):
-        proposals_dataset = VideoProposalDataset(video_paths[i], frame_length, frame_stride, proposal_stride, transform)
+        proposals_dataset = VideoProposalDataset(video_paths[i], frame_length, frame_stride, proposal_stride, transform, num_workers=num_workers)
         proposals_dataloader = DataLoader(dataset=proposals_dataset, batch_size=batch_size, num_workers=num_workers)
 
         video_name = video_paths[i].rpartition('/')[2]

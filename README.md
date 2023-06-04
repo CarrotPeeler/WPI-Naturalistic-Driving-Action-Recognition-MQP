@@ -48,7 +48,7 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_D
 ```
 
 ### Inference
-- cd into outermost slowfast folder
+- cd into outermost slowfast folder (make you cd while within the python interpreter, not from bash)
 - go to inference folder > run inference.py 
 
 ### TODO
