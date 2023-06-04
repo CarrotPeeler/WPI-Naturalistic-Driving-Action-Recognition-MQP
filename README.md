@@ -5,7 +5,7 @@
 Completed as part of my Major Qualifying Project for Worcester Polytechnic Institute (Summer 2023)
 
 ### Requirements
-- Python >= 3.8.10, pytorch == 1.13.1+c117, pandas, tqdm, mmcv, scikit-learn, decord, tensorrt (may have to upgrade pip3 first)
+- Python >= 3.8.10, pytorch == 1.13.1+c117, pandas, tqdm, scikit-learn, decord, tensorrt (may have to upgrade pip3 first)
 - FFmpeg >= 4.2.7 
 - GNU Parallel 
 - Follow PySlowFast INSTALL.md 

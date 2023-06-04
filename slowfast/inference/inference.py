@@ -1,6 +1,6 @@
 import os
 import torch
-import mmcv
+import decord
 import pandas as pd
 import slowfast.utils.checkpoint as cu
 from slowfast.models import build_model
@@ -17,21 +17,23 @@ class VideoProposalDataset(torch.utils.data.Dataset):
         self.video_path = video_path
         self.frame_length = frame_length
         self.transform = transform
-        self.video = mmcv.VideoReader(video_path)
-
+        self.proposals = []
+        
+        frames = decord.VideoReader(self.video_path)
         proposal_length = frame_length * frame_stride
 
         # list of proposal tuples (start_frame_idx, end_frame_idx)
-        self.proposals = self.generate_proposals(proposal_stride, proposal_length, len(self.video))
+        temp_proposals = self.generate_proposals(proposal_stride, proposal_length, len(frames))
+
+        # modify proposal tuples to add sampled frames (sampled_frames, start_frame_idx, end_frame_idx)
+        for i in tqdm(range(len(temp_proposals))):
+            temp_proposal = temp_proposals[i]
+            self.proposals.append((self.temporal_sampling(frames, temp_proposal[0], temp_proposal[1], self.frame_length),
+                                   temp_proposal[0],
+                                   temp_proposal[1]))
         
     """
-    Returns list of numpy arrays (frames) given a list of the frame indices
-    """
-    def load_frames_by_idxs(self, idxs: List[int]):
-        return [self.video[i] for i in idxs]
-    
-    """
-    Returns list of proposal tuples (start_frame_idx, end_frame_idx)
+    Returns list of proposal tuples without frames (start_frame_idx, end_frame_idx)
     """
     def generate_proposals(self, proposal_stride, proposal_length, video_frame_count):
         proposals = []
@@ -41,10 +43,14 @@ class VideoProposalDataset(torch.utils.data.Dataset):
         return proposals
     
     """
-    Returns a list of evenly spaced frame indices given a proposal and the number of frames to sample
+    Returns temporally sampled frames given list of frames, start_frame_idx, end_frame_idx, number of frames to sample
     """
-    def sample_frames(self, proposal, frame_length):
-        return torch.linspace(proposal[0], proposal[1], frame_length, dtype=torch.int16).numpy().tolist()
+    def temporal_sampling(self, frames, start_frame_idx, end_frame_idx, num_samples):
+        idxs = torch.linspace(start_frame_idx, end_frame_idx, num_samples, dtype=torch.int16)
+        idxs = torch.clamp(idxs, 0, len(frames) - 1)
+        #sampled_frames = [frames[int(i)] for i in idxs]
+        sampled_frames = frames.get_batch(idxs)
+        return sampled_frames
         
     def __len__(self):
         "Returns the total number of proposals for this video."
@@ -54,15 +60,12 @@ class VideoProposalDataset(torch.utils.data.Dataset):
     def __getitem__(self, index: int):
         "Returns one proposal (frames, start_frame_idx, end_frame_idx)."
         proposal = self.proposals[index]
-        sampled_frames_idxs = self.sample_frames(proposal, self.frame_length)
-        
-        # sampled_frames = self.load_frames_by_idxs(sampled_frames_idxs)
-
+    
         # perform transform on frames if specified
         if self.transform:
-            return (list(map(self.transform, sampled_frames_idxs)), proposal[0], proposal[1])
+            return (list(map(self.transform, proposal[0])), proposal[1], proposal[2])
         else:
-            return (sampled_frames_idxs, proposal[0], proposal[1])
+            return proposal
         
 
 
@@ -127,15 +130,14 @@ if __name__ == '__main__':
         video_id =  {i for i in video_ids_dict if video_name in video_ids_dict[i]}
         video_id = list(video_id)[0]
 
-        # model.eval()
-        # with torch.inference_mode():
-        #     for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in enumerate(proposals_dataloader):
-        #         pass
-        #         prediction = make_prediction(model, batch_frames)
+        model.eval()
+        with torch.inference_mode():
+            for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in enumerate(proposals_dataloader):
+                prediction = make_prediction(model, batch_frames)
 
-        #         # each batch has many proposals => we iterate through each proposal in a batch
-        #         for proposal_idx in enumerate(batch_frames.shape[0]):
-        #             # write prob, start_frame_idx, end_frame_idx to file
-        #             with open("/post_process/predictions.txt", "a+") as f:
-                        # f.writelines(f"{video_id} {prediction[proposal_idx]} {start_frame_idxs[proposal_idx]} {end_frame_idxs[proposal_idx]}")
+                # each batch has many proposals => we iterate through each proposal in a batch
+                for proposal_idx in enumerate(batch_frames.shape[0]):
+                    # write prob, start_frame_idx, end_frame_idx to file
+                    with open("/post_process/predictions.txt", "a+") as f:
+                        f.writelines(f"{video_id} {prediction[proposal_idx]} {start_frame_idxs[proposal_idx]} {end_frame_idxs[proposal_idx]}")
         

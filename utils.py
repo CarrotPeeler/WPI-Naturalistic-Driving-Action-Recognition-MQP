@@ -3,27 +3,62 @@ import subprocess
 import sys
 import torch
 import mmcv
+import decord
 import pandas as pd
+import numpy as np
+import time
 from glob import glob
 from typing import List
 
-def get_video_ids_dict(path_to_csv):
-    video_ids_dict = dict()
-    df = pd.read_csv(path_to_csv)
+def temporal_sampling(frames, start_frame_idx, end_frame_idx, num_samples):
+    idxs = np.linspace(start_frame_idx, end_frame_idx, num_samples, dtype=np.int16)
+    idxs = np.clip(idxs, 0, len(frames) - 1)
+    sampled_frames = [frames[i] for i in idxs]
+    return sampled_frames
 
-    for idx, row in df.iterrows():
-        key = int(row['video_id'])
-        val = row[df.columns[1:4]].to_list()
-        video_ids_dict[int(key)] = val
+def temporal_sampling_3(frames, start_frame_idx, end_frame_idx, num_samples):
+    idxs = torch.linspace(start_frame_idx, end_frame_idx, num_samples, dtype=torch.int16)
+    idxs = torch.clamp(idxs, 0, len(frames) - 1).numpy().tolist()
+    sampled_frames = [frames[i] for i in idxs]
+    return sampled_frames
 
-    return video_ids_dict
+def temporal_sampling_2(frames, start_frame_idx, end_frame_idx, num_samples):
+    idxs = torch.linspace(start_frame_idx, end_frame_idx, num_samples, dtype=torch.int16)
+    idxs = torch.clamp(idxs, 0, len(frames) - 1)
+    sampled_frames = [frames[int(i)] for i in idxs]
+    return sampled_frames
 
+# Always run the start method inside this if-statement
+if __name__ == '__main__':  
 
-A2_data_path = "/home/vislab-001/Jared/SET-A2"
-video_paths = glob(A2_data_path + "/**/*.MP4")
+    A2_data_path = "/home/vislab-001/Jared/SET-A2"
+    video_paths = glob(A2_data_path + "/**/*.MP4")
 
-dic = get_video_ids_dict(os.getcwd() + "/video_ids.csv")
-    
-video_name = video_paths[0].rpartition('/')
-print(video_name)
-# video_id =  {i for i in video_ids_dict if video_name in video_ids_dict[i]}
+    frames = decord.VideoReader(video_paths[0], num_threads=os.cpu_count())
+
+    times1 = 0
+    times2 = 0
+    times3 = 0
+    trials = 20
+    for i in range(trials+1):
+        start_time1 = time.time()
+        temporal_sampling(frames, 0, 63, 16)
+        end_time1 = time.time()
+        times1 += (end_time1-start_time1)
+
+        start_time2 = time.time()
+        temporal_sampling_2(frames, 0, 63, 16)
+        end_time2 = time.time()
+        times2 += (end_time2-start_time2)
+
+        start_time3 = time.time()
+        temporal_sampling_3(frames, 0, 63, 16)
+        end_time3 = time.time()
+        times3 += (end_time3-start_time3)
+    times1 /= trials
+    times2 /= trials
+    times3 /= trials
+
+    print(f"numpy: {times1:.2f} seconds")
+    print(f"torch-mod: {times2:.2f} seconds")
+    print(f"torch-orig: {times3:.2f} seconds")
