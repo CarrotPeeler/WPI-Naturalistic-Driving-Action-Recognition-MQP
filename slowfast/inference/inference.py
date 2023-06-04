@@ -258,7 +258,7 @@ if __name__ == '__main__':
     frame_stride = 4
     proposal_stride = frame_length * frame_stride # for non-overlapping proposals; set smaller num for overlapping 
     transform = None
-    num_workers = 2 #os.cpu_count()
+    num_workers = 4 #os.cpu_count() # num of threads to use from cpu
     batch_size = 1
     ############################################
     path_to_config = os.getcwd() + "/configs/SLOWFAST_8x8_R50_inf.yaml"
@@ -284,7 +284,7 @@ if __name__ == '__main__':
         model.eval()
         with torch.inference_mode():
             for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in enumerate(proposals_dataloader):
-                print(batch_frames[0])
+                print(len(batch_frames))
                 # prediction = make_prediction(model, batch_frames)
                 # print(prediction)
                 # # each batch has many proposals => we iterate through each proposal in a batch
