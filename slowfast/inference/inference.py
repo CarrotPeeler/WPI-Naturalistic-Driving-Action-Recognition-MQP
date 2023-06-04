@@ -37,7 +37,7 @@ class VideoProposalDataset(torch.utils.data.Dataset):
     """
     def generate_proposals(self, proposal_stride, proposal_length, video_frame_count):
         proposals = []
-        for i in range(0, video_frame_count, proposal_stride):
+        for i in range(0, video_frame_count - proposal_stride - 1, proposal_stride):
             # each proposal is a tuple with a start and end index
             proposals.append((i, i+proposal_length-1))
         return proposals
@@ -107,14 +107,16 @@ def make_prediction(model, batch_frames):
 
 if __name__ == '__main__':
 
+    ########### Configuration Params ############
     path_to_config = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/configs/SLOWFAST_8x8_R50.yaml"
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
     frame_length = 16
     frame_stride = 4
-    proposal_stride = 16 
+    proposal_stride = frame_length * frame_stride # for non-overlapping proposals; set smaller num for overlapping 
     transform = None
-    num_workers = os.cpu_count()
+    num_workers = 8 #os.cpu_count()
     batch_size = 1
+    ############################################
 
     video_ids_dict = get_video_ids_dict(os.getcwd() + "/inference/video_ids.csv")
     video_paths = glob(A2_data_path + "/**/*.MP4")
