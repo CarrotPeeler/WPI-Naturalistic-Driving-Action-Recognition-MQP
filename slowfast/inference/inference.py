@@ -108,7 +108,6 @@ def make_prediction(model, batch_frames):
 if __name__ == '__main__':
 
     ########### Configuration Params ############
-    path_to_config = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/configs/SLOWFAST_8x8_R50.yaml"
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
     frame_length = 16
     frame_stride = 4
@@ -117,6 +116,7 @@ if __name__ == '__main__':
     num_workers = 8 #os.cpu_count()
     batch_size = 1
     ############################################
+    path_to_config = os.getcwd() + "/configs/SLOWFAST_8x8_R50_inf.yaml"
 
     video_ids_dict = get_video_ids_dict(os.getcwd() + "/inference/video_ids.csv")
     video_paths = glob(A2_data_path + "/**/*.MP4")
@@ -140,10 +140,10 @@ if __name__ == '__main__':
         with torch.inference_mode():
             for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in enumerate(proposals_dataloader):
                 prediction = make_prediction(model, batch_frames)
-
-                # each batch has many proposals => we iterate through each proposal in a batch
-                for proposal_idx in enumerate(batch_frames.shape[0]):
-                    # write prob, start_frame_idx, end_frame_idx to file
-                    with open("/post_process/predictions.txt", "a+") as f:
-                        f.writelines(f"{video_id} {prediction[proposal_idx]} {start_frame_idxs[proposal_idx]} {end_frame_idxs[proposal_idx]}")
+                print(prediction)
+                # # each batch has many proposals => we iterate through each proposal in a batch
+                # for proposal_idx in enumerate(batch_frames.shape[0]):
+                #     # write prob, start_frame_idx, end_frame_idx to file
+                #     with open("/post_process/predictions.txt", "a+") as f:
+                #         f.writelines(f"{video_id} {prediction[proposal_idx]} {start_frame_idxs[proposal_idx]} {end_frame_idxs[proposal_idx]}")
         

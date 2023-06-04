@@ -1,5 +1,5 @@
 TRAIN:
-  ENABLE: True
+  ENABLE: False
   DATASET: kinetics
   BATCH_SIZE: 16
   EVAL_PERIOD: 10
@@ -53,9 +53,9 @@ MODEL:
   LOSS_FUNC: cross_entropy
   DROPOUT_RATE: 0.5
 TEST:
-  ENABLE: False
+  ENABLE: True
   DATASET: kinetics
-  BATCH_SIZE: 2
+  BATCH_SIZE: 1
 DATA_LOADER:
   NUM_WORKERS: 1
   PIN_MEMORY: True
