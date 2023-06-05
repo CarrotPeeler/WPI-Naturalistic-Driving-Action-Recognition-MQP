@@ -51,7 +51,11 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_D
 - edit the config in slowfast/slowfast/configs (SLOWFAST_8x8_R50_inf.yaml)
     - i.e., DATA.NUM_FRAMES and DATA.SAMPLING_RATE
 - cd into outermost slowfast folder (make sure you cd from within the python interpreter, not from bash)
-- in inference folder, run inference.py (edit num_threads to your liking)
+- in inference folder > inference.py, A2_data_path and num_threads should be adjusted based on your setup
+- run the following:
+```console
+python3 inference/inference.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml
+```
 
 ### TODO
 - before splitting videos into clips using ffmpeg, 
@@ -81,17 +85,19 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_D
         - for each untrimmed video path, create a video_proposals_dataset and dataloader for it
         - for each dataloader, feed batch of frames into model for predictions
         - for each proposal frame set in the batch, append (pred, start, end) to list of preds
+        
+        - make sure last epoch checkpoint is loaded correctly :heavy_check_mark:
 
-        - all predictions are 0 :o:
-        - make sure last epoch checkpoint is loaded correctly :o:
-
+        - bad predictions (only predicts 0, 9, or 10) :o:
+            - try to add ensemble views and spatial crop back in to aggregate probs for each frame and improve classification
+            - change proposal generation method
 
     - post-processing script to piece together all proposals back into the full untrimmed video and align action preds with timestamps :o:
     multiple proposals that are consecutive in temporal space, having the same action pred, should be combined into one start and end timestamp
 
 - setup config + model to use 2 gpus (breaks when attemtping) and more workers; then, can increase train batch_size :heavy_check_mark:
 
-- edit eval output to show train and val accuracy and specify what top1 and top5 error apply to (train or val) :o:
+- edit eval output to show train and val accuracy and specify what top1 and top5 error apply to (train or val) :heavy_check_mark:
 
 - add data augmentation (color/flip images horizontally to add more data) :o:
 
@@ -100,5 +106,8 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_D
     use action detection model to create BBoxes for var crop
 
 - experiment with different models for action classification :o:
+    - try different frame length x sampling rate models for SlowFast 
+        - 16x4 SlowFast
+        - 32x2 SlowFast
 
 - incorporate visual prompting or experiment with other action recognition aspects :o:

@@ -249,7 +249,7 @@ def make_prediction(model, batch_frames):
     
     probs = model([slow_frames, fast_frames])
     preds = probs.argmax().item()
-
+    print(f"{probs} ====> Max: {preds}")
     return preds
 
 
@@ -259,14 +259,14 @@ if __name__ == '__main__':
     ########### Configuration Params ############
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
     #############################################
-    path_to_config = os.getcwd() + "/configs/SLOWFAST_8x8_R50_inf.yaml" # remove this and use as bash param --cfg later
     args = parse_args()
-    cfg = load_config(args, path_to_config)
-    cfg = assert_and_infer_cfg(cfg)
+    for path_to_config in args.cfg_files:
+        cfg = load_config(args, path_to_config)
+        cfg = assert_and_infer_cfg(cfg)
 
     frame_length = cfg.DATA.NUM_FRAMES
     frame_stride = cfg.DATA.SAMPLING_RATE
-    proposal_stride = frame_length * frame_stride # for non-overlapping proposals; set smaller num for overlapping 
+    proposal_stride = 16 #frame_length * frame_stride # for non-overlapping proposals; set smaller num for overlapping 
     transform = None
     num_threads = 4 # Do NOT use all cpu threads available; 2 * num_threads used for dataloader and decord together
     batch_size = 1
