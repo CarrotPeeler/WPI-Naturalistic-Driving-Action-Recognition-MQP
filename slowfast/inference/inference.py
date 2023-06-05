@@ -22,29 +22,21 @@ from slowfast.datasets.transform import (
 
 
 class VideoProposalDataset(torch.utils.data.Dataset):
-    def __init__(self, cfg, video_path, frame_length, frame_stride, proposal_stride, num_workers=1):
+    def __init__(self, cfg, video_path, frame_length, frame_stride, proposal_stride, num_workers=0):
         self.cfg = cfg
         self.aug = False
         self.rand_erase = False
+        self.num_workers = num_workers
 
         self.video_path = video_path
         self.frame_length = frame_length
-        self.transform = transform
-        self.proposals = []
 
         # decode video and start proposal generation        
-        frames = decord.VideoReader(self.video_path, num_threads=num_workers)
+        frames = decord.VideoReader(self.video_path, num_threads=self.num_workers)
         proposal_length = frame_length * frame_stride
 
         # list of proposal tuples (start_frame_idx, end_frame_idx)
-        temp_proposals = self.generate_proposals(proposal_stride, proposal_length, len(frames))
-
-        # modify proposal tuples to add sampled frames (sampled_frames, start_frame_idx, end_frame_idx)
-        for i in tqdm(range(len(temp_proposals))):
-            temp_proposal = temp_proposals[i]
-            self.proposals.append((self.temporal_sampling(frames, temp_proposal[0], temp_proposal[1], self.frame_length),
-                                   temp_proposal[0],
-                                   temp_proposal[1]))
+        self.proposals = self.generate_proposals(proposal_stride, proposal_length, len(frames))
         
     """
     Returns list of proposal tuples without frames (start_frame_idx, end_frame_idx)
@@ -136,7 +128,11 @@ class VideoProposalDataset(torch.utils.data.Dataset):
         
         # get proposal (frames, start_frame_idx, end_frame_idx)
         proposal = self.proposals[index]
-        frames_decoded = [proposal[0]]
+
+        frames = decord.VideoReader(self.video_path, num_threads=self.num_workers)
+        
+        # uniformly sample frames based on proposal start and end indices
+        frames_decoded = [self.temporal_sampling(frames, proposal[0], proposal[1], self.frame_length)]
 
         num_aug = 1
         num_out = num_aug
@@ -212,7 +208,7 @@ class VideoProposalDataset(torch.utils.data.Dataset):
         frames = f_out[0] if num_out == 1 else f_out
 
         # return proposal tuple with new frame modifications
-        return (frames, proposal[1], proposal[2])
+        return (frames, proposal[0], proposal[1])
         
 
 
@@ -258,7 +254,7 @@ if __name__ == '__main__':
     frame_stride = 4
     proposal_stride = frame_length * frame_stride # for non-overlapping proposals; set smaller num for overlapping 
     transform = None
-    num_workers = 4 #os.cpu_count() # num of threads to use from cpu
+    num_threads = 8 # Do NOT use all cpu threads available; 2 * num_threads used for dataloader and decord together
     batch_size = 1
     ############################################
     path_to_config = os.getcwd() + "/configs/SLOWFAST_8x8_R50_inf.yaml"
@@ -271,11 +267,9 @@ if __name__ == '__main__':
 
     model = load_model(cfg)
 
-    print(f"Number of threads: {num_workers}")
-
     for i in tqdm(range(len(video_paths))):
-        proposals_dataset = VideoProposalDataset(cfg, video_paths[i], frame_length, frame_stride, proposal_stride, num_workers=num_workers)
-        proposals_dataloader = DataLoader(dataset=proposals_dataset, batch_size=batch_size, num_workers=num_workers)
+        proposals_dataset = VideoProposalDataset(cfg, video_paths[i], frame_length, frame_stride, proposal_stride, num_workers=num_threads)
+        proposals_dataloader = DataLoader(dataset=proposals_dataset, batch_size=batch_size, num_workers=num_threads)
 
         video_name = video_paths[i].rpartition('/')[2]
         video_id =  {i for i in video_ids_dict if video_name in video_ids_dict[i]}
@@ -283,8 +277,8 @@ if __name__ == '__main__':
 
         model.eval()
         with torch.inference_mode():
-            for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in enumerate(proposals_dataloader):
-                print(len(batch_frames))
+            for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in tqdm(enumerate(proposals_dataloader), total=len(proposals_dataloader)):
+                pass
                 # prediction = make_prediction(model, batch_frames)
                 # print(prediction)
                 # # each batch has many proposals => we iterate through each proposal in a batch
