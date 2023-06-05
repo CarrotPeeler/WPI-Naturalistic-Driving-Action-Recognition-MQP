@@ -13,7 +13,7 @@ Completed as part of my Major Qualifying Project for Worcester Polytechnic Insti
 For video and decoder functionality to work, torchvision MUST be compiled & built from source (used v0.14.1+c117): 
 - uninstall FFmpeg if you already have it, then reinstall it with the following command:
 ```console
-apt install ffmpeg libavutil-dev libavcodec-dev libavformat-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev libswresample-dev libpostproc-dev libjpeg-dev libpng-dev
+sudo apt install ffmpeg libavutil-dev libavcodec-dev libavformat-dev libavdevice-dev libavfilter-dev libswscale-dev libswresample-dev libswresample-dev libpostproc-dev libjpeg-dev libpng-dev
 ```
 - clone the torchvision release compatible with your pytorch version
 - add this line to top of setup.py: 
