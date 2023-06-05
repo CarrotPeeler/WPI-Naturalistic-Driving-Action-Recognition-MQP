@@ -142,7 +142,7 @@ class VideoProposalDataset(torch.utils.data.Dataset):
 
         for _ in range(num_aug):
             idx += 1
-            f_out[idx] = frames_decoded[i].clone()
+            f_out[idx] = frames_decoded[0].clone()
             f_out[idx] = f_out[idx].float()
             f_out[idx] = f_out[idx] / 255.0
 
@@ -268,7 +268,7 @@ if __name__ == '__main__':
     frame_stride = cfg.DATA.SAMPLING_RATE
     proposal_stride = frame_length * frame_stride # for non-overlapping proposals; set smaller num for overlapping 
     transform = None
-    num_threads = 8 # Do NOT use all cpu threads available; 2 * num_threads used for dataloader and decord together
+    num_threads = 4 # Do NOT use all cpu threads available; 2 * num_threads used for dataloader and decord together
     batch_size = 1
 
     video_ids_dict = get_video_ids_dict(os.getcwd() + "/inference/video_ids.csv")

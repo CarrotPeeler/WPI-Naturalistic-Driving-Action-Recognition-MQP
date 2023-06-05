@@ -50,7 +50,7 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_D
 ### Inference
 - edit the config in slowfast/slowfast/configs (SLOWFAST_8x8_R50_inf.yaml)
 - cd into outermost slowfast folder (make sure you cd from within the python interpreter, not from bash)
-- in inference folder, run inference.py 
+- in inference folder, run inference.py (edit num_threads to your liking)
 
 ### TODO
 - before splitting videos into clips using ffmpeg, 
