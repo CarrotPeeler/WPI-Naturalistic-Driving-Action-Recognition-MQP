@@ -52,7 +52,7 @@ class VideoProposalDataset(torch.utils.data.Dataset):
     Returns temporally sampled frames given list of frames, start_frame_idx, end_frame_idx, number of frames to sample
     
     Returns:
-        sampled_frames (Tensor[N, H, W, C]) - batch size, height, width, color channels
+        sampled_frames (Tensor[T, H, W, C]) - batch size, height, width, color channels
     """
     def temporal_sampling(self, frames, start_frame_idx, end_frame_idx, num_samples):
         frames_batch = frames.get_batch(list(range(start_frame_idx, end_frame_idx + 1))).asnumpy()
@@ -199,6 +199,7 @@ class VideoProposalDataset(torch.utils.data.Dataset):
                     f_out[idx].permute(1, 0, 2, 3)
                 ).permute(1, 0, 2, 3)
 
+            # creates slow and fast frames -> output = list with 2 elements (each is a Tensor[T, H, W, C])
             f_out[idx] = utils.pack_pathway_output(self.cfg, f_out[idx])
 
             if self.cfg.AUG.GEN_MASK_LOADER:
@@ -207,7 +208,7 @@ class VideoProposalDataset(torch.utils.data.Dataset):
 
         frames = f_out[0] if num_out == 1 else f_out
 
-        # return proposal tuple with new frame modifications
+        # return 2 element list and start and end frame indices of proposal
         return (frames, proposal[0], proposal[1])
         
 
@@ -242,7 +243,14 @@ def load_model(cfg):
 Returns a prediction generated from a model, given the model and a batch of frames as input
 """
 def make_prediction(model, batch_frames):
-    return model(batch_frames)
+    # move frame data to GPU
+    slow_frames = batch_frames[0].to("cuda")
+    fast_frames = batch_frames[1].to("cuda")
+    
+    probs = model([slow_frames, fast_frames])
+    preds = probs.argmax().item()
+
+    return preds
 
 
 
@@ -250,20 +258,21 @@ if __name__ == '__main__':
 
     ########### Configuration Params ############
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
-    frame_length = 16
-    frame_stride = 4
+    #############################################
+    path_to_config = os.getcwd() + "/configs/SLOWFAST_8x8_R50_inf.yaml"
+    args = parse_args()
+    cfg = load_config(args, path_to_config)
+    cfg = assert_and_infer_cfg(cfg)
+
+    frame_length = cfg.DATA.NUM_FRAMES
+    frame_stride = cfg.DATA.SAMPLING_RATE
     proposal_stride = frame_length * frame_stride # for non-overlapping proposals; set smaller num for overlapping 
     transform = None
     num_threads = 8 # Do NOT use all cpu threads available; 2 * num_threads used for dataloader and decord together
     batch_size = 1
-    ############################################
-    path_to_config = os.getcwd() + "/configs/SLOWFAST_8x8_R50_inf.yaml"
 
     video_ids_dict = get_video_ids_dict(os.getcwd() + "/inference/video_ids.csv")
     video_paths = glob(A2_data_path + "/**/*.MP4")
-    args = parse_args()
-    cfg = load_config(args, path_to_config)
-    cfg = assert_and_infer_cfg(cfg)
 
     model = load_model(cfg)
 
@@ -278,12 +287,9 @@ if __name__ == '__main__':
         model.eval()
         with torch.inference_mode():
             for batch_idx, (batch_frames, start_frame_idxs, end_frame_idxs) in tqdm(enumerate(proposals_dataloader), total=len(proposals_dataloader)):
-                pass
-                # prediction = make_prediction(model, batch_frames)
-                # print(prediction)
-                # # each batch has many proposals => we iterate through each proposal in a batch
-                # for proposal_idx in enumerate(batch_frames.shape[0]):
-                #     # write prob, start_frame_idx, end_frame_idx to file
-                #     with open("/post_process/predictions.txt", "a+") as f:
-                #         f.writelines(f"{video_id} {prediction[proposal_idx]} {start_frame_idxs[proposal_idx]} {end_frame_idxs[proposal_idx]}")
+                prediction = make_prediction(model, batch_frames)
+
+                # write prob, start_frame_idx, end_frame_idx to file
+                with open(os.getcwd() + "/post_process/predictions.txt", "a+") as f:
+                    f.writelines(f"{video_id} {prediction} {start_frame_idxs[0]} {end_frame_idxs[0]}\n")
         

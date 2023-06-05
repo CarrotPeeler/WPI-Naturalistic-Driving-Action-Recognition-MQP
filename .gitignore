@@ -2,3 +2,4 @@ data/*
 data_prev/*
 slowfast/checkpoints/*[.pkl, .pyth]
 slowfast/*.csv
+slowfast/post_process/*.txt
