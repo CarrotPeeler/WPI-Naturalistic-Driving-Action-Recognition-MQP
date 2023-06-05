@@ -202,7 +202,7 @@ def train_epoch(
                 )
 
         else:
-            top1_err, top5_err = None, None
+            top1_acc, top5_acc, top1_err, top5_err = None, None, None, None
             if cfg.DATA.MULTI_LABEL:
                 # Gather all the predictions across all the devices.
                 if cfg.NUM_GPUS > 1:
@@ -231,6 +231,10 @@ def train_epoch(
                 top1_err, top5_err = [
                     (1.0 - x / preds.size(0)) * 100.0 for x in num_topks_correct
                 ]
+
+                # Compute the accuracies
+                top1_acc, top5_acc = metrics.topk_accuracies(preds, labels, (1, 5))
+
                 # Gather all the predictions across all the devices.
                 if cfg.NUM_GPUS > 1:
                     loss, grad_norm, top1_err, top5_err = du.all_reduce(
@@ -238,15 +242,19 @@ def train_epoch(
                     )
 
                 # Copy the stats from GPU to CPU (sync point).
-                loss, grad_norm, top1_err, top5_err = (
+                loss, grad_norm, top1_err, top5_err, top1_acc, top5_acc = (
                     loss.item(),
                     grad_norm.item(),
                     top1_err.item(),
                     top5_err.item(),
+                    top1_acc.item(),
+                    top5_acc.item(),
                 )
 
             # Update and log stats.
             train_meter.update_stats(
+                top1_acc,
+                top5_acc,
                 top1_err,
                 top5_err,
                 loss,
@@ -388,15 +396,23 @@ def eval_epoch(
                 top1_err, top5_err = [
                     (1.0 - x / preds.size(0)) * 100.0 for x in num_topks_correct
                 ]
+
+                # accuracies
+                top1_acc, top5_acc = metrics.topk_accuracies(preds, labels, (1, 5))
+
                 if cfg.NUM_GPUS > 1:
-                    top1_err, top5_err = du.all_reduce([top1_err, top5_err])
+                    top1_acc, top5_acc, top1_err, top5_err = du.all_reduce([top1_acc, top5_acc, top1_err, top5_err])
 
                 # Copy the errors from GPU to CPU (sync point).
                 top1_err, top5_err = top1_err.item(), top5_err.item()
+                # do same for acc
+                top1_acc, top5_acc = top1_acc.item(), top5_acc.item()
 
                 val_meter.iter_toc()
                 # Update and log stats.
                 val_meter.update_stats(
+                    top1_acc, 
+                    top5_acc,
                     top1_err,
                     top5_err,
                     batch_size

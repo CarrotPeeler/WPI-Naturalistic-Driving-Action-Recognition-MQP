@@ -535,7 +535,12 @@ class TrainMeter(object):
         # Current minibatch errors (smoothed over a window).
         self.mb_top1_err = ScalarMeter(cfg.LOG_PERIOD)
         self.mb_top5_err = ScalarMeter(cfg.LOG_PERIOD)
+        # accuracy of preds
+        self.top1_acc = ScalarMeter(cfg.LOG_PERIOD)
+        self.top5_acc = ScalarMeter(cfg.LOG_PERIOD)
         # Number of misclassified examples.
+        self.num_top1_acc = 0
+        self.num_top5_acc = 0
         self.num_top1_mis = 0
         self.num_top5_mis = 0
         self.num_samples = 0
@@ -550,8 +555,12 @@ class TrainMeter(object):
         self.loss_total = 0.0
         self.lr = None
         self.grad_norm = None
+        self.top1_acc.reset()
+        self.top5_acc.reset()
         self.mb_top1_err.reset()
         self.mb_top5_err.reset()
+        self.num_top1_acc = 0
+        self.num_top5_acc = 0
         self.num_top1_mis = 0
         self.num_top5_mis = 0
         self.num_samples = 0
@@ -577,7 +586,7 @@ class TrainMeter(object):
         self.net_timer.reset()
 
     def update_stats(
-        self, top1_err, top5_err, loss, lr, grad_norm, mb_size, multi_loss=None
+        self, top1_acc, top5_acc, top1_err, top5_err, loss, lr, grad_norm, mb_size, multi_loss=None
     ):
         """
         Update the current stats.
@@ -596,6 +605,11 @@ class TrainMeter(object):
         self.num_samples += mb_size
 
         if not self._cfg.DATA.MULTI_LABEL:
+            self.top1_acc.add_value(top1_acc)
+            self.top5_acc.add_value(top5_acc)
+            # aggregate
+            self.num_top1_acc += top1_acc * mb_size
+            self.num_top5_acc += top5_acc * mb_size
             # Current minibatch stats
             self.mb_top1_err.add_value(top1_err)
             self.mb_top5_err.add_value(top5_err)
@@ -652,6 +666,8 @@ class TrainMeter(object):
             "gpu_mem": "{:.2f}G".format(misc.gpu_mem_usage()),
         }
         if not self._cfg.DATA.MULTI_LABEL:
+            stats["top1_acc"] = self.top1_acc.get_win_median()
+            stats["top5_acc"] = self.top5_acc.get_win_median()
             stats["top1_err"] = self.mb_top1_err.get_win_median()
             stats["top5_err"] = self.mb_top5_err.get_win_median()
         if self.multi_loss is not None:
@@ -685,12 +701,18 @@ class TrainMeter(object):
             "RAM": "{:.2f}/{:.2f}G".format(*misc.cpu_mem_usage()),
         }
         if not self._cfg.DATA.MULTI_LABEL:
+            top1_acc = self.num_top1_acc / self.num_samples
+            top5_acc = self.num_top5_acc / self.num_samples
             top1_err = self.num_top1_mis / self.num_samples
             top5_err = self.num_top5_mis / self.num_samples
             avg_loss = self.loss_total / self.num_samples
+
             stats["top1_err"] = top1_err
             stats["top5_err"] = top5_err
             stats["loss"] = avg_loss
+            stats["top1_acc"] = top1_acc
+            stats["top5_acc"] = top5_acc
+            
         if self.multi_loss is not None:
             avg_loss_list = self.multi_loss.get_global_avg()
             for idx, loss in enumerate(avg_loss_list):
@@ -717,10 +739,15 @@ class ValMeter(object):
         # Current minibatch errors (smoothed over a window).
         self.mb_top1_err = ScalarMeter(cfg.LOG_PERIOD)
         self.mb_top5_err = ScalarMeter(cfg.LOG_PERIOD)
+        # accuracies
+        self.top1_acc = ScalarMeter(cfg.LOG_PERIOD)
+        self.top5_acc = ScalarMeter(cfg.LOG_PERIOD)
         # Min errors (over the full val set).
         self.min_top1_err = 100.0
         self.min_top5_err = 100.0
         # Number of misclassified examples.
+        self.num_top1_acc = 0
+        self.num_top5_acc = 0
         self.num_top1_mis = 0
         self.num_top5_mis = 0
         self.num_samples = 0
@@ -737,6 +764,10 @@ class ValMeter(object):
         self.net_timer.reset()
         self.mb_top1_err.reset()
         self.mb_top5_err.reset()
+        self.top1_acc.reset()
+        self.top5_acc.reset()
+        self.num_top1_acc = 0
+        self.num_top5_acc = 0
         self.num_top1_mis = 0
         self.num_top5_mis = 0
         self.num_samples = 0
@@ -761,7 +792,7 @@ class ValMeter(object):
         self.data_timer.pause()
         self.net_timer.reset()
 
-    def update_stats(self, top1_err, top5_err, mb_size):
+    def update_stats(self, top1_acc, top5_acc, top1_err, top5_err, mb_size):
         """
         Update the current stats.
         Args:
@@ -769,6 +800,11 @@ class ValMeter(object):
             top5_err (float): top5 error rate.
             mb_size (int): mini batch size.
         """
+        self.top1_acc.add_value(top1_acc)
+        self.top5_acc.add_value(top5_acc)
+        self.num_top1_acc += top1_acc * mb_size
+        self.num_top5_acc += top5_acc * mb_size
+        
         self.mb_top1_err.add_value(top1_err)
         self.mb_top5_err.add_value(top5_err)
         self.num_top1_mis += top1_err * mb_size
@@ -810,6 +846,8 @@ class ValMeter(object):
         if not self._cfg.DATA.MULTI_LABEL:
             stats["top1_err"] = self.mb_top1_err.get_win_median()
             stats["top5_err"] = self.mb_top5_err.get_win_median()
+            stats["top1_acc"] = self.top1_acc.get_win_median()
+            stats["top5_acc"] = self.top5_acc.get_win_median()
         logging.log_json_stats(stats)
 
     def log_epoch_stats(self, cur_epoch):
@@ -833,6 +871,8 @@ class ValMeter(object):
                 torch.cat(self.all_labels).cpu().numpy(),
             )
         else:
+            top1_acc = self.num_top1_acc / self.num_samples
+            top5_acc = self.num_top5_acc / self.num_samples
             top1_err = self.num_top1_mis / self.num_samples
             top5_err = self.num_top5_mis / self.num_samples
             self.min_top1_err = min(self.min_top1_err, top1_err)
@@ -842,6 +882,8 @@ class ValMeter(object):
             stats["top5_err"] = top5_err
             stats["min_top1_err"] = self.min_top1_err
             stats["min_top5_err"] = self.min_top5_err
+            stats["top1_acc"] = top1_acc
+            stats["top1_acc"] = top5_acc
 
         logging.log_json_stats(stats, self.output_dir)
 

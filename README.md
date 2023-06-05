@@ -82,8 +82,8 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_D
         - for each dataloader, feed batch of frames into model for predictions
         - for each proposal frame set in the batch, append (pred, start, end) to list of preds
 
-        - bug with loading second video's batches :o:
-        - all predictions are 0
+        - all predictions are 0 :o:
+        - make sure last epoch checkpoint is loaded correctly :o:
 
 
     - post-processing script to piece together all proposals back into the full untrimmed video and align action preds with timestamps :o:
