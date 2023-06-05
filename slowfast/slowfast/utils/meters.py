@@ -883,7 +883,7 @@ class ValMeter(object):
             stats["min_top1_err"] = self.min_top1_err
             stats["min_top5_err"] = self.min_top5_err
             stats["top1_acc"] = top1_acc
-            stats["top1_acc"] = top5_acc
+            stats["top5_acc"] = top5_acc
 
         logging.log_json_stats(stats, self.output_dir)
 
