@@ -89,7 +89,7 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_D
     - post-processing script to piece together all proposals back into the full untrimmed video and align action preds with timestamps :o:
     multiple proposals that are consecutive in temporal space, having the same action pred, should be combined into one start and end timestamp
 
-- setup config + model to use 2 gpus (breaks when attemtping) and more workers (max = 20 cpu threads); then, can increase train batch_size :o:
+- setup config + model to use 2 gpus (breaks when attemtping) and more workers; then, can increase train batch_size :heavy_check_mark:
 
 - edit eval output to show train and val accuracy and specify what top1 and top5 error apply to (train or val) :o:
 
