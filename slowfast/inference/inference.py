@@ -259,7 +259,7 @@ if __name__ == '__main__':
     ########### Configuration Params ############
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
     #############################################
-    path_to_config = os.getcwd() + "/configs/SLOWFAST_8x8_R50_inf.yaml"
+    path_to_config = os.getcwd() + "/configs/SLOWFAST_8x8_R50_inf.yaml" # remove this and use as bash param --cfg later
     args = parse_args()
     cfg = load_config(args, path_to_config)
     cfg = assert_and_infer_cfg(cfg)
