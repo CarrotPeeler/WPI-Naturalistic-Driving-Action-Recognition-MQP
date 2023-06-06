@@ -351,6 +351,9 @@ class TestMeter(object):
         Args:
             cur_iter (int): the current iteration of testing.
         """
+        if (cur_iter + 1) % self._cfg.LOG_PERIOD != 0:
+            return
+        
         eta_sec = self.iter_timer.seconds() * (self.overall_iters - cur_iter)
         eta = str(datetime.timedelta(seconds=int(eta_sec)))
         stats = {

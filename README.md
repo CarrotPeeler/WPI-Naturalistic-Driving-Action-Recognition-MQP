@@ -55,12 +55,12 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_D
 - edit the config in slowfast/slowfast/configs (SLOWFAST_8x8_R50_inf.yaml)
     - i.e., DATA.NUM_FRAMES and DATA.SAMPLING_RATE
 - cd into outermost slowfast folder (make sure you cd from within the python interpreter, not from bash)
-- in inference folder > prepare_loc_data.py, adjust config params
+- in inference folder > prepare_loc_data.py, adjust A2_data_path and other params as necessary
 - run the following to segment test data videos and create proposals
 ```console
 python3 inference/prepare_loc_data.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml < /dev/null > inference/ffmpeg_loc_log.txt 2>&1 &
 ```
-- then to run inferencing:
+- then run inferencing after test data is prepared:
 ```console
 python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml DATA.PATH_TO_DATA_DIR .
 ```
