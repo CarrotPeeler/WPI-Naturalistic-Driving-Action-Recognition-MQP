@@ -1,5 +1,5 @@
 data/*
-data_prev/*
+data_loc/*
 slowfast/checkpoints/*[.pkl, .pyth]
 slowfast/*.csv
 slowfast/post_process/*.txt

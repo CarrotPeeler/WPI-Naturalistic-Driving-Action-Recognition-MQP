@@ -38,7 +38,11 @@ clips_savepath = "/path_to_data/data_dir"
 ```
 
 ### Data Preparation
-- make sure you cd into this repo first, then run prepare_data.py after changing params as mentioned above
+- make sure you cd into this repo first, change params in prepare_data.py as needed
+- run the following:
+```console
+python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
+```
 
 ### Training
 - edit the config in slowfast/slowfast/configs
@@ -51,10 +55,10 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_D
 - edit the config in slowfast/slowfast/configs (SLOWFAST_8x8_R50_inf.yaml)
     - i.e., DATA.NUM_FRAMES and DATA.SAMPLING_RATE
 - cd into outermost slowfast folder (make sure you cd from within the python interpreter, not from bash)
-- in inference folder > inference.py, A2_data_path and num_threads should be adjusted based on your setup
-- run the following:
+- in inference folder > prepare_loc_data.py, adjust config params
+- run the following to segment test data videos and create proposals
 ```console
-python3 inference/inference.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml
+python3 inference/prepare_loc_data.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml < /dev/null > inference/ffmpeg_loc_log.txt 2>&1 &
 ```
 
 ### TODO
