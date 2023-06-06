@@ -25,7 +25,7 @@ def get_video_ids_dict(path_to_csv):
 """
 Uniformly trims test data set videos into clips and generates a corresponding csv
 """
-def uniform_video_segment(video_filepaths, video_extension, video_ids_dict, proposal_stride, proposal_length, clip_resolution, encode_speed):
+def uniform_video_segment(video_filepaths, video_extension, video_ids_dict, proposal_stride, proposal_length, clip_resolution, encode_speed, re_encode=False):
     # create save dir for clips if it doesn't exist
     clip_dir = os.getcwd().rpartition('/')[0] + "/data_loc"
     if(not os.path.exists(clip_dir)):
@@ -68,7 +68,10 @@ def uniform_video_segment(video_filepaths, video_extension, video_ids_dict, prop
 
             # write ffmpeg command to bash script
             with open(clip_dir + "/ffmpeg_loc_commands.sh", 'a+') as f:
-                f.writelines(f"ffmpeg -loglevel quiet -y -i {video_paths[i]} -vf scale={clip_resolution} -ss {start_time} -to {end_time} -c:v libx264 {preset}{clip_filepath}\n")
+                if(re_encode == False):
+                    f.writelines(f"ffmpeg -loglevel quiet -y -i {video_paths[i]} -ss {start_time} -to {end_time} -c:v copy {clip_filepath}\n")
+                else:
+                    f.writelines(f"ffmpeg -loglevel quiet -y -i {video_paths[i]} -vf scale={clip_resolution} -ss {start_time} -to {end_time} -c:v libx264 {preset}{clip_filepath}\n")
 
             # add clip path, placeholder label, video_id, start_time, end_time to test.csv
             with open(os.getcwd() + "/test.csv", "a+") as f:
@@ -100,7 +103,7 @@ if __name__ == '__main__':
     proposal_length = frame_length * frame_stride
 
     """
-    Because of encoding, the videos may take several hours to process; use the command below to run the script in the background:
+    Because of re-encoding, the videos may take several hours to process; to run script in the background:
     cd slowfast
     python3 prepare_loc_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
     """
@@ -111,6 +114,7 @@ if __name__ == '__main__':
                           proposal_stride=proposal_stride, 
                           proposal_length=proposal_length, 
                           clip_resolution=clip_resolution, 
-                          encode_speed=encode_speed)
+                          encode_speed=encode_speed,
+                          re_encode=True)
 
     
