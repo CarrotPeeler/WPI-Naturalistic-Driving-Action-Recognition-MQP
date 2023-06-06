@@ -252,6 +252,7 @@ def test(cfg):
                 len(test_loader),
                 cfg.DATA.MULTI_LABEL,
                 cfg.DATA.ENSEMBLE_METHOD,
+                cfg.LOG_PERIOD,
             )
 
         # Set up writer for logging to Tensorboard format.
