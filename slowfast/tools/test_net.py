@@ -46,7 +46,13 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None):
     model.eval()
     test_meter.iter_tic()
 
-    for cur_iter, (inputs, labels, video_idx, time, meta) in enumerate(
+    # delete existing predictions.txt if exists
+    pred_output = os.getcwd() + "/post_process/predictions.txt"
+    if os.path.exists(pred_output):
+        print("DELETING predictions.txt")
+        os.remove(pred_output)
+
+    for cur_iter, (inputs, labels, video_idx, time, meta, proposal) in enumerate(
         test_loader
     ):
 
@@ -118,8 +124,7 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None):
         else:
             # Perform the forward pass.
             preds = model(inputs)
-            pf = preds.argmax().item()
-            print(f"{preds} =======================> {pf}")
+
         # Gather all the predictions across all the devices to perform ensemble.
         if cfg.NUM_GPUS > 1:
             preds, labels, video_idx = du.all_gather([preds, labels, video_idx])
@@ -127,6 +132,13 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None):
             preds = preds.cpu()
             labels = labels.cpu()
             video_idx = video_idx.cpu()
+
+        pred = preds.argmax().item()
+
+        if proposal is not None:    
+            # write video_id, pred, start_time, end_time to file for post-processing
+            with open(os.getcwd() + "/post_process/predictions.txt", "a+") as f:
+                f.writelines(f"{proposal[0][0]} {pred} {proposal[1][0]} {proposal[2][0]}\n")
 
         test_meter.iter_toc()
 
@@ -240,6 +252,7 @@ def test(cfg):
                 len(test_loader),
                 cfg.DATA.MULTI_LABEL,
                 cfg.DATA.ENSEMBLE_METHOD,
+                cfg.LOG_PERIOD,
             )
 
         # Set up writer for logging to Tensorboard format.

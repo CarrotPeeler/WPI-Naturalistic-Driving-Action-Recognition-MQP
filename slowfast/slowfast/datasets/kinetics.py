@@ -117,6 +117,9 @@ class Kinetics(torch.utils.data.Dataset):
         self._path_to_videos = []
         self._labels = []
         self._spatial_temporal_idx = []
+        self._proposals = []
+        self.using_proposals = False
+
         self.cur_iter = 0
         self.chunk_epoch = 0
         self.epoch = 0.0
@@ -137,6 +140,10 @@ class Kinetics(torch.utils.data.Dataset):
                     path, fn, label = fetch_info
                 elif len(fetch_info) == 1:
                     path, label = fetch_info[0], 0
+                # for parsing proposal metadata
+                elif len(fetch_info) == 5:
+                    path, label, video_id, start_time, end_time = fetch_info
+                    self.using_proposals = True
                 else:
                     raise RuntimeError(
                         "Failed to parse video fetch {} info {} retries.".format(
@@ -151,6 +158,9 @@ class Kinetics(torch.utils.data.Dataset):
                     self._labels.append(int(label))
                     self._spatial_temporal_idx.append(idx)
                     self._video_meta[clip_idx * self._num_clips + idx] = {}
+
+                    if(self.using_proposals == True):
+                        self._proposals.append((video_id, start_time, end_time))
         assert (
             len(self._path_to_videos) > 0
         ), "Failed to load Kinetics split {} from {}".format(
@@ -503,6 +513,15 @@ class Kinetics(torch.utils.data.Dataset):
             if self.cfg.DATA.DUMMY_LOAD:
                 if self.dummy_output is None:
                     self.dummy_output = (frames, label, index, time_idx, {})
+
+            # for test mode with proposal generation
+            elif(self.mode == "test" and self.using_proposals == True):
+                proposal = self._proposals[index]
+                return frames, label, index, time_idx, {}, proposal
+            
+            elif(self.mode == "test" and self.using_proposals == False):
+                return frames, label, index, time_idx, {}, None
+                    
             return frames, label, index, time_idx, {}
         else:
             logger.warning(

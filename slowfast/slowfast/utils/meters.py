@@ -260,6 +260,7 @@ class TestMeter(object):
         overall_iters,
         multi_label=False,
         ensemble_method="sum",
+        log_period=None,
     ):
         """
         Construct tensors to store the predictions and labels. Expect to get
@@ -296,6 +297,8 @@ class TestMeter(object):
         self.clip_count = torch.zeros((num_videos)).long()
         self.topk_accs = []
         self.stats = {}
+
+        self.log_period = log_period
 
         # Reset metric.
         self.reset()
@@ -351,6 +354,9 @@ class TestMeter(object):
         Args:
             cur_iter (int): the current iteration of testing.
         """
+        if self.log_period is not None and (cur_iter + 1) % self.log_period != 0:
+            return
+        
         eta_sec = self.iter_timer.seconds() * (self.overall_iters - cur_iter)
         eta = str(datetime.timedelta(seconds=int(eta_sec)))
         stats = {
