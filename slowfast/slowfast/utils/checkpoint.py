@@ -75,6 +75,7 @@ def get_last_checkpoint(path_to_job, task):
         return None
     # Sort the checkpoints by epoch.
     name = sorted(names)[-1]
+    print(f"RETRIEVING CHECKPOINT: {name}")
     return os.path.join(d, name)
 
 

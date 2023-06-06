@@ -48,7 +48,7 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 - edit the config in slowfast/slowfast/configs
 - cd into outermost slowfast folder and run the following:
 ```console
-python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR .
+python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 &
 ```
 
 ### Inference
