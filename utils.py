@@ -1,12 +1,21 @@
 import os
 import torch
-import ast
+import pandas as pd
 from glob import glob
 
 # Always run the start method inside this if-statement
 if __name__ == '__main__':  
-    
-    list = torch.tensor([.1, .2222, 1.3, 4.5, .0009]).tolist()
-    a = str(list)
-    b = ast.literal_eval(a)
-    print(b)
+
+    df = pd.read_csv(os.getcwd() + "/slowfast/val.csv", delimiter=" ", names=["path", "class"])
+    print(df.pivot_table(index = ["class"], aggfunc = "size"))
+
+#  # split data into train and val sets
+#         splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state = 42)
+#         split = splitter.split(X=df['clip'], y=df['class'])
+#         train_indexes, test_indexes = next(split)
+
+#         train_df = df.iloc[train_indexes]
+#         test_df = df.iloc[test_indexes]
+
+#         train_df.to_csv(os.getcwd() + "/slowfast/train.csv", sep=" ", header=False, index=False)
+#         test_df.to_csv(os.getcwd() + "/slowfast/val.csv", sep=" ", header=False, index=False)

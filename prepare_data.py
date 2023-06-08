@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from glob import glob
 from tqdm import tqdm
-from sklearn.model_selection import StratifiedGroupKFold
+from sklearn.model_selection import StratifiedKFold
 
 # suppress pandas chain assignment warnings
 pd.options.mode.chained_assignment = None
@@ -245,9 +245,9 @@ if __name__ == '__main__':
         zero_sec_clips = df.index[df['clip'].str.rpartition("start")[2].str.partition('-')[0] == df['clip'].str.rpartition("end")[2].str.partition('.')[0]].to_list()
         df.drop(zero_sec_clips, inplace=True)
 
-        # split data into train and test sets via grouping by video name
-        splitter = StratifiedGroupKFold(n_splits=5, shuffle=True, random_state = 42)
-        split = splitter.split(X=df['clip'], y=df['class'], groups=df['clip'].str.rpartition('/')[2].str.partition('-')[0])
+        # split data into train and test sets 
+        splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state = 42)
+        split = splitter.split(X=df['clip'], y=df['class'])
         train_indexes, test_indexes = next(split)
 
         train_df = df.iloc[train_indexes]
