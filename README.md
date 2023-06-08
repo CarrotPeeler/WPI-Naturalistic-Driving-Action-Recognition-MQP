@@ -64,6 +64,7 @@ python3 inference/prepare_loc_data.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml < 
 ```console
 python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml DATA.PATH_TO_DATA_DIR .
 ```
+- then in post_process folder, run post_process.py to obtain the post_processed_data.txt used for submission to the evaluation server
 
 ### TODO
 - before splitting videos into clips using ffmpeg, 

@@ -134,11 +134,12 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None):
             video_idx = video_idx.cpu()
 
         pred = preds.argmax().item()
+        max_prob = preds.max().item()
 
         if proposal is not None:    
-            # write video_id, pred, start_time, end_time to file for post-processing
+            # write video_id, pred, max_prob, start_time, end_time to file for post-processing
             with open(os.getcwd() + "/post_process/predictions.txt", "a+") as f:
-                f.writelines(f"{proposal[0][0]} {pred} {proposal[1][0]} {proposal[2][0]}\n")
+                f.writelines(f"{proposal[0][0]} {pred} {max_prob} {proposal[1][0]} {proposal[2][0]}\n")
 
         test_meter.iter_toc()
 
