@@ -120,7 +120,7 @@ encode_speed: "default" for preset speed; else, use any ffmpeg speed param
 
 Returns True if operation suceeded; else, False if it failed
 """
-def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, re_encode:bool, clip_resolution:str, encode_speed:str):
+def videos_to_clips_fill(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, re_encode:bool, clip_resolution:str, encode_speed:str):
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     clip_filepaths = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
@@ -183,6 +183,60 @@ def videosToClips(video_dir: str, clip_dir: str, annotation_filename: str, video
     return True
 
 
+"""
+Same function as above but does not autolabel unlabeled video segments as normal driving (class 0)
+"""
+def videos_to_clips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, re_encode:bool, clip_resolution:str, encode_speed:str):
+    csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
+    clip_filepaths = [] # stores image (frame) names
+    classes = [] # stores class labels for each frame
+
+    for i in tqdm(range(len(csv_filepaths))): # for each csv file corresponding to a group of videos, split each video into clips
+        annotation_df = pd.read_csv(csv_filepaths[i])
+        videos = glob(csv_filepaths[i].rpartition('/')[0] + "/*" + video_extension)
+
+        for video in videos: # for each video, parse out its individual csv data from the original csv for the group of videos 
+            video_filename = video.rpartition('/')[-1].partition('.')[0] 
+            parsed_video_df = parse_data_from_csv(video, annotation_df)
+            video_duration = extract_video_duration_seconds(video) # video duration in total seconds elapsed
+
+            # extract start and end timestamps from df and convert each to seconds
+            start_times = list(map(timestamp_to_seconds, parsed_video_df['Start Time'].to_list()))
+            end_times = list(map(timestamp_to_seconds, parsed_video_df['End Time'].to_list()))
+            labels = list(map(lambda str:int(str.rpartition(' ')[-1]), parsed_video_df['Label (Primary)'].to_list()))
+                
+            # write ffmpeg commands to bash script for parallel execution & add labels and file paths to lists for annotation 
+            with open(clip_dir + "/ffmpeg_commands.sh", 'a+') as f:
+
+                for k in range(len(labels)): # for each action in the video, extract video clip of action based on timestamps
+
+                    # extract only the portion of the video between start_time and end_time
+                    clip_filepath = clip_dir + f"/{video_filename}" + f"-start{start_times[k]}" + f"-end{end_times[k]}" + ".MP4"
+
+                    if(encode_speed == "default"): 
+                        preset = ""
+                    else:
+                        preset = "-preset " + encode_speed + " "
+                    
+                    # # no re-encoding (typically much faster than with re-encoding)
+                    if(re_encode == False):
+                        f.writelines(f"ffmpeg -loglevel quiet -y -i {video} -ss {start_times[k]} -to {end_times[k]} -c:v copy {clip_filepath}\n")
+                    else:       
+                        f.writelines(f"ffmpeg -loglevel quiet -y -i {video} -vf scale={clip_resolution} -ss {start_times[k]} -to {end_times[k]} -c:v libx264 {preset}{clip_filepath}\n")
+                    
+                    clip_filepaths.append(clip_filepath)
+                    classes.append(labels[k])
+    
+    # parallelize ffmpeg commands
+    os.system(f"parallel --eta < {clip_dir}/ffmpeg_commands.sh")
+
+    # create annotation csv to store clip file paths and their labels
+    data = pd.DataFrame()
+    data['clip'] = clip_filepaths
+    data['class'] = classes  
+    data.to_csv(clip_dir + "/" + annotation_filename, sep=" ", header=False, index=False)
+
+
 
 """
 Parses out the data for a single video, given its file path and the entire annotation csv for the user recorded in the video
@@ -225,36 +279,33 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 if __name__ == '__main__':
 
     videos_loadpath = "/home/vislab-001/Jared/SET-A1"
-    clips_savepath = os.getcwd() + "/data"
+    clips_savepath = os.getcwd() + "/data/data_normal"
     annotation_filename = "annotation.csv"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
-    if(videosToClips(video_dir=videos_loadpath, 
+    videos_to_clips(video_dir=videos_loadpath, 
                   clip_dir=clips_savepath, 
                   video_extension=".MP4", 
                   annotation_filename=annotation_filename,
                   re_encode=True,
                   encode_speed = "ultrafast",
-                  clip_resolution="512:512")):
+                  clip_resolution="512:512")
 
-        print("All videos have been successfully processed into clips. Creating annotation split...")
+    print("All videos have been successfully processed into clips. Creating annotation split...")
 
-        df = pd.read_csv(clips_savepath + "/" + annotation_filename, sep=" ", names=["clip", "class"])
+    df = pd.read_csv(clips_savepath + "/" + annotation_filename, sep=" ", names=["clip", "class"])
 
-        # clean data for videos with no time duration
-        zero_sec_clips = df.index[df['clip'].str.rpartition("start")[2].str.partition('-')[0] == df['clip'].str.rpartition("end")[2].str.partition('.')[0]].to_list()
-        df.drop(zero_sec_clips, inplace=True)
+    # clean data for videos with no time duration
+    zero_sec_clips = df.index[df['clip'].str.rpartition("start")[2].str.partition('-')[0] == df['clip'].str.rpartition("end")[2].str.partition('.')[0]].to_list()
+    df.drop(zero_sec_clips, inplace=True)
 
-        # split data into train and test sets 
-        splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state = 42)
-        split = splitter.split(X=df['clip'], y=df['class'])
-        train_indexes, test_indexes = next(split)
+    # split data into train and test sets 
+    splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state = 42)
+    split = splitter.split(X=df['clip'], y=df['class'])
+    train_indexes, test_indexes = next(split)
 
-        train_df = df.iloc[train_indexes]
-        test_df = df.iloc[test_indexes]
+    train_df = df.iloc[train_indexes]
+    test_df = df.iloc[test_indexes]
 
-        train_df.to_csv(os.getcwd() + "/slowfast/train.csv", sep=" ", header=False, index=False)
-        test_df.to_csv(os.getcwd() + "/slowfast/val.csv", sep=" ", header=False, index=False)
-
-    else:
-        print("Video processing was unsuccessful.")
+    train_df.to_csv(os.getcwd() + "/slowfast/train.csv", sep=" ", header=False, index=False)
+    test_df.to_csv(os.getcwd() + "/slowfast/val.csv", sep=" ", header=False, index=False)

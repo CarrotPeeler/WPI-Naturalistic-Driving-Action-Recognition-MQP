@@ -24,10 +24,28 @@ def get_video_ids_dict(path_to_csv):
 
 """
 Uniformly trims test data set videos into clips and generates a corresponding csv
+
+video_filepaths: path to test/inf dataset videos
+clips_save_dir: path to directory where clips will be saved 
+video_extension: ".MP4", ".avi", etc.
+video_ids_dict: dict object which has video_ids as keys and video_filenames as values
+proposal_stride: interval (in frames) at which proposals are created
+proposal_length: input num frames x frame sampling rate
+clip_resolution: "512:512", "720:540", etc. (only applied if re_encode is True)
+encode_speed: refer to FFmpeg documentation (only applied if re_encode is True)
+re_encode: True to re-encode clips; else, False 
 """
-def uniform_video_segment(video_filepaths, video_extension, video_ids_dict, proposal_stride, proposal_length, clip_resolution, encode_speed, re_encode=False):
+def uniform_video_segment(video_filepaths, 
+                          clips_save_dir, 
+                          video_extension, 
+                          video_ids_dict, 
+                          proposal_stride, 
+                          proposal_length, 
+                          clip_resolution, 
+                          encode_speed, 
+                          re_encode=False):
     # create save dir for clips if it doesn't exist
-    clip_dir = os.getcwd().rpartition('/')[0] + "/data_loc"
+    clip_dir = clips_save_dir
     if(not os.path.exists(clip_dir)):
         os.mkdir(clip_dir)
 
@@ -87,8 +105,9 @@ if __name__ == '__main__':
 
     ############### CONFIGURATION PARAMS ################
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
+    clip_save_dir = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_normal_inf_16x4_overlap_16"
     clip_resolution = (512, 512) # resolution that clips will be resized to; this should match the resolution used in prepare_data.py
-    proposal_stride = 64
+    proposal_stride = 16
     encode_speed = "ultrafast"
     clip_resolution="512:512"
     #####################################################
@@ -109,6 +128,7 @@ if __name__ == '__main__':
     """
     # uniformly segment videos into clips of the same size 
     uniform_video_segment(video_filepaths=A2_data_path, 
+                          clips_save_dir=clip_save_dir,
                           video_extension=".MP4", 
                           video_ids_dict=get_video_ids_dict(os.getcwd() + "/inference/video_ids.csv"),
                           proposal_stride=proposal_stride, 

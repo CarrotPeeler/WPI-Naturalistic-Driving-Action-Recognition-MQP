@@ -1,6 +1,8 @@
 import os
 import pandas as pd
+import numpy as np
 from glob import glob
+from scipy import stats
 from tqdm.auto import tqdm
 from prepare_data import timestamp_to_seconds
 
@@ -71,14 +73,63 @@ def get_merged_segment_idxs(video_df):
 
 """
 Aggregates prediction and localization data across three diff. camera angles/videos
-Returns four aggregated data lists (video_id, activity_id, start_time, end_time)
+Returns aggregated dataframe with 4 cols (video_id, activity_id, start_time, end_time)
 
-vid_id_dict: dictionary with four keys "video_id_cols", "activity_id_cols", "start_time_cols", "end_time_cols"
-- each key stores a list that has 3 lists, 1 list for each camera angle
+video_id_df: dataframe containing raw output inference data for ONE video_id (may contain multiple videos)
 """
-def aggregate_3angle_data(vid_id_dict):
-    # print(f"\n{vid_id_dict['activity_id_cols'][0]}\n{vid_id_dict['activity_id_cols'][1]}\n{vid_id_dict['activity_id_cols'][2]}")
-    a = 1
+def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
+    # parse the index for the first row of data for each video
+    video_start_idxs  = video_id_df.index[video_id_df["start_time"] == 0].to_list()
+    
+    assert (len(video_start_idxs) == 3), "Error: more than three videos found per video id"
+
+    # store dfs for each vid in array
+    video_dfs = []
+    for i, video_start_idx in enumerate(video_start_idxs):
+        if(i != len(video_start_idxs) - 1):
+            video_df = video_id_df.iloc[video_start_idx : video_start_idxs[i+1] - 1]
+        else:
+            video_df = video_id_df.iloc[video_start_idx : len(video_id_df) - 1]
+
+        video_dfs.append(video_df)
+        print(f"\n\n{video_df['pred'].to_list()} =====> LEN: {len(video_df)}\n\n{list(map(lambda x:int(x*10), video_df['max_prob'].to_list()))}\n\n")
+    
+    # check each df has same length
+    eq_len_check = 0
+    for video_d in video_dfs:
+        if len(video_d) == len(video_dfs[0]): 
+            eq_len_check += 1
+
+    assert eq_len_check == len(video_dfs), "Dataframe size mismatch for video_id"
+
+    # aggregate results by selecting highest prob pred for each pred among all videos
+    agg_preds = []
+    for row_idx in range(len(video_dfs[0])):
+        preds = np.array([])
+        probs = np.array([])
+
+        # create lists of probs and preds for current row among all videos
+        for vid_df in video_dfs:
+            preds.append(vid_df.iloc[[row_idx]]["pred"].to_list()[0])
+            probs.append(vid_df.iloc[[row_idx]]["max_prob"].to_list()[0])
+            
+        # first check if there is a common pred among candidates
+        if(stats.mode(preds, keepdims=False)[1] > 1):
+            # validate the probs of each pred are high enough to not be coincidence
+            mode_pred = stats.mode(preds, keepdims=False)[0]
+            mode_pred_idxs = np.where(preds == mode_pred)
+            mode_probs = np.array([probs[z] for z in mode_pred_idxs])
+            
+            if(mode_probs.mean() >= prob_threshold):
+                agg_preds.append(mode_pred)
+
+        # no common pred => find highest prob pred and append
+        else:
+            agg_preds.append(preds[probs.argmax()])
+
+    print(f"\n\nFINAL: {agg_preds} =====> LEN: {len(agg_preds)}\n\n")
+
+        
 
 
 """
@@ -112,55 +163,38 @@ def process_data(raw_output_filename:str, train_data_path:str):
         # get all video dfs with the same id
         video_id_df = df[df["video_id"] == video_id].reset_index()
 
-        # parse the index for the first row of data for each video
-        video_start_idxs  = video_id_df.index[video_id_df["start_time"] == 0].to_list()
-        
-        assert (len(video_start_idxs) == 3), "Error: more than three videos found per video id"
+        if video_id == 1: aggregate_video_data(video_id_df, prob_threshold)
 
         # print(video_id_df.pivot_table(index = ["end_time"], aggfunc = "size"))
 
-        # stores data cols for all 3 videos for a video_id; each video cols are stored in a tuple
-        video_id_data_dict = {"video_id_cols": [],
-                              "activity_id_cols": [],
-                              "start_time_cols": [],
-                              "end_time_cols": []}
+       
 
-        for i, video_start_idx in enumerate(video_start_idxs):
-            if(i != len(video_start_idxs) - 1):
-                video_df = video_id_df.iloc[video_start_idx : video_start_idxs[i+1] - 1]
-            else:
-                video_df = video_id_df.iloc[video_start_idx : len(video_id_df) - 1]
 
-            if(video_id == 1): print(f"\n\n{video_df['pred'].to_list()} =====> LEN: {len(video_df)}\n\n")
+        # # filter out probs that don't meet threshold
+        # video_df.drop(video_df.index[video_df["max_prob"] < prob_threshold], inplace=True)
+        # video_df.reset_index(inplace=True)
 
-            # filter out probs that don't meet threshold
-            video_df.drop(video_df.index[video_df["max_prob"] < prob_threshold], inplace=True)
-            video_df.reset_index(inplace=True)
+        # # aggregate segments with same prob
+        # merged_idxs = get_merged_segment_idxs(video_df)
 
-            # aggregate segments with same prob
-            merged_idxs = get_merged_segment_idxs(video_df)
+        # # column values for this video's merged preds
+        # temp_video_id_col = [video_id] * len(merged_idxs)
+        # temp_activity_id_col = []
+        # temp_start_time_col = []
+        # temp_end_time_col = []
 
-            # column values for this video's merged preds
-            temp_video_id_col = [video_id] * len(merged_idxs)
-            temp_activity_id_col = []
-            temp_start_time_col = []
-            temp_end_time_col = []
+        # for merged_idx_tuple in merged_idxs:
+        #     merge_start_row = video_df.loc[[merged_idx_tuple[0]]]
+        #     merge_end_row = video_df.loc[[merged_idx_tuple[1]]]
 
-            for merged_idx_tuple in merged_idxs:
-                merge_start_row = video_df.loc[[merged_idx_tuple[0]]]
-                merge_end_row = video_df.loc[[merged_idx_tuple[1]]]
+        #     temp_activity_id_col.append(merge_start_row["pred"].to_list()[0])
+        #     temp_start_time_col.append(merge_start_row["start_time"].to_list()[0])
+        #     temp_end_time_col.append(merge_end_row["end_time"].to_list()[0])
 
-                temp_activity_id_col.append(merge_start_row["pred"].to_list()[0])
-                temp_start_time_col.append(merge_start_row["start_time"].to_list()[0])
-                temp_end_time_col.append(merge_end_row["end_time"].to_list()[0])
-
-            video_id_data_dict["video_id_cols"].append(temp_video_id_col)
-            video_id_data_dict["activity_id_cols"].append(temp_activity_id_col)
-            video_id_data_dict["start_time_cols"].append(temp_start_time_col)
-            video_id_data_dict["end_time_cols"].append(temp_end_time_col)
-
-        # aggregate column data across all 3 videos (camera angles) for a video_id
-        if video_id == 1: aggregate_3angle_data(video_id_data_dict)
+        # video_id_data_dict["video_id_cols"].append(temp_video_id_col)
+        # video_id_data_dict["activity_id_cols"].append(temp_activity_id_col)
+        # video_id_data_dict["start_time_cols"].append(temp_start_time_col)
+        # video_id_data_dict["end_time_cols"].append(temp_end_time_col)
 
         # append aggregated video_id data to col lists
         # video_id_col.extend()
