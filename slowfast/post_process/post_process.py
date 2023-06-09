@@ -77,8 +77,8 @@ vid_id_dict: dictionary with four keys "video_id_cols", "activity_id_cols", "sta
 - each key stores a list that has 3 lists, 1 list for each camera angle
 """
 def aggregate_3angle_data(vid_id_dict):
-    pass
-
+    # print(f"\n{vid_id_dict['activity_id_cols'][0]}\n{vid_id_dict['activity_id_cols'][1]}\n{vid_id_dict['activity_id_cols'][2]}")
+    a = 1
 
 
 """
@@ -131,6 +131,8 @@ def process_data(raw_output_filename:str, train_data_path:str):
             else:
                 video_df = video_id_df.iloc[video_start_idx : len(video_id_df) - 1]
 
+            if(video_id == 1): print(f"\n\n{video_df['pred'].to_list()} =====> LEN: {len(video_df)}\n\n")
+
             # filter out probs that don't meet threshold
             video_df.drop(video_df.index[video_df["max_prob"] < prob_threshold], inplace=True)
             video_df.reset_index(inplace=True)
@@ -158,20 +160,20 @@ def process_data(raw_output_filename:str, train_data_path:str):
             video_id_data_dict["end_time_cols"].append(temp_end_time_col)
 
         # aggregate column data across all 3 videos (camera angles) for a video_id
-
+        if video_id == 1: aggregate_3angle_data(video_id_data_dict)
 
         # append aggregated video_id data to col lists
-        video_id_col.extend()
-        activity_id_col.extend()
-        start_time_col.extend()
-        end_time_col.extend()
+        # video_id_col.extend()
+        # activity_id_col.extend()
+        # start_time_col.extend()
+        # end_time_col.extend()
             
             
 
 if __name__ == '__main__':  
 
     A1_data_path = "/home/vislab-001/Jared/SET-A1"
-    raw_output_filename = "predictions_300_epochs.txt"
+    raw_output_filename = "/slowfast8x8/predictions_120_eps_nogroups.txt"
 
     process_data(raw_output_filename, A1_data_path)
     
