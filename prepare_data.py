@@ -121,6 +121,10 @@ encode_speed: "default" for preset speed; else, use any ffmpeg speed param
 Returns True if operation suceeded; else, False if it failed
 """
 def videos_to_clips_fill(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, re_encode:bool, clip_resolution:str, encode_speed:str):
+    # create save dir for clips if it doesn't exist
+    if(not os.path.exists(clips_savepath)):
+        os.mkdir(clips_savepath)
+    
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     clip_filepaths = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
@@ -187,6 +191,10 @@ def videos_to_clips_fill(video_dir: str, clip_dir: str, annotation_filename: str
 Same function as above but does not autolabel unlabeled video segments as normal driving (class 0)
 """
 def videos_to_clips(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, re_encode:bool, clip_resolution:str, encode_speed:str):
+    # create save dir for clips if it doesn't exist
+    if(not os.path.exists(clip_dir)):
+        os.mkdir(clip_dir)
+    
     csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
     clip_filepaths = [] # stores image (frame) names
     classes = [] # stores class labels for each frame
