@@ -8,7 +8,7 @@ from scipy import stats
 # Always run the start method inside this if-statement
 if __name__ == '__main__':  
 
-    df = pd.read_csv(os.getcwd() + "/slowfast/val.csv", delimiter=" ", names=["path", "class"])
+    df = pd.read_csv(os.getcwd() + "/slowfast/train.csv", delimiter=" ", names=["path", "class"])
     print(df.pivot_table(index = ["class"], aggfunc = "size"))
 
 

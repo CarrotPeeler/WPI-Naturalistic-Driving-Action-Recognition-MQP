@@ -77,7 +77,7 @@ def uniform_video_segment(video_filepaths,
             start_time = round(start_frame_idx / fps, 2)
             end_time = round(end_frame_idx / fps, 2)
 
-            clip_filepath = os.getcwd().rpartition('/')[0] + f"/data_loc/{video_name}-{start_frame_idx}-{end_frame_idx}.MP4"
+            clip_filepath = clip_dir + f"/{video_name}-{start_frame_idx}-{end_frame_idx}.MP4"
 
             if(encode_speed == "default"): 
                 preset = ""
@@ -96,7 +96,7 @@ def uniform_video_segment(video_filepaths,
                 f.writelines(f"{clip_filepath} 0 {video_id} {start_time} {end_time}\n")
 
     # parallelize ffmpeg commands
-    os.system(f"parallel --eta < {clip_dir}/ffmpeg_loc_commands.sh")
+    #os.system(f"parallel --eta < {clip_dir}/ffmpeg_loc_commands.sh")
 
 
 
@@ -105,9 +105,11 @@ if __name__ == '__main__':
 
     ############### CONFIGURATION PARAMS ################
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
-    clip_save_dir = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_normal_inf_16x4_overlap_16"
+    clip_save_dir = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_inf_16x4_overlap_16"
+    # "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_inf_16x4_no_overlap"
+
     clip_resolution = (512, 512) # resolution that clips will be resized to; this should match the resolution used in prepare_data.py
-    proposal_stride = 16
+    proposal_stride = 16 # 64 => (no overlap)
     encode_speed = "ultrafast"
     clip_resolution="512:512"
     #####################################################

@@ -50,6 +50,7 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 ```console
 python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 &
 ```
+python3 tools/run_net.py --cfg configs/MVITv2_B_32x3.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
 
 ### Inference
 - edit the config in slowfast/slowfast/configs (SLOWFAST_8x8_R50_inf.yaml)
