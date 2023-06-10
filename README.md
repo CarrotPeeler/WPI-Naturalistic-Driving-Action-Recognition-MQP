@@ -108,7 +108,8 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml DATA.PATH_TO_DA
 
 - edit eval output to show train and val accuracy and specify what top1 and top5 error apply to (train or val) :heavy_check_mark:
 
-- add data augmentation (color/flip images horizontally to add more data) :o:
+- add data augmentation (color/flip (RandomFlip) images horizontally to add more data) :o:
+    - look into mixup or aug options for PySlowFast
 
 - fixed crop for each camera view (rear, front, side) to only include driver area :o:
     OR 
