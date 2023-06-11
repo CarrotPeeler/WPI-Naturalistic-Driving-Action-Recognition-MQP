@@ -249,7 +249,7 @@ def videos_to_clips(video_dir: str, clip_dir: str, annotation_filename: str, vid
 
 
 """
-Uses decord for frame seeking and cv2 for saving clips; faster than FFmpeg with re-encoding and outputs decently small file size, close to compressed size
+Uses decord for frame seeking and cv2 for saving clips; faster than FFmpeg re-encoding and outputs decently small file size, close to compressed size
 
 clip_resolution: tuple (width, height) of new dimensions/resolution 
 """
