@@ -1,5 +1,7 @@
 import pandas as pd
 import os
+import decord
+import cv2
 from glob import glob
 from tqdm import tqdm
 from sklearn.model_selection import StratifiedKFold
@@ -247,6 +249,67 @@ def videos_to_clips(video_dir: str, clip_dir: str, annotation_filename: str, vid
 
 
 """
+Uses decord for frame seeking and cv2 for saving clips; faster than FFmpeg with re-encoding and outputs decently small file size, close to compressed size
+
+clip_resolution: tuple (width, height) of new dimensions/resolution 
+"""
+def videos_to_clips_optimized(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, clip_resolution, num_threads=0):
+    # create save dir for clips if it doesn't exist
+    if(not os.path.exists(clip_dir)):
+        os.mkdir(clip_dir)
+    
+    csv_filepaths = glob(video_dir + "/**/*.csv", recursive=True) # search for all .csv files (each dir. of videos should only have ONE)
+    clip_filepaths = [] # stores image (frame) names
+    classes = [] # stores class labels for each frame
+
+    for i in tqdm(range(len(csv_filepaths))): # for each csv file corresponding to a group of videos, split each video into clips
+        annotation_df = pd.read_csv(csv_filepaths[i])
+        videos = glob(csv_filepaths[i].rpartition('/')[0] + "/*" + video_extension)
+
+        for video in videos: # for each video, parse out its individual csv data from the original csv for the group of videos 
+            video_filename = video.rpartition('/')[-1].partition('.')[0] 
+            parsed_video_df = parse_data_from_csv(video, annotation_df)
+            video_duration = extract_video_duration_seconds(video) # video duration in total seconds elapsed
+
+            vid = decord.VideoReader(video, num_threads=num_threads)
+
+            # extract start and end timestamps from df and convert each to seconds
+            start_times = list(map(timestamp_to_seconds, parsed_video_df['Start Time'].to_list()))
+            end_times = list(map(timestamp_to_seconds, parsed_video_df['End Time'].to_list()))
+            labels = list(map(lambda str:int(str.rpartition(' ')[-1]), parsed_video_df['Label (Primary)'].to_list()))
+
+            for k in tqdm(range(len(labels))): # for each action in the video, extract video clip of action based on timestamps
+
+                # extract only the portion of the video between start_time and end_time
+                clip_filepath = clip_dir + f"/{video_filename}" + f"-start{start_times[k]}" + f"-end{end_times[k]}" + ".MP4"
+
+                fps = int(vid.get_avg_fps())
+
+                clip = cv2.VideoWriter(clip_filepath, cv2.VideoWriter_fourcc(*'mp4v'), fps, clip_resolution)
+
+                start_frame = start_times[k] * fps
+                end_frame = end_times[k] * fps
+                    
+                frames = vid.get_batch(list(range(start_frame, end_frame))).asnumpy()
+
+                for frame in frames:
+                    new_frame = cv2.resize(frame, clip_resolution)
+                    clip.write(new_frame)
+
+                clip.release()
+                
+                clip_filepaths.append(clip_filepath)
+                classes.append(labels[k])
+
+    # create annotation csv to store clip file paths and their labels
+    data = pd.DataFrame()
+    data['clip'] = clip_filepaths
+    data['class'] = classes  
+    data.to_csv(clip_dir + "/" + annotation_filename, sep=" ", header=False, index=False)
+
+
+
+"""
 Parses out the data for a single video, given its file path and the entire annotation csv for the user recorded in the video
 NOTE: each annotation file has multiple videos, each with their own data
 """
@@ -287,17 +350,16 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 if __name__ == '__main__':
 
     videos_loadpath = "/home/vislab-001/Jared/SET-A1"
-    clips_savepath = os.getcwd() + "/data/data_normal"
+    clips_savepath = os.getcwd() + "/data/data_normal_uncompressed"
     annotation_filename = "annotation.csv"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
-    videos_to_clips(video_dir=videos_loadpath, 
+    videos_to_clips_optimized(video_dir=videos_loadpath, 
                   clip_dir=clips_savepath, 
                   video_extension=".MP4", 
                   annotation_filename=annotation_filename,
-                  re_encode=True,
-                  encode_speed = "ultrafast",
-                  clip_resolution="512:512")
+                  clip_resolution=(512,512),
+                  num_threads=8)
 
     print("All videos have been successfully processed into clips. Creating annotation split...")
 
