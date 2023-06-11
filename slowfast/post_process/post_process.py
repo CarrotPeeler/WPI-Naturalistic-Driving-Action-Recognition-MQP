@@ -105,13 +105,16 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
     # aggregate results by selecting highest prob pred for each pred among all videos
     agg_preds = []
     for row_idx in range(len(video_dfs[0])):
-        preds = np.array([])
-        probs = np.array([])
+        preds = []
+        probs = []
 
         # create lists of probs and preds for current row among all videos
         for vid_df in video_dfs:
             preds.append(vid_df.iloc[[row_idx]]["pred"].to_list()[0])
             probs.append(vid_df.iloc[[row_idx]]["max_prob"].to_list()[0])
+
+        preds = np.array(preds)
+        probs = np.array(probs)
             
         # first check if there is a common pred among candidates
         if(stats.mode(preds, keepdims=False)[1] > 1):
@@ -135,17 +138,17 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
 """
 Post-process predictions.txt to get submission-ready text file
 
-raw_output_filename: name (not path) of text file containing inference output
+raw_output_filepath: path of text file containing inference output
 """
-def process_data(raw_output_filename:str, train_data_path:str):
-    dir = os.getcwd() + "/slowfast/post_process"
+def process_data(raw_output_filepath:str, train_data_path:str):
+    dir = os.getcwd() + "/post_process"
 
     # delete existing post_processed_data.txt if exists
     txt_path = dir + "/post_processed_data.txt"
     if os.path.exists(txt_path):
         os.remove(txt_path)
 
-    df = pd.read_csv(dir + "/" + raw_output_filename, delimiter=" ", names=["video_id", "pred", "max_prob", "start_time", "end_time"])
+    df = pd.read_csv(raw_output_filepath, delimiter=" ", names=["video_id", "pred", "max_prob", "start_time", "end_time"])
 
     min_action_length = get_shortest_segment_length(train_data_path) # we will not use this since the shortest action label is 1 second...
 
@@ -207,9 +210,9 @@ def process_data(raw_output_filename:str, train_data_path:str):
 if __name__ == '__main__':  
 
     A1_data_path = "/home/vislab-001/Jared/SET-A1"
-    raw_output_filename = "/slowfast8x8/predictions_120_eps_nogroups.txt"
+    raw_output_filepath = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/post_process/mvitv2-b32x3/normal_data/predictions_mvitv2-b_240_epochs_no_overlap.txt"
 
-    process_data(raw_output_filename, A1_data_path)
+    process_data(raw_output_filepath, A1_data_path)
     
 
 
