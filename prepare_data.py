@@ -253,7 +253,7 @@ Uses decord for frame seeking and cv2 for saving clips; faster than FFmpeg with 
 
 clip_resolution: tuple (width, height) of new dimensions/resolution 
 """
-def videos_to_clips_optimized(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, clip_resolution, num_threads=0):
+def videos_to_clips_alt(video_dir: str, clip_dir: str, annotation_filename: str, video_extension: str, clip_resolution, num_threads=0):
     # create save dir for clips if it doesn't exist
     if(not os.path.exists(clip_dir)):
         os.mkdir(clip_dir)
@@ -293,7 +293,7 @@ def videos_to_clips_optimized(video_dir: str, clip_dir: str, annotation_filename
                 frames = vid.get_batch(list(range(start_frame, end_frame))).asnumpy()
 
                 for frame in frames:
-                    new_frame = cv2.resize(frame, clip_resolution)
+                    new_frame = cv2.resize(frame, clip_resolution) # interpolation=cv2.INTER_AREA) slower but better quality
                     clip.write(new_frame)
 
                 clip.release()
@@ -354,12 +354,13 @@ if __name__ == '__main__':
     annotation_filename = "annotation.csv"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
-    videos_to_clips_optimized(video_dir=videos_loadpath, 
+    videos_to_clips(video_dir=videos_loadpath, 
                   clip_dir=clips_savepath, 
                   video_extension=".MP4", 
                   annotation_filename=annotation_filename,
-                  clip_resolution=(512,512),
-                  num_threads=8)
+                  re_encode=False,
+                  encode_speed = "ultrafast",
+                  clip_resolution="512:512")
 
     print("All videos have been successfully processed into clips. Creating annotation split...")
 
