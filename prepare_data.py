@@ -350,7 +350,7 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 if __name__ == '__main__':
 
     videos_loadpath = "/home/vislab-001/Jared/SET-A1"
-    clips_savepath = os.getcwd() + "/data/data_normal_uncompressed"
+    clips_savepath = os.getcwd() + "/data/data_normal"
     annotation_filename = "annotation.csv"
 
     # truncate each train video into frames (truncate_size = num of frames per video)
@@ -358,7 +358,7 @@ if __name__ == '__main__':
                   clip_dir=clips_savepath, 
                   video_extension=".MP4", 
                   annotation_filename=annotation_filename,
-                  re_encode=False,
+                  re_encode=True,
                   encode_speed = "ultrafast",
                   clip_resolution="512:512")
 
