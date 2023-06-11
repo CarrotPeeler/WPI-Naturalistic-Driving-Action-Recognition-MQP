@@ -96,7 +96,7 @@ def uniform_video_segment(video_filepaths,
                 f.writelines(f"{clip_filepath} 0 {video_id} {start_time} {end_time}\n")
 
     # parallelize ffmpeg commands
-    #os.system(f"parallel --eta < {clip_dir}/ffmpeg_loc_commands.sh")
+    os.system(f"parallel --eta < {clip_dir}/ffmpeg_loc_commands.sh")
 
 
 
