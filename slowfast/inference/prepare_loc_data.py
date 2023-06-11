@@ -137,7 +137,7 @@ if __name__ == '__main__':
                           proposal_length=proposal_length, 
                           clip_resolution=clip_resolution, 
                           encode_speed=encode_speed,
-                          re_encode=True)
+                          re_encode=False)
     
     print("Video segmentation complete.")
 
