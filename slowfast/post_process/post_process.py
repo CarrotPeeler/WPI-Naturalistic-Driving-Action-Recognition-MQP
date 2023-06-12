@@ -72,8 +72,8 @@ def get_merged_segment_idxs(video_df):
 
 
 """
-Aggregates prediction and localization data across three diff. camera angles/videos
-Returns aggregated dataframe with 4 cols (video_id, activity_id, start_time, end_time)
+Aggregates prediction and localization data across three diff. camera angles/videos for ONE video_id
+Returns aggregated dataframe with 5 cols (video_id, pred, max_prob, start_time, end_time)
 
 video_id_df: dataframe containing raw output inference data for ONE video_id (may contain multiple videos)
 """
@@ -92,7 +92,7 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
             video_df = video_id_df.iloc[video_start_idx : len(video_id_df) - 1]
 
         video_dfs.append(video_df)
-        print(f"\n\n{video_df['pred'].to_list()} =====> LEN: {len(video_df)}\n\n{list(map(lambda x:int(x*10), video_df['max_prob'].to_list()))}\n\n")
+        # print(f"\n\n{video_df['pred'].to_list()} =====> LEN: {len(video_df)}\n\n{list(map(lambda x:int(x*100), video_df['max_prob'].to_list()))}\n\n")
     
     # check each df has same length
     eq_len_check = 0
@@ -100,10 +100,12 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
         if len(video_d) == len(video_dfs[0]): 
             eq_len_check += 1
 
-    assert eq_len_check == len(video_dfs), "Dataframe size mismatch for video_id"
+    # assert eq_len_check == len(video_dfs), f"Dataframe size mismatch among videos for video_id {video_id_df['video_id'][0]}: {video_dfs}"
+    if eq_len_check != len(video_dfs): print(f"Dataframe size mismatch among videos for video_id {video_id_df['video_id'][0]}: {video_dfs}")
 
-    # aggregate results by selecting highest prob pred for each pred among all videos
+    # aggregate pred and max_prob results for each row (each proposal) across all 3 camera angles
     agg_preds = []
+    agg_probs = []
     for row_idx in range(len(video_dfs[0])):
         preds = []
         probs = []
@@ -115,22 +117,51 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
 
         preds = np.array(preds)
         probs = np.array(probs)
-            
-        # first check if there is a common pred among candidates
+
+        # check if there is a common pred among candidates
         if(stats.mode(preds, keepdims=False)[1] > 1):
             # validate the probs of each pred are high enough to not be coincidence
             mode_pred = stats.mode(preds, keepdims=False)[0]
-            mode_pred_idxs = np.where(preds == mode_pred)
+
+            mode_pred_idxs = np.where(preds == mode_pred)[0]
+            minority_pred_idxs = np.where(preds != mode_pred)[0]
+
             mode_probs = np.array([probs[z] for z in mode_pred_idxs])
+            minority_probs = np.array([probs[j] for j in minority_pred_idxs])
+
+            # # check if minority pred exists and its prob is higher than mode probs
+            # if(len(minority_pred_idxs) > 0 and minority_probs.max() > mode_probs.max() and mode_probs.max() < prob_threshold):
+            #     # print(f"{preds} ==> {probs}")
+            #     minority_pred = np.array([preds[m] for m in minority_pred_idxs]).max()
+            #     agg_preds.append(minority_pred)
+            #     agg_probs.append(minority_probs.max())
             
-            if(mode_probs.mean() >= prob_threshold):
-                agg_preds.append(mode_pred)
+            # # select common pred if mean of common pred probs >= threshold
+            # else:
+            agg_preds.append(mode_pred)
+            agg_probs.append(mode_probs.mean())
 
-        # no common pred => find highest prob pred and append
+        # no common pred => select highest prob pred among all three camera angles
         else:
-            agg_preds.append(preds[probs.argmax()])
+            best_prob_idx = probs.argmax()
+            agg_preds.append(preds[best_prob_idx])
+            agg_probs.append(probs.max())
 
-    print(f"\n\nFINAL: {agg_preds} =====> LEN: {len(agg_preds)}\n\n")
+    # since video_id, start, and end time columns should be same length, copy those cols from first video_df
+    video_ids = [video_id_df['video_id'][0]] * len(video_dfs[0])
+    start_times = video_dfs[0]["start_time"].to_list()
+    end_times = video_dfs[0]["end_time"].to_list()
+
+    agg_df = pd.DataFrame()
+    agg_df["video_id"] = video_ids
+    agg_df["pred"] = agg_preds
+    agg_df["max_prob"] = agg_probs
+    agg_df["start_time"] = start_times
+    agg_df["end_time"] = end_times
+
+    return agg_df
+
+    # print(f"\n\nFINAL: {agg_preds} =====> LEN: {len(agg_preds)}\n\n")
 
         
 
@@ -139,80 +170,64 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
 Post-process predictions.txt to get submission-ready text file
 
 raw_output_filepath: path of text file containing inference output
+prob_threshold: float b/w 0 and 1 that indicates the minimum acceptable probability used for filtering; by default uses avg prediction prob
 """
-def process_data(raw_output_filepath:str, train_data_path:str):
-    dir = os.getcwd() + "/post_process"
+def process_data(raw_output_filepath:str, train_data_path:str, prob_threshold:float=None):
+    dir = os.getcwd() + "/post_process/submission_files"
 
     # delete existing post_processed_data.txt if exists
-    txt_path = dir + "/post_processed_data.txt"
-    if os.path.exists(txt_path):
-        os.remove(txt_path)
+    submission_filepath = dir + "/post_processed_data.txt"
+    if os.path.exists(submission_filepath):
+        os.remove(submission_filepath)
 
     df = pd.read_csv(raw_output_filepath, delimiter=" ", names=["video_id", "pred", "max_prob", "start_time", "end_time"])
 
     min_action_length = get_shortest_segment_length(train_data_path) # we will not use this since the shortest action label is 1 second...
 
     # threshold for usable preds
-    prob_threshold = round(df["max_prob"].mean(), 1)
-
-    # column values for final dataframe
-    video_id_col = []
-    activity_id_col = []
-    start_time_col = []
-    end_time_col = []
+    if prob_threshold is None: prob_threshold = round(df["max_prob"].mean(), 1)
 
     # perform post-processing for each video_id (each id should have three videos, one for each camera angle)
-    for idx, video_id in tqdm(enumerate(sorted(df["video_id"].unique()))):
+    for idx, video_id in tqdm(enumerate(sorted(df["video_id"].unique())), total=len(df["video_id"].unique())):
         # get all video dfs with the same id
         video_id_df = df[df["video_id"] == video_id].reset_index()
 
-        if video_id == 1: aggregate_video_data(video_id_df, prob_threshold)
+        agg_df = aggregate_video_data(video_id_df, prob_threshold)
 
         # print(video_id_df.pivot_table(index = ["end_time"], aggfunc = "size"))
 
-       
+        # filter out probs that don't meet threshold
+        agg_df.drop(agg_df.index[agg_df["max_prob"] < prob_threshold], inplace=True)
+        agg_df.reset_index(inplace=True)
 
+        # aggregate segments with same prob
+        merged_idxs = get_merged_segment_idxs(agg_df)
 
-        # # filter out probs that don't meet threshold
-        # video_df.drop(video_df.index[video_df["max_prob"] < prob_threshold], inplace=True)
-        # video_df.reset_index(inplace=True)
+        # column values for this video's merged preds
+        temp_video_id_col = [video_id] * len(merged_idxs)
+        temp_activity_id_col = []
+        temp_start_time_col = []
+        temp_end_time_col = []
 
-        # # aggregate segments with same prob
-        # merged_idxs = get_merged_segment_idxs(video_df)
+        for merged_idx_tuple in merged_idxs:
+            merge_start_row = agg_df.loc[[merged_idx_tuple[0]]]
+            merge_end_row = agg_df.loc[[merged_idx_tuple[1]]]
 
-        # # column values for this video's merged preds
-        # temp_video_id_col = [video_id] * len(merged_idxs)
-        # temp_activity_id_col = []
-        # temp_start_time_col = []
-        # temp_end_time_col = []
+            activity_id = merge_start_row["pred"].to_list()[0]
+            start_time = round(merge_start_row["start_time"].to_list()[0])
+            end_time = round(merge_end_row["end_time"].to_list()[0])
 
-        # for merged_idx_tuple in merged_idxs:
-        #     merge_start_row = video_df.loc[[merged_idx_tuple[0]]]
-        #     merge_end_row = video_df.loc[[merged_idx_tuple[1]]]
-
-        #     temp_activity_id_col.append(merge_start_row["pred"].to_list()[0])
-        #     temp_start_time_col.append(merge_start_row["start_time"].to_list()[0])
-        #     temp_end_time_col.append(merge_end_row["end_time"].to_list()[0])
-
-        # video_id_data_dict["video_id_cols"].append(temp_video_id_col)
-        # video_id_data_dict["activity_id_cols"].append(temp_activity_id_col)
-        # video_id_data_dict["start_time_cols"].append(temp_start_time_col)
-        # video_id_data_dict["end_time_cols"].append(temp_end_time_col)
-
-        # append aggregated video_id data to col lists
-        # video_id_col.extend()
-        # activity_id_col.extend()
-        # start_time_col.extend()
-        # end_time_col.extend()
+            with open(submission_filepath, "a+") as f:
+                f.writelines(f"{video_id} {activity_id} {start_time} {end_time}\n")
             
             
 
 if __name__ == '__main__':  
 
     A1_data_path = "/home/vislab-001/Jared/SET-A1"
-    raw_output_filepath = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/post_process/mvitv2-b32x3/normal_data/predictions_mvitv2-b_240_epochs_no_overlap.txt"
+    raw_output_filepath = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/post_process/mvitv2-b32x3/normal_data/predictions_mvitv2-b_240_epochs_overlap_32.txt"
 
-    process_data(raw_output_filepath, A1_data_path)
+    process_data(raw_output_filepath, A1_data_path, prob_threshold=0.8)
     
 
 

@@ -105,11 +105,11 @@ if __name__ == '__main__':
 
     ############### CONFIGURATION PARAMS ################
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
-    clip_save_dir = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_inf_16x4_overlap_16"
+    clip_save_dir = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_inf_16x4_overlap_32"
     # "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_inf_16x4_no_overlap"
 
     clip_resolution = (512, 512) # resolution that clips will be resized to; this should match the resolution used in prepare_data.py
-    proposal_stride = 16 # 64 => (no overlap)
+    proposal_stride = 32 # 64 => (no overlap)
     encode_speed = "ultrafast"
     clip_resolution="512:512"
     #####################################################
