@@ -50,7 +50,10 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 ```console
 python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 &
 ```
+OR to train MViTv2-B:
+```console
 python3 tools/run_net.py --cfg configs/MVITv2_B_32x3.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
+```
 
 ### Inference
 - edit the config in slowfast/slowfast/configs (SLOWFAST_8x8_R50_inf.yaml)
@@ -61,9 +64,14 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3.yaml DATA.PATH_TO_DATA_DIR 
 ```console
 python3 inference/prepare_loc_data.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml < /dev/null > inference/ffmpeg_loc_log.txt 2>&1 &
 ```
-- then run inferencing after test data is prepared:
+- make sure correct model checkpoint .pyth file is in slowfast/checkpoints folder
+- then run inferencing:
 ```console
 python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml DATA.PATH_TO_DATA_DIR .
+```
+OR for MViTv2:
+```console
+python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_DIR .
 ```
 - then in post_process folder, run post_process.py to obtain the post_processed_data.txt used for submission to the evaluation server
 
@@ -76,7 +84,7 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml DATA.PATH_TO_DA
 
 - set up PySlowFast with a Model and create config file to use for training (look at repos for examples) :heavy_check_mark:
 
-- create proposal generation and post-processing scripts to handle inference on A2 and temporal action localization output/accuracy: :o:
+- create proposal generation and post-processing scripts to handle inference on A2 and temporal action localization output/accuracy: :heavy_check_mark:
     - create video_proposals_dataset(video_path, frame_length, frame_stride, proposal_stride, etc. params) :heavy_check_mark:
         - for a single untrimmed video, use cv2 to convert video into frames, save frames to self.frames
         - proposal length = frame_length * frame_stride
@@ -102,8 +110,8 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml DATA.PATH_TO_DA
             - try to add ensemble views and spatial crop back in to aggregate probs for each frame and improve classification
             - change proposal generation method
 
-    - post-processing script to piece together all proposals back into the full untrimmed video and align action preds with timestamps :o:
-    multiple proposals that are consecutive in temporal space, having the same action pred, should be combined into one start and end timestamp
+    - post-processing script to piece together all proposals back into the full untrimmed video and align action preds with timestamps
+    multiple proposals that are consecutive in temporal space, having the same action pred, should be combined into one start and end timestamp :heavy_check_mark:
 
 - setup config + model to use 2 gpus (breaks when attemtping) and more workers; then, can increase train batch_size :heavy_check_mark:
 
@@ -117,8 +125,7 @@ python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml DATA.PATH_TO_DA
     use action detection model to create BBoxes for var crop
 
 - experiment with different models for action classification :o:
-    - try different frame length x sampling rate models for SlowFast 
-        - 16x4 SlowFast
+    - try different frame length x sampling rate models for SlowFast and MViTv2
         - 32x2 SlowFast
 
 - incorporate visual prompting or experiment with other action recognition aspects :o:
