@@ -117,15 +117,15 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_
 
 - edit eval output to show train and val accuracy and specify what top1 and top5 error apply to (train or val) :heavy_check_mark:
 
+- experiment with different models for action classification :heavy_check_mark:
+    - try different frame length x sampling rate models for SlowFast and MViTv2
+        - 32x2 SlowFast
+
 - add data augmentation (color/flip (RandomFlip) images horizontally to add more data) :o:
     - look into mixup or aug options for PySlowFast
 
-- fixed crop for each camera view (rear, front, side) to only include driver area :o:
-    OR 
-    use action detection model to create BBoxes for var crop
-
-- experiment with different models for action classification :o:
-    - try different frame length x sampling rate models for SlowFast and MViTv2
-        - 32x2 SlowFast
+- improve training via running the input frames through detection models first :o:
+    - use action detection model to create BBoxes for cropping each camera view (rear, front, side) to only include driver area :o:
+    - use other detection models to draw stick figures/simplify human gestures on input frames, so recognition model has easier to time classifying
 
 - incorporate visual prompting or experiment with other action recognition aspects :o:
