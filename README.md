@@ -125,7 +125,7 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_
     - look into mixup or aug options for PySlowFast
 
 - improve training via running the input frames through detection models first :o:
-    - use action detection model to create BBoxes for cropping each camera view (rear, front, side) to only include driver area :o:
-    - use other detection models to draw stick figures/simplify human gestures on input frames, so recognition model has easier to time classifying
+    - use action detection model to create BBoxes for cropping each camera view (rear, front, side) to only include driver area
+    - use other detection models to draw stick figures/simplify human gestures on input frames, so recognition model has easier to time classifying 
 
 - incorporate visual prompting or experiment with other action recognition aspects :o:
