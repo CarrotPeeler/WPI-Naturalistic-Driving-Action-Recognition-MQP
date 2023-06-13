@@ -106,7 +106,7 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_
         
         - make sure last epoch checkpoint is loaded correctly :heavy_check_mark:
 
-        - bad predictions (only predicts 0, 9, or 10) :o:
+        - fix bad predictions (only predicts 0, 9, or 10) :heavy_check_mark:
             - try to add ensemble views and spatial crop back in to aggregate probs for each frame and improve classification
             - change proposal generation method
 
