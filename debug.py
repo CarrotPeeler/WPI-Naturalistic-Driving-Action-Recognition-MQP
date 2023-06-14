@@ -13,6 +13,4 @@ if __name__ == '__main__':
 
     # df = pd.read_csv(os.getcwd() + "/slowfast/train.csv", delimiter=" ", names=["path", "class"])
     # print(df.pivot_table(index = ["class"], aggfunc = "size"))
-
-    z = torch.zeros(1,1,3,224,224)
-    print(z.shape)
+    pass

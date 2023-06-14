@@ -50,7 +50,7 @@ class PadPrompter(nn.Module):
         # permute [B x T x C x H x W] => [B x C x T x H x W] to match input tensor shape
         prompt = prompt.permute(0, 2, 1, 3, 4)
         
-        return x + prompt
+        return [x + prompt] # pyslowfast models expect list of tensors as input
 
 
 class FixedPatchPrompter(nn.Module):

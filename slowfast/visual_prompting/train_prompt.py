@@ -35,14 +35,15 @@ import torch
 import torch.backends.cudnn as cudnn
 
 import slowfast.utils.checkpoint as cu
+import slowfast.utils.distributed as du
 from slowfast.datasets import loader
 from slowfast.models import build_model
 from slowfast.config.defaults import assert_and_infer_cfg
-from slowfast.utils.parser import load_config, parse_args
+from slowfast.utils.parser import load_config
 from slowfast.utils.metrics import topk_accuracies
 
 import prompters
-from utils import AverageMeter, ProgressMeter, save_checkpoint, cosine_lr
+from utils import AverageMeter, ProgressMeter, save_checkpoint, cosine_lr, launch_job
 
 
 def parse_option():
@@ -86,7 +87,7 @@ def parse_option():
 
     parser.add_argument('--print_freq', type=int, default=10,
                         help='print frequency')
-    parser.add_argument('--save_freq', type=int, default=50,
+    parser.add_argument('--save_freq', type=int, default=100,
                         help='save frequency')
     parser.add_argument('--batch_size', type=int, default=128,
                         help='batch_size')
@@ -153,15 +154,8 @@ def parse_option():
 best_acc1 = 0
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-def main():
+def main(args, cfg):
     global best_acc1, device
-
-    args = parse_option()
-    for path_to_config in args.cfg_files:
-        cfg = load_config(args, path_to_config)
-        cfg = assert_and_infer_cfg(cfg)
-
-    args.image_size = cfg.DATA.TRAIN_CROP_SIZE
 
     if args.seed is not None:
         random.seed(args.seed)
@@ -219,23 +213,23 @@ def main():
 
     epochs_since_improvement = 0
 
-    for epoch in range(args.epochs):
+    for epoch in tqdm(range(args.epochs)):
         # Shuffle the dataset.
         loader.shuffle_dataset(train_loader, epoch)
         if hasattr(train_loader.dataset, "_set_epoch_num"):
             train_loader.dataset._set_epoch_num(epoch)
 
         # train for one epoch
-        train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args)
+        train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args, cfg)
 
         # evaluate on validation set
-        acc1 = validate(val_loader, model, prompter, criterion, args)
+        acc1 = validate(val_loader, model, prompter, criterion, args, cfg)
 
         # remember best acc@1 and save checkpoint
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
 
-        if(args.epochs % 100 == 0):
+        if(epoch % args.save_freq == 0):
             save_checkpoint({
                 'epoch': epoch + 1,
                 'state_dict': prompter.state_dict(),
@@ -255,7 +249,7 @@ def main():
 
 
 
-def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args):
+def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args, cfg):
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
     losses = AverageMeter('Loss', ':.4e')
@@ -271,7 +265,20 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
     num_batches_per_epoch = len(train_loader)
 
     end = time.time()
-    for i, (inputs, labels, index, times, meta) in enumerate(tqdm(train_loader)):
+    for i, (inputs, labels, index, times, meta) in enumerate(train_loader):
+        if cfg.NUM_GPUS:
+            if isinstance(inputs, (list,)):
+                for i in range(len(inputs)):
+                    if isinstance(inputs[i], (list,)):
+                        for j in range(len(inputs[i])):
+                            inputs[i][j] = inputs[i][j].cuda(non_blocking=True)
+                    else:
+                        inputs[i] = inputs[i].cuda(non_blocking=True)
+            else:
+                inputs = inputs.cuda(non_blocking=True)
+            if not isinstance(labels, list):
+                labels = labels.cuda(non_blocking=True)
+
         images = inputs[0]
         target = labels
 
@@ -296,7 +303,11 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         optimizer.step()
 
         # measure accuracy
-        acc1 = topk_accuracies(output, target, topk=(1,))[0]
+        acc1 = topk_accuracies(output, target, (1,))[0]
+
+        if cfg.NUM_GPUS > 1:
+            acc1 = du.all_reduce([acc1])
+
         losses.update(loss.item(), images.size(0))
         top1.update(acc1[0].item(), images.size(0))
 
@@ -307,18 +318,25 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         if i % args.print_freq == 0:
             progress.display(i)
 
-        if i % args.save_freq == 0:
-            save_checkpoint({
-                'epoch': epoch + 1,
-                'state_dict': prompter.state_dict(),
-                'best_acc1': best_acc1,
-                'optimizer': optimizer.state_dict(),
-            }, args)
+        # if i % args.save_freq == 0:
+        #     save_checkpoint({
+        #         'epoch': epoch + 1,
+        #         'state_dict': prompter.state_dict(),
+        #         'best_acc1': best_acc1,
+        #         'optimizer': optimizer.state_dict(),
+        #     }, args)
+        
+        torch.cuda.synchronize()
+
+    del inputs
+
+    # in case of fragmented memory
+    torch.cuda.empty_cache()
 
     return losses.avg, top1.avg
 
 
-def validate(val_loader, model, prompter, criterion, args):
+def validate(val_loader, model, prompter, criterion, args, cfg):
     batch_time = AverageMeter('Time', ':6.3f')
     losses = AverageMeter('Loss', ':.4e')
     top1_org = AverageMeter('Original Acc@1', ':6.2f')
@@ -333,7 +351,16 @@ def validate(val_loader, model, prompter, criterion, args):
 
     with torch.no_grad():
         end = time.time()
-        for i, (inputs, labels, index, times, meta) in enumerate(tqdm(val_loader)):
+        for i, (inputs, labels, index, times, meta) in enumerate(val_loader):
+            if cfg.NUM_GPUS:
+                # Transferthe data to the current GPU device.
+                if isinstance(inputs, (list,)):
+                    for i in range(len(inputs)):
+                        inputs[i] = inputs[i].cuda(non_blocking=True)
+                else:
+                    inputs = inputs.cuda(non_blocking=True)
+                labels = labels.cuda()
+
             images = inputs[0]
             target = labels
 
@@ -343,13 +370,17 @@ def validate(val_loader, model, prompter, criterion, args):
 
             # compute output
             output_prompt = model(prompted_images)
-            output_org = model(images)
+            output_org = model(inputs)
 
             loss = criterion(output_prompt, target)
 
             # measure accuracy and record loss
-            acc1_org = topk_accuracies(output_org, target, topk=(1,))[0]
-            acc1_prompt = topk_accuracies(output_prompt, target, topk=(1,))[0]
+            acc1_org = topk_accuracies(output_org, target, (1,))[0]
+            acc1_prompt = topk_accuracies(output_prompt, target, (1,))[0]
+
+            if cfg.NUM_GPUS > 1:
+                acc1_org, acc1_prompt = du.all_reduce([acc1_org, acc1_prompt])
+                                                                            
             losses.update(loss.item(), images.size(0))
             top1_org.update(acc1_org[0].item(), images.size(0))
             top1_prompt.update(acc1_prompt[0].item(), images.size(0))
@@ -361,11 +392,19 @@ def validate(val_loader, model, prompter, criterion, args):
             if i % args.print_freq == 0:
                 progress.display(i)
 
-        print(' * Prompt Acc@1 {top1_prompt.avg:.3f} Original Acc@1 {top1_org.avg:.3f}'
-              .format(top1_prompt=top1_prompt, top1_org=top1_org))
+        print('FINAL * Prompt Acc@1 {top1_prompt.avg:.3f} Original Acc@1 {top1_org.avg:.3f}'
+            .format(top1_prompt=top1_prompt, top1_org=top1_org))
 
     return top1_prompt.avg
 
 
 if __name__ == '__main__':
-    main()
+
+    args = parse_option()
+    for path_to_config in args.cfg_files:
+        cfg = load_config(args, path_to_config)
+        cfg = assert_and_infer_cfg(cfg)
+
+    args.image_size = cfg.DATA.TRAIN_CROP_SIZE
+
+    launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)
