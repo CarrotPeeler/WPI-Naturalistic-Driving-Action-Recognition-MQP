@@ -50,9 +50,13 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 ```console
 python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 &
 ```
-OR to train MViTv2-B:
+OR to train MViTv2-B (higher top1 acc):
 ```console
 python3 tools/run_net.py --cfg configs/MVITv2_B_32x3.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
+```
+- train prompts for MViTv2-B:
+```console
+python3 visual_prompting/train_prompt.py --cfg configs/MVITv2_B_32x3_inf.yaml
 ```
 
 ### Inference
@@ -69,7 +73,7 @@ python3 inference/prepare_loc_data.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml < 
 ```console
 python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml DATA.PATH_TO_DATA_DIR .
 ```
-OR for MViTv2:
+OR for MViTv2 (higher top1 acc):
 ```console
 python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_DIR .
 ```
