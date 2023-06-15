@@ -392,8 +392,11 @@ def validate(val_loader, model, prompter, criterion, args, cfg):
                 progress.display(batch_iter)
 
         if(du.get_rank() == 0): # only print this on 1 GPU
-            print('FINAL * Prompt Acc@1 {top1_prompt.avg:.3f} Original Acc@1 {top1_org.avg:.3f}'
-                .format(top1_prompt=top1_prompt, top1_org=top1_org))
+            disp_text = 'FINAL * Prompt Acc@1 {top1_prompt.avg:.3f} Original Acc@1 {top1_org.avg:.3f}'.format(top1_prompt=top1_prompt, top1_org=top1_org)
+            print(disp_text)
+            # write to log file as well
+            with open(os.getcwd() + "/visual_prompting/prompt_train.log", "a+") as f:
+                f.writelines(disp_text + "\n")
 
     return top1_prompt.avg
 

@@ -56,7 +56,7 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3.yaml DATA.PATH_TO_DATA_DIR 
 ```
 - train prompts for MViTv2-B:
 ```console
-python3 visual_prompting/train_prompt.py --cfg configs/MVITv2_B_32x3.yaml < /dev/null > visual_prompting/prompt_train_log.txt 2>&1 & 
+python3 visual_prompting/train_prompt.py --cfg configs/MVITv2_B_32x3.yaml < /dev/null > visual_prompting/prompt_train.log 2>&1 & 
 ```
 
 ### Inference

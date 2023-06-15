@@ -1,3 +1,21 @@
-Epoch: [1/400][  0/120]	Time 12.918 (12.918)	Data  7.780 ( 7.780)	Loss 2.1046e+00 (2.1046e+00)	Acc@1  75.00 ( 75.00)
-Epoch: [1/400][ 10/120]	Time  1.791 ( 2.797)	Data  0.000 ( 0.708)	Loss 1.9684e+00 (2.0236e+00)	Acc@1  93.75 ( 85.23)
-Epoch: [1/400][ 20/120]	Time  1.812 ( 2.323)	Data  0.000 ( 0.371)	Loss 2.1969e+00 (2.0200e+00)	Acc@1  75.00 ( 84.52)
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
+  warnings.warn(
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
+  warnings.warn(
+RETRIEVING CHECKPOINT: checkpoint_epoch_00240.pyth
+missing keys: []
+unexpected keys: []
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
+  warnings.warn(
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
+  warnings.warn(
+RETRIEVING CHECKPOINT: checkpoint_epoch_00240.pyth
+missing keys: []
+unexpected keys: []
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
+  warnings.warn(
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
+  warnings.warn(
+Epoch: [1/400][  0/120]	Time 13.101 (13.101)	Data  8.524 ( 8.524)	Loss 2.1046e+00 (2.1046e+00)	Acc@1  75.00 ( 75.00)
+Epoch: [1/400][ 10/120]	Time  1.794 ( 2.808)	Data  0.000 ( 0.775)	Loss 1.9684e+00 (2.0236e+00)	Acc@1  93.75 ( 85.23)
+Epoch: [1/400][ 20/120]	Time  1.810 ( 2.330)	Data  0.000 ( 0.406)	Loss 2.1969e+00 (2.0200e+00)	Acc@1  75.00 ( 84.52)
