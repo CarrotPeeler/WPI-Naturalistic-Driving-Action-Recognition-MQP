@@ -87,13 +87,9 @@ def parse_option():
 
     parser.add_argument('--print_freq', type=int, default=10,
                         help='print frequency')
-    parser.add_argument('--save_freq', type=int, default=100,
+    parser.add_argument('--save_freq', type=int, default=20,
                         help='save frequency')
-    parser.add_argument('--batch_size', type=int, default=128,
-                        help='batch_size')
-    parser.add_argument('--num_workers', type=int, default=16,
-                        help='num of workers to use')
-    parser.add_argument('--epochs', type=int, default=1000,
+    parser.add_argument('--epochs', type=int, default=400,
                         help='number of training epochs')
 
     # optimization
@@ -103,11 +99,11 @@ def parse_option():
                         help='learning rate')
     parser.add_argument("--weight_decay", type=float, default=0,
                         help="weight decay")
-    parser.add_argument("--warmup", type=int, default=1000,
+    parser.add_argument("--warmup", type=int, default=400,
                         help="number of steps to warmup for")
     parser.add_argument('--momentum', type=float, default=0.9,
                         help='momentum')
-    parser.add_argument('--patience', type=int, default=1000)
+    parser.add_argument('--patience', type=int, default=400)
 
     # model
     parser.add_argument('--method', type=str, default='padding',
@@ -119,9 +115,9 @@ def parse_option():
     # other
     parser.add_argument('--seed', type=int, default=0,
                         help='seed for initializing training')
-    parser.add_argument('--model_dir', type=str, default='./save/models',
+    parser.add_argument('--model_dir', type=str, default='./visual_prompting/save/models',
                         help='path to save models')
-    parser.add_argument('--image_dir', type=str, default='./save/images',
+    parser.add_argument('--image_dir', type=str, default='./visual_prompting/save/images',
                         help='path to save images')
     parser.add_argument('--filename', type=str, default=None,
                         help='filename to save')
@@ -137,9 +133,9 @@ def parse_option():
 
     args = parser.parse_args()
 
-    args.filename = '{}_{}_{}_lr_{}_decay_{}_bsz_{}_trial_{}'. \
+    args.filename = '{}_{}_{}_lr_{}_decay_{}_trial_{}'. \
         format(args.method, args.prompt_size,
-               args.optim, args.learning_rate, args.weight_decay, args.batch_size, args.trial)
+               args.optim, args.learning_rate, args.weight_decay, args.trial)
 
     args.model_folder = os.path.join(args.model_dir, args.filename)
     if not os.path.isdir(args.model_folder):
@@ -213,7 +209,10 @@ def main(args, cfg):
 
     epochs_since_improvement = 0
 
-    for epoch in tqdm(range(args.epochs)):
+    for epoch in range(args.epochs):
+        # remove zero-based indexing on epoch
+        epoch += 1 
+
         # Shuffle the dataset.
         loader.shuffle_dataset(train_loader, epoch)
         if hasattr(train_loader.dataset, "_set_epoch_num"):
@@ -221,7 +220,7 @@ def main(args, cfg):
 
         # train for one epoch
         train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args, cfg)
-
+       
         # evaluate on validation set
         acc1 = validate(val_loader, model, prompter, criterion, args, cfg)
 
@@ -229,9 +228,9 @@ def main(args, cfg):
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
 
-        if(epoch % args.save_freq == 0):
+        if(epoch % args.save_freq == 0 and du.get_rank() == 0):
             save_checkpoint({
-                'epoch': epoch + 1,
+                'epoch': epoch,
                 'state_dict': prompter.state_dict(),
                 'best_acc1': best_acc1,
                 'optimizer': optimizer.state_dict(),
@@ -257,7 +256,7 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
     progress = ProgressMeter(
         len(train_loader),
         [batch_time, data_time, losses, top1],
-        prefix="Epoch: [{}]".format(epoch))
+        prefix=f"Epoch: [{epoch}/{args.epochs}]")
 
     # switch to train mode
     prompter.train()
@@ -265,7 +264,7 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
     num_batches_per_epoch = len(train_loader)
 
     end = time.time()
-    for i, (inputs, labels, index, times, meta) in enumerate(train_loader):
+    for batch_iter, (inputs, labels, index, times, meta) in enumerate(train_loader):
         if cfg.NUM_GPUS:
             if isinstance(inputs, (list,)):
                 for i in range(len(inputs)):
@@ -286,7 +285,7 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         data_time.update(time.time() - end)
 
         # adjust learning rate
-        step = num_batches_per_epoch * epoch + i
+        step = num_batches_per_epoch * epoch + batch_iter
         scheduler(step)
 
         images = images.to(device)
@@ -315,8 +314,8 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         batch_time.update(time.time() - end)
         end = time.time()
 
-        if i % args.print_freq == 0:
-            progress.display(i)
+        if batch_iter % args.print_freq == 0 and du.get_rank() == 0:
+            progress.display(batch_iter)
 
         # if i % args.save_freq == 0:
         #     save_checkpoint({
@@ -327,12 +326,12 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         #     }, args)
         
         torch.cuda.synchronize()
-
+   
     del inputs
 
     # in case of fragmented memory
     torch.cuda.empty_cache()
-
+   
     return losses.avg, top1.avg
 
 
@@ -351,7 +350,7 @@ def validate(val_loader, model, prompter, criterion, args, cfg):
 
     with torch.no_grad():
         end = time.time()
-        for i, (inputs, labels, index, times, meta) in enumerate(val_loader):
+        for batch_iter, (inputs, labels, index, times, meta) in enumerate(val_loader):
             if cfg.NUM_GPUS:
                 # Transferthe data to the current GPU device.
                 if isinstance(inputs, (list,)):
@@ -382,18 +381,19 @@ def validate(val_loader, model, prompter, criterion, args, cfg):
                 acc1_org, acc1_prompt = du.all_reduce([acc1_org, acc1_prompt])
                                                                             
             losses.update(loss.item(), images.size(0))
-            top1_org.update(acc1_org[0].item(), images.size(0))
-            top1_prompt.update(acc1_prompt[0].item(), images.size(0))
+            top1_org.update(acc1_org.item(), images.size(0))
+            top1_prompt.update(acc1_prompt.item(), images.size(0))
 
             # measure elapsed time
             batch_time.update(time.time() - end)
             end = time.time()
 
-            if i % args.print_freq == 0:
-                progress.display(i)
+            if batch_iter % args.print_freq == 0 and du.get_rank() == 0:
+                progress.display(batch_iter)
 
-        print('FINAL * Prompt Acc@1 {top1_prompt.avg:.3f} Original Acc@1 {top1_org.avg:.3f}'
-            .format(top1_prompt=top1_prompt, top1_org=top1_org))
+        if(du.get_rank() == 0): # only print this on 1 GPU
+            print('FINAL * Prompt Acc@1 {top1_prompt.avg:.3f} Original Acc@1 {top1_org.avg:.3f}'
+                .format(top1_prompt=top1_prompt, top1_org=top1_org))
 
     return top1_prompt.avg
 
