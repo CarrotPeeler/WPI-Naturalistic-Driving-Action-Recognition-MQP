@@ -95,15 +95,15 @@ def parse_option():
     # optimization
     parser.add_argument('--optim', type=str, default='sgd',
                         help='optimizer to use')
-    parser.add_argument('--learning_rate', type=float, default=40,
+    parser.add_argument('--learning_rate', type=float, default=0.02,
                         help='learning rate')
-    parser.add_argument("--weight_decay", type=float, default=0,
+    parser.add_argument("--weight_decay", type=float, default=1e-4,
                         help="weight decay")
-    parser.add_argument("--warmup", type=int, default=400,
+    parser.add_argument("--warmup", type=int, default=30,
                         help="number of steps to warmup for")
     parser.add_argument('--momentum', type=float, default=0.9,
                         help='momentum')
-    parser.add_argument('--patience', type=int, default=400)
+    parser.add_argument('--patience', type=int, default=40)
 
     # model
     parser.add_argument('--method', type=str, default='padding',
