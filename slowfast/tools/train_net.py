@@ -237,7 +237,7 @@ def train_epoch(
 
                 # Gather all the predictions across all the devices.
                 if cfg.NUM_GPUS > 1:
-                    loss, grad_norm, top1_err, top5_err = du.all_reduce(
+                    loss, grad_norm, top1_err, top5_err, top1_acc, top5_acc = du.all_reduce(
                         [loss.detach(), grad_norm, top1_err, top5_err, top1_acc, top5_acc]
                     )
 
