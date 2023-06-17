@@ -58,11 +58,11 @@ class FixedPatchPrompter(nn.Module):
         super(FixedPatchPrompter, self).__init__()
         self.isize = args.image_size
         self.psize = args.prompt_size
-        self.patch = nn.Parameter(torch.randn([1, 3, self.psize, self.psize]))
+        self.patch = nn.Parameter(torch.randn([1, 3, 1, self.psize, self.psize]))
 
     def forward(self, x):
-        prompt = torch.zeros([1, 3, self.isize, self.isize]).cuda()
-        prompt[:, :, :self.psize, :self.psize] = self.patch
+        prompt = torch.zeros([1, 3, 1, self.isize, self.isize]).cuda()
+        prompt[:, :, :, :self.psize, :self.psize] = self.patch
 
         return x + prompt
 

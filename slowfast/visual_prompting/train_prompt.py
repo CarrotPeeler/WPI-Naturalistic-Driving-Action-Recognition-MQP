@@ -33,6 +33,7 @@ import numpy as np
 
 import torch
 import torch.backends.cudnn as cudnn
+from torchvision.utils import save_image
 
 import slowfast.utils.checkpoint as cu
 import slowfast.utils.distributed as du
@@ -95,15 +96,15 @@ def parse_option():
     # optimization
     parser.add_argument('--optim', type=str, default='sgd',
                         help='optimizer to use')
-    parser.add_argument('--learning_rate', type=float, default=0.02,
+    parser.add_argument('--learning_rate', type=float, default=40,
                         help='learning rate')
-    parser.add_argument("--weight_decay", type=float, default=1e-4,
+    parser.add_argument("--weight_decay", type=float, default=1e-3,
                         help="weight decay")
     parser.add_argument("--warmup", type=int, default=30,
                         help="number of steps to warmup for")
     parser.add_argument('--momentum', type=float, default=0.9,
                         help='momentum')
-    parser.add_argument('--patience', type=int, default=40)
+    parser.add_argument('--patience', type=int, default=10)
 
     # model
     parser.add_argument('--method', type=str, default='padding',
@@ -292,6 +293,21 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         target = target.to(device)
 
         prompted_images = prompter(images)
+        
+        # if(epoch == 1 and batch_iter == 0):
+            # save prompted images for visualization
+            # for idx, images_batch in enumerate(prompted_images[0]):
+            #     if(idx == 3):
+            #         perm_images = images_batch.permute(1, 0, 2, 3)
+            #         for jdx, image in enumerate(perm_images):
+            #             save_image(image, os.getcwd() + f"/visual_prompting/images/prompts/batch_{idx}_prompt_{jdx}.png")
+        
+            # save original images for comparison
+            # for idx, images_batch in enumerate(inputs[0]):
+            #     perm_images = images_batch.permute(1, 0, 2, 3)
+            #     for jdx, image in enumerate(perm_images):
+            #         save_image(image, os.getcwd() + f"/visual_prompting/images/originals/batch_{idx}_prompt_{jdx}.png")
+
         output = model(prompted_images)
     
         loss = criterion(output, target)
