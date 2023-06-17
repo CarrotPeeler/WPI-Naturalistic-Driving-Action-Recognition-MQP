@@ -2,3 +2,4 @@ data/*
 slowfast/checkpoints/*
 slowfast/*.csv
 slowfast/post_process/*.txt
+slowfast/debug/*

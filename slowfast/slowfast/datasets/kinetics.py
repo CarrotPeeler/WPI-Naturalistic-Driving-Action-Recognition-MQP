@@ -471,20 +471,27 @@ class Kinetics(torch.utils.data.Dataset):
                         if (self.mode not in ["train"] or len(asp) == 0)
                         else asp
                     )
-                    f_out[idx] = utils.spatial_sampling(
+                    # f_out[idx] = utils.spatial_sampling(
+                    #     f_out[idx],
+                    #     spatial_idx=spatial_sample_index,
+                    #     min_scale=min_scale[i],
+                    #     max_scale=max_scale[i],
+                    #     crop_size=crop_size[i],
+                    #     random_horizontal_flip=self.cfg.DATA.RANDOM_FLIP,
+                    #     inverse_uniform_sampling=self.cfg.DATA.INV_UNIFORM_SAMPLE,
+                    #     aspect_ratio=relative_aspect,
+                    #     scale=relative_scales,
+                    #     motion_shift=self.cfg.DATA.TRAIN_JITTER_MOTION_SHIFT
+                    #     if self.mode in ["train"]
+                    #     else False,
+                    # )
+
+                    # resize images
+                    f_out[idx] = torch.nn.functional.interpolate(
                         f_out[idx],
-                        spatial_idx=spatial_sample_index,
-                        min_scale=min_scale[i],
-                        max_scale=max_scale[i],
-                        crop_size=crop_size[i],
-                        random_horizontal_flip=self.cfg.DATA.RANDOM_FLIP,
-                        inverse_uniform_sampling=self.cfg.DATA.INV_UNIFORM_SAMPLE,
-                        aspect_ratio=relative_aspect,
-                        scale=relative_scales,
-                        motion_shift=self.cfg.DATA.TRAIN_JITTER_MOTION_SHIFT
-                        if self.mode in ["train"]
-                        else False,
-                    )
+                        size=(crop_size[i], crop_size[i]),
+                        mode="bilinear",
+                        align_corners=False,)
 
                     if self.rand_erase:
                         erase_transform = RandomErasing(
