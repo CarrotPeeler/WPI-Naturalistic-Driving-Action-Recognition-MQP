@@ -194,6 +194,7 @@ def main(args, cfg):
     val_loader = loader.construct_loader(cfg, "val")
     test_loader = loader.construct_loader(cfg, "test")
 
+    lder = val_loader
     class_dict = getClassNamesDict(os.getcwd().rpartition('/')[0] + "/rq_class_names.txt")
 
     cudnn.benchmark = True
@@ -209,7 +210,7 @@ def main(args, cfg):
 
         # train for one epoch
         if(epoch == 1): 
-            for batch_iter, (inputs, labels, index, times, meta) in enumerate(val_loader):
+            for batch_iter, (inputs, labels, index, times, meta) in enumerate(lder):
                 if cfg.NUM_GPUS:
                     if isinstance(inputs, (list,)):
                         for i in range(len(inputs)):
@@ -227,7 +228,10 @@ def main(args, cfg):
                 images = images.to(device)
                 labels = labels.tolist()
 
-                batch_preds = model([images]).argmax(dim=1).tolist()
+                output = model([images])
+                max_tup = output.max(dim=1)
+                batch_preds = max_tup[1].tolist()
+                batch_probs = max_tup[0].tolist()
 
                 for idx in range(len(batch_preds)):
                     if(batch_preds[idx] != labels[idx]):
@@ -235,8 +239,8 @@ def main(args, cfg):
                         
                         for jdx, image in enumerate(clip):
                             # if(jdx == 0):
-                                clip_name = val_loader.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
-                                save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_target_{class_dict[labels[idx]]}.png")
+                                clip_name = lder.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
+                                save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
                             # else: 
                             #     break
 
@@ -250,5 +254,6 @@ if __name__ == '__main__':
         cfg = assert_and_infer_cfg(cfg)
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
+    cfg.TRAIN.BATCH_SIZE = 8
 
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)
