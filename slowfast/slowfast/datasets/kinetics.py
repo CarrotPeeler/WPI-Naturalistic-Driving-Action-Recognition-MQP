@@ -486,13 +486,6 @@ class Kinetics(torch.utils.data.Dataset):
                         else False,
                     )
 
-                    # resize images
-                    # f_out[idx] = torch.nn.functional.interpolate(
-                    #     f_out[idx],
-                    #     size=(crop_size[i], crop_size[i]),
-                    #     mode="bilinear",
-                    #     align_corners=False,)
-
                     if self.rand_erase:
                         erase_transform = RandomErasing(
                             self.cfg.AUG.RE_PROB,
