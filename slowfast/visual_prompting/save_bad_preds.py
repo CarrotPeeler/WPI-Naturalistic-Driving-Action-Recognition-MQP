@@ -42,6 +42,7 @@ from slowfast.models import build_model
 from slowfast.config.defaults import assert_and_infer_cfg
 from slowfast.utils.parser import load_config
 from slowfast.utils.metrics import topk_accuracies
+from prepare_data import getClassNamesDict
 
 import prompters
 from utils import AverageMeter, ProgressMeter, save_checkpoint, cosine_lr, launch_job
@@ -193,6 +194,8 @@ def main(args, cfg):
     val_loader = loader.construct_loader(cfg, "val")
     test_loader = loader.construct_loader(cfg, "test")
 
+    class_dict = getClassNamesDict(os.getcwd().rpartition('/')[0] + "/rq_class_names.txt")
+
     cudnn.benchmark = True
 
     for epoch in range(args.epochs):
@@ -231,10 +234,11 @@ def main(args, cfg):
                         clip = images[idx].permute(1, 0, 2, 3)
                         
                         for jdx, image in enumerate(clip):
-                            if(jdx == 0):
-                                save_image(image, os.getcwd() + f"/visual_prompting/bad_val_images/batch_{batch_iter}_clip_{idx}_prompt_{jdx}.png")
-                            else: 
-                                break
+                            # if(jdx == 0):
+                                clip_name = val_loader.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
+                                save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_target_{class_dict[labels[idx]]}.png")
+                            # else: 
+                            #     break
 
 
 
