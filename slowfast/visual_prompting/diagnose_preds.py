@@ -268,10 +268,9 @@ if __name__ == '__main__':
     fig, ax = plot_confusion_matrix(
         conf_mat=confmat_tensor.numpy(),
         class_names=class_names,
-        figsize=(13,12)
+        figsize=(14,14)
     )
-
-    ax.tick_params(axis='x', which='major', labelsize=8)
+    
     fig.suptitle("Validation Confusion Matrix for MViTv2-B", fontsize=15)
     
     # save figure
