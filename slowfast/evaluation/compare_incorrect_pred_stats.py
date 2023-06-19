@@ -31,9 +31,13 @@ def print_incorrect_pred_stats(csv_filepath_list, model_name, trained_epochs_lis
         checkpoint_df = pd.read_csv(csv_filepath_list[i], names=["path", "pred", "prob", "target"])
         
         print(f"\n{trained_epochs_list[i]} epochs:\ttotal incorrect preds = {len(checkpoint_df['prob'])}\
-              \nmean = {checkpoint_df['prob'].mean():.3f}\nmedian = {checkpoint_df['prob'].median():.3f}\
-              \nmax = {checkpoint_df['prob'].max():.3f}\
-              \nmin = {checkpoint_df['prob'].min():.3f}\
+              \n\nmean prob = {checkpoint_df['prob'].mean():.3f}\
+              \nmedian prob = {checkpoint_df['prob'].median():.3f}\
+              \nmax prob = {checkpoint_df['prob'].max():.3f}\
+              \nmin prob = {checkpoint_df['prob'].min():.3f}\
+              \n\ntotal preds with prob >= 0.9 = {len(checkpoint_df[checkpoint_df['prob'] >= 0.9])}\
+              \ntotal preds with prob < 0.9 = {len(checkpoint_df[checkpoint_df['prob'] < 0.9])}\
+              \ntotal preds with prob < 0.8 = {len(checkpoint_df[checkpoint_df['prob'] < 0.8])}\
               \n")
 
 
