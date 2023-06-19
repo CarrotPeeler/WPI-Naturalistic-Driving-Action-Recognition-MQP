@@ -22,9 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+
+
+# THIS FILE CREATES CONFUSION MATRICES, INCORRECT PRED INFO CSVS, AND SAVES INCORRECT PRED IMAGES
+
+
+
 # Run command:
 # cd slowfast
-# python3 visual_prompting/diagnose_preds.py --cfg configs/MVITv2_B_32x3_inf.yaml
+# python3 evaluation/diagnose_preds.py --cfg configs/MVITv2_B_32x3_inf.yaml
+
+
+
 
 from __future__ import print_function
 
@@ -52,8 +61,7 @@ from torchmetrics import ConfusionMatrix
 from mlxtend.plotting import plot_confusion_matrix
 from textwrap import wrap
 
-import prompters
-from utils import AverageMeter, ProgressMeter, save_checkpoint, cosine_lr, launch_job
+from visual_prompting.utils import launch_job
 
 
 def parse_option():

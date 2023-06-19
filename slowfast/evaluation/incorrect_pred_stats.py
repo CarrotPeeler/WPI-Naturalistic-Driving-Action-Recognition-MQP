@@ -1,6 +1,12 @@
 import os
 import pandas as pd
 
+
+"""
+THIS FILE RUNS STATISTICS ON INCORRECT PREDICTIONS AND THEIR PROBABILITIES
+"""
+
+
 # Run command:
 # cd slowfast
 
