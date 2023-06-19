@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 # Run command:
+# cd slowfast
 # python3 visual_prompting/diagnose_preds.py --cfg configs/MVITv2_B_32x3_inf.yaml
 
 from __future__ import print_function
@@ -218,18 +219,18 @@ def main(args, cfg):
 
                 # the code below is for saving and examining incorrectly predicted input frames from clips
 
-                # batch_probs = max_tup[0].tolist()
-                # batch_preds, labels = batch_preds.tolist(), labels.tolist()
+                batch_probs = max_tup[0].tolist()
+                batch_preds, labels = batch_preds.tolist(), labels.tolist()
 
-                # for idx in range(len(batch_preds)):
-                    # if(batch_preds[idx] != labels[idx]):
-                        # clip = images[idx].permute(1, 0, 2, 3)
-                        # for jdx, image in enumerate(clip):
-                            # if(jdx == 0):
-                                # clip_name = lder.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
-                                # save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
-                            # else: 
-                            #     break
+                for idx in range(len(batch_preds)):
+                    if(batch_preds[idx] != labels[idx] and (labels[idx] == 11 or labels[idx] == 12)):
+                        clip = images[idx].permute(1, 0, 2, 3)
+                        for jdx, image in enumerate(clip):
+                            if(jdx == 0):
+                                clip_name = lder.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
+                                save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images_passenger_talk/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
+                            else: 
+                                break
 
 
 
