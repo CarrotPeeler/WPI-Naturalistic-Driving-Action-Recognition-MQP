@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+# Run command:
+# python3 visual_prompting/diagnose_preds.py --cfg configs/MVITv2_B_32x3_inf.yaml
+
 from __future__ import print_function
 
 import argparse
@@ -43,6 +46,10 @@ from slowfast.config.defaults import assert_and_infer_cfg
 from slowfast.utils.parser import load_config
 from slowfast.utils.metrics import topk_accuracies
 from prepare_data import getClassNamesDict
+
+from torchmetrics import ConfusionMatrix
+from mlxtend.plotting import plot_confusion_matrix
+from textwrap import wrap
 
 import prompters
 from utils import AverageMeter, ProgressMeter, save_checkpoint, cosine_lr, launch_job
@@ -165,37 +172,12 @@ def main(args, cfg):
     cu.load_test_checkpoint(cfg, model)
     model.eval()
 
-    # create prompt
-    prompter = prompters.__dict__[args.method](args).to(device)
-
-    # optionally resume from a checkpoint
-    if args.resume:
-        if os.path.isfile(args.resume):
-            print("=> loading checkpoint '{}'".format(args.resume))
-            if args.gpu is None:
-                checkpoint = torch.load(args.resume)
-            else:
-                # Map model to be loaded to specified single gpu.
-                loc = 'cuda:{}'.format(args.gpu)
-                checkpoint = torch.load(args.resume, map_location=loc)
-            args.start_epoch = checkpoint['epoch']
-            best_acc1 = checkpoint['best_acc1']
-            if args.gpu is not None:
-                # best_acc1 may be from a checkpoint from a different GPU
-                best_acc1 = best_acc1.to(args.gpu)
-            prompter.load_state_dict(checkpoint['state_dict'])
-            print("=> loaded checkpoint '{}' (epoch {})"
-                  .format(args.resume, checkpoint['epoch']))
-        else:
-            print("=> no checkpoint found at '{}'".format(args.resume))
-
     # create dataloaders
     train_loader = loader.construct_loader(cfg, "train")
     val_loader = loader.construct_loader(cfg, "val")
     test_loader = loader.construct_loader(cfg, "test")
 
     lder = val_loader
-    class_dict = getClassNamesDict(os.getcwd().rpartition('/')[0] + "/rq_class_names.txt")
 
     cudnn.benchmark = True
 
@@ -226,21 +208,26 @@ def main(args, cfg):
 
                 images = inputs[0]
                 images = images.to(device)
-                labels = labels.tolist()
 
                 output = model([images])
                 max_tup = output.max(dim=1)
-                batch_preds = max_tup[1].tolist()
-                batch_probs = max_tup[0].tolist()
+                batch_preds = max_tup[1]
 
-                for idx in range(len(batch_preds)):
-                    if(batch_preds[idx] != labels[idx]):
-                        clip = images[idx].permute(1, 0, 2, 3)
-                        
-                        for jdx, image in enumerate(clip):
+                pred_labels.append(batch_preds.cpu())
+                target_labels.append(labels.cpu())
+
+                # the code below is for saving and examining incorrectly predicted input frames from clips
+
+                # batch_probs = max_tup[0].tolist()
+                # batch_preds, labels = batch_preds.tolist(), labels.tolist()
+
+                # for idx in range(len(batch_preds)):
+                    # if(batch_preds[idx] != labels[idx]):
+                        # clip = images[idx].permute(1, 0, 2, 3)
+                        # for jdx, image in enumerate(clip):
                             # if(jdx == 0):
-                                clip_name = lder.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
-                                save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
+                                # clip_name = lder.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
+                                # save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
                             # else: 
                             #     break
 
@@ -248,12 +235,47 @@ def main(args, cfg):
 
 if __name__ == '__main__':
 
+    # parse config and params
     args = parse_option()
     for path_to_config in args.cfg_files:
         cfg = load_config(args, path_to_config)
         cfg = assert_and_infer_cfg(cfg)
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
-    cfg.TRAIN.BATCH_SIZE = 8
+    cfg.TRAIN.BATCH_SIZE = 4
 
+    # retrieve class names dict
+    class_dict = getClassNamesDict(os.getcwd().rpartition('/')[0] + "/rq_class_names.txt")
+
+    pred_labels = []
+    target_labels = []
+
+    # gather preds and targets from validation dataset
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)
+
+    # concat list pred and target tensors to create tensors of preds and targets
+    pred_labels_tensor, target_labels_tensor = torch.cat(pred_labels), torch.cat(target_labels)
+
+    # create confusion matrix
+    confmat = ConfusionMatrix(task='multiclass',num_classes=len(class_dict))
+    confmat_tensor = confmat(preds=pred_labels_tensor,
+                            target=target_labels_tensor)
+
+    # wrap class names since they are rather long
+    class_names = [ '\n'.join(wrap(l, 20)) for l in list(class_dict.values())]
+
+    # plot confusion matrix
+    fig, ax = plot_confusion_matrix(
+        conf_mat=confmat_tensor.numpy(),
+        class_names=class_names,
+        figsize=(13,12)
+    )
+
+    ax.tick_params(axis='x', which='major', labelsize=8)
+    fig.suptitle("Validation Confusion Matrix for MViTv2-B", fontsize=15)
+    
+    # save figure
+    fig.savefig(os.getcwd() + "/evaluation/graphs/val_confusion_matrix_mvitv2-b_normal_data.png") # save the figure to file
+    
+    print("Done diagnosing predictions")
+
