@@ -223,14 +223,18 @@ def main(args, cfg):
                 batch_preds, labels = batch_preds.tolist(), labels.tolist()
 
                 for idx in range(len(batch_preds)):
-                    if(batch_preds[idx] != labels[idx] and (labels[idx] == 11 or labels[idx] == 12)):
-                        clip = images[idx].permute(1, 0, 2, 3)
-                        for jdx, image in enumerate(clip):
-                            if(jdx == 0):
-                                clip_name = lder.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
-                                save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images_passenger_talk/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
-                            else: 
-                                break
+                    clip_name = lder.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
+
+                    if(batch_preds[idx] != labels[idx]):
+                        with open(filepath, "a+") as f:
+                            f.writelines(f"{clip_name},{class_dict[batch_preds[idx]]},{batch_probs[idx]:.3f},{class_dict[labels[idx]]}\n")
+                    # if(batch_preds[idx] != labels[idx] and (labels[idx] == 11 or labels[idx] == 12)):
+                    #     clip = images[idx].permute(1, 0, 2, 3)
+                    #     for jdx, image in enumerate(clip):
+                    #         if(jdx == 0):
+                    #             save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images_passenger_talk/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
+                    #         else: 
+                    #             break
 
 
 
@@ -244,6 +248,11 @@ if __name__ == '__main__':
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
     cfg.TRAIN.BATCH_SIZE = 4
+
+    # delete existing post_processed_data.txt if exists
+    filepath = os.getcwd() + "/evaluation/" + "val_incorrect_pred_probs.txt"
+    if os.path.exists(filepath):
+        os.remove(filepath)
 
     # retrieve class names dict
     class_dict = getClassNamesDict(os.getcwd().rpartition('/')[0] + "/rq_class_names.txt")
