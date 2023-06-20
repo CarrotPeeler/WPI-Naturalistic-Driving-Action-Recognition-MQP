@@ -9,6 +9,7 @@ THIS FILE RUNS STATISTICS ON INCORRECT PREDICTIONS AND THEIR PROBABILITIES
 
 # Run command:
 # cd slowfast
+# python3 evaluation/compare_incorrect_pred_stats.py
 
 
 
@@ -43,10 +44,15 @@ def print_incorrect_pred_stats(csv_filepath_list, model_name, trained_epochs_lis
 
 if __name__ == '__main__':  
 
-    csv_filepaths = [os.getcwd() + "/evaluation/val_incorrect_pred_probs_mvitv2-b_120_epochs.txt",
-                     os.getcwd() + "/evaluation/val_incorrect_pred_probs_mvitv2-b_240_epochs.txt"]
+    cwd = os.getcwd()
+
+    csv_filepaths = [cwd + "/evaluation/val_incorrect_pred_probs_mvitv2-b_100_epochs.txt",
+                     cwd + "/evaluation/val_incorrect_pred_probs_mvitv2-b_120_epochs.txt",
+                     cwd + "/evaluation/val_incorrect_pred_probs_mvitv2-b_140_epochs.txt",
+                     cwd + "/evaluation/val_incorrect_pred_probs_mvitv2-b_160_epochs.txt",
+                     cwd + "/evaluation/val_incorrect_pred_probs_mvitv2-b_240_epochs.txt"]
 
     print_incorrect_pred_stats(csv_filepath_list=csv_filepaths,
                                model_name="MViTv2-B",
-                               trained_epochs_list=[120, 240])
+                               trained_epochs_list=[100, 120, 140, 160, 240])
     
