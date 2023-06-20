@@ -64,7 +64,7 @@ class FixedPatchPrompter(nn.Module):
         prompt = torch.zeros([1, 3, 1, self.isize, self.isize]).cuda()
         prompt[:, :, :, :self.psize, :self.psize] = self.patch
 
-        return x + prompt
+        return [x + prompt]
 
 
 class RandomPatchPrompter(nn.Module):

@@ -234,7 +234,11 @@ def main(args, cfg):
                     clip_name = lder.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
 
                     if(batch_preds[idx] != labels[idx]):
-                        with open(filepath, "a+") as f:
+                        pass
+                        # with open(filepath, "a+") as f:
+                        #     f.writelines(f"{clip_name},{class_dict[batch_preds[idx]]},{batch_probs[idx]:.3f},{class_dict[labels[idx]]}\n")
+                    else:
+                        with open(filepath_2, "a+") as f:
                             f.writelines(f"{clip_name},{class_dict[batch_preds[idx]]},{batch_probs[idx]:.3f},{class_dict[labels[idx]]}\n")
                     # if(batch_preds[idx] != labels[idx] and (labels[idx] == 11 or labels[idx] == 12)):
                     #     clip = images[idx].permute(1, 0, 2, 3)
@@ -258,9 +262,13 @@ if __name__ == '__main__':
     cfg.TRAIN.BATCH_SIZE = 4
 
     # delete existing post_processed_data.txt if exists
-    filepath = os.getcwd() + "/evaluation/" + "val_incorrect_pred_probs.txt"
+    filepath = os.getcwd() + "/evaluation/val_preds/incorrect_preds/" + "val_incorrect_pred_probs.txt"
     if os.path.exists(filepath):
         os.remove(filepath)
+
+    filepath_2 = os.getcwd() + "/evaluation/val_preds/correct_preds/" + "val_correct_pred_probs.txt"
+    if os.path.exists(filepath_2):
+        os.remove(filepath_2)
 
     # retrieve class names dict
     class_dict = getClassNamesDict(os.getcwd().rpartition('/')[0] + "/rq_class_names.txt")
@@ -292,7 +300,7 @@ if __name__ == '__main__':
     fig.suptitle("Validation Confusion Matrix for MViTv2-B", fontsize=15)
     
     # save figure
-    fig.savefig(os.getcwd() + "/evaluation/graphs/val_confusion_matrix_mvitv2-b_normal_data.png") # save the figure to file
+    # fig.savefig(os.getcwd() + "/evaluation/graphs/val_confusion_matrix_mvitv2-b_normal_data.png") # save the figure to file
     
     print("Done diagnosing predictions")
 
