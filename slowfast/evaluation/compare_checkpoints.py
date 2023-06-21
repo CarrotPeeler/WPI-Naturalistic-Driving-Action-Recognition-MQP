@@ -32,7 +32,8 @@ def print_incorrect_pred_stats(csv_filepath_arr, model_name, trained_epochs_list
         checkpoint_df = [pd.read_csv(csv_filepath_arr[i][0], names=["path", "pred", "prob", "target"]),
                          pd.read_csv(csv_filepath_arr[i][1], names=["path", "pred", "prob", "target"])]
         
-        inc_pred_conf_rank_df = checkpoint_df[0][["pred", "prob"]].groupby(["pred"]).agg(["mean", "median"]).reset_index().round(3).sort_values(by=("prob", "mean"), ascending=False)
+        inc_pred_conf_rank_df = checkpoint_df[0][["pred", "prob"]].groupby(["pred"]).agg(["mean", "median", "count"]).reset_index()\
+            .round(3).sort_values(by=[("prob", "mean"), ("prob", "count")], ascending=[False, False])
         
         stats_str = (f"\n{trained_epochs_list[i]} epochs:\
             \n\n{stat_type[0]} Prediction Stats:\t\t{stat_type[1]} Prediction Stats:\

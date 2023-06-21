@@ -21,21 +21,21 @@ Right Side Window = 0.779		Right Side Window = 0.954
 
 incorrect pred confidence ranking:            
 
-                              pred   prob       
-                                     mean median
-5                 Phone Call(left)  0.891  0.836
-2                           Eating  0.871  0.926
-14                    Text (Right)  0.856  0.893
-4           Normal Forward Driving  0.813  0.790
-6                Phone Call(right)  0.813  0.809
-1                         Drinking  0.799  0.998
-3                     Hand on head  0.762  0.762
-11   Talk to passenger at backseat  0.740  0.771
-7      Pick up from floor (Driver)  0.730  0.635
-10   Singing or dancing with music  0.722  0.746
-13                     Text (Left)  0.699  0.765
-8   Pick up from floor (Passenger)  0.691  0.757
-9                  Reaching behind  0.682  0.682
-12  Talk to passenger at the right  0.645  0.548
-0             Adjust control panel  0.631  0.629
-15                         Yawning  0.629  0.692            
+                              pred   prob             
+                                     mean median count
+5                 Phone Call(left)  0.891  0.836     7
+2                           Eating  0.871  0.926     5
+14                    Text (Right)  0.856  0.893     7
+4           Normal Forward Driving  0.813  0.790     8
+6                Phone Call(right)  0.813  0.809     7
+1                         Drinking  0.799  0.998     3
+3                     Hand on head  0.762  0.762     2
+11   Talk to passenger at backseat  0.740  0.771    12
+7      Pick up from floor (Driver)  0.730  0.635     5
+10   Singing or dancing with music  0.722  0.746     4
+13                     Text (Left)  0.699  0.765     9
+8   Pick up from floor (Passenger)  0.691  0.757     7
+9                  Reaching behind  0.682  0.682     2
+12  Talk to passenger at the right  0.645  0.548     8
+0             Adjust control panel  0.631  0.629     6
+15                         Yawning  0.629  0.692     6            
