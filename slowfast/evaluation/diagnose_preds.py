@@ -235,11 +235,12 @@ def main(args, cfg):
 
                     if(batch_preds[idx] != labels[idx]):
                         pass
-                        # with open(filepath, "a+") as f:
-                        #     f.writelines(f"{clip_name},{class_dict[batch_preds[idx]]},{batch_probs[idx]:.3f},{class_dict[labels[idx]]}\n")
+                        with open(filepath, "a+") as f:
+                            f.writelines(f"{clip_name},{class_dict[batch_preds[idx]]},{batch_probs[idx]:.3f},{class_dict[labels[idx]]}\n")
                     else:
                         with open(filepath_2, "a+") as f:
                             f.writelines(f"{clip_name},{class_dict[batch_preds[idx]]},{batch_probs[idx]:.3f},{class_dict[labels[idx]]}\n")
+                            
                     # if(batch_preds[idx] != labels[idx] and (labels[idx] == 11 or labels[idx] == 12)):
                     #     clip = images[idx].permute(1, 0, 2, 3)
                     #     for jdx, image in enumerate(clip):
@@ -300,7 +301,7 @@ if __name__ == '__main__':
     fig.suptitle("Validation Confusion Matrix for MViTv2-B", fontsize=15)
     
     # save figure
-    # fig.savefig(os.getcwd() + "/evaluation/graphs/val_confusion_matrix_mvitv2-b_normal_data.png") # save the figure to file
+    fig.savefig(os.getcwd() + "/evaluation/graphs/val_confusion_matrix_mvitv2-b_normal_data.png") # save the figure to file
     
     print("Done diagnosing predictions")
 

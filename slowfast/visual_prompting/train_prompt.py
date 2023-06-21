@@ -104,7 +104,7 @@ def parse_option():
                         help="number of steps to warmup for")
     parser.add_argument('--momentum', type=float, default=0.9,
                         help='momentum')
-    parser.add_argument('--patience', type=int, default=10)
+    parser.add_argument('--patience', type=int, default=400)
 
     # model
     parser.add_argument('--method', type=str, default='padding',
@@ -293,20 +293,16 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         target = target.to(device)
 
         prompted_images = prompter(images)
-        
-        # if(epoch == 1 and batch_iter == 0):
-            # save prompted images for visualization
-            # for idx, images_batch in enumerate(prompted_images[0]):
-            #     if(idx == 3):
-            #         perm_images = images_batch.permute(1, 0, 2, 3)
-            #         for jdx, image in enumerate(perm_images):
-            #             save_image(image, os.getcwd() + f"/visual_prompting/images/prompts/batch_{idx}_prompt_{jdx}.png")
-        
-            # save original images for comparison
-            # for idx, images_batch in enumerate(inputs[0]):
-            #     perm_images = images_batch.permute(1, 0, 2, 3)
-            #     for jdx, image in enumerate(perm_images):
-            #         save_image(image, os.getcwd() + f"/visual_prompting/images/originals/batch_{idx}_prompt_{jdx}.png")
+
+        # save prompted_images for visualization
+        if(epoch == 1 and batch_iter == 0):
+            for idx in range(len(prompted_images[0])): 
+                clip = images[idx].permute(1, 0, 2, 3)
+                for jdx, image in enumerate(clip):
+                    if(jdx == 0):
+                        save_image(image, os.getcwd() + f"/visual_prompting/images/prompts/batch_{batch_iter}_clip_{idx}.png")
+                    else: 
+                        break
 
         output = model(prompted_images)
     

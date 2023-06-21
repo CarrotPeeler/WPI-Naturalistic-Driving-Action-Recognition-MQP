@@ -23,10 +23,8 @@ args:
     model_name: single string of the model being used
     trained_epochs_list: list of integers (number of epochs) for each checkpoint being compared
 """
-def print_incorrect_pred_stats(csv_filepath_arr, model_name, trained_epochs_list):
+def print_incorrect_pred_stats(csv_filepath_arr, model_name, trained_epochs_list, save_dir):
     assert len(csv_filepath_arr) == len(trained_epochs_list), "Length of csv_filepath_list does not match length of trained_epochs_list"
-    
-    print(f"\n{model_name} stats for incorrect predictions:\n")
 
     for i in range(len(csv_filepath_arr)):
         stat_type = ["Incorrect", "Correct"]
@@ -34,7 +32,9 @@ def print_incorrect_pred_stats(csv_filepath_arr, model_name, trained_epochs_list
         checkpoint_df = [pd.read_csv(csv_filepath_arr[i][0], names=["path", "pred", "prob", "target"]),
                          pd.read_csv(csv_filepath_arr[i][1], names=["path", "pred", "prob", "target"])]
         
-        print(f"\n{trained_epochs_list[i]} epochs:\
+        inc_pred_conf_rank_df = checkpoint_df[0][["pred", "prob"]].groupby(["pred"]).agg(["mean", "median"]).reset_index().round(3).sort_values(by=("prob", "mean"), ascending=False)
+        
+        stats_str = (f"\n{trained_epochs_list[i]} epochs:\
             \n\n{stat_type[0]} Prediction Stats:\t\t{stat_type[1]} Prediction Stats:\
             \
             \ntotal {stat_type[0].lower()} preds = {len(checkpoint_df[0]['prob'])}\t\ttotal {stat_type[1].lower()} preds = {len(checkpoint_df[1]['prob'])}\
@@ -53,13 +53,26 @@ def print_incorrect_pred_stats(csv_filepath_arr, model_name, trained_epochs_list
             \
             \n                       < 0.8 = {len(checkpoint_df[0][checkpoint_df[0]['prob'] < 0.8])}\t                       < 0.8 = {len(checkpoint_df[1][checkpoint_df[1]['prob'] < 0.8])}\
             \
+            \n\nmean prob by camera angle:\
+            \n\nDashboard = {checkpoint_df[0].loc[checkpoint_df[0]['path'].str.partition('_')[0] == 'Dashboard']['prob'].mean():.3f}\t\t\tDashboard = {checkpoint_df[1].loc[checkpoint_df[1]['path'].str.partition('_')[0] == 'Dashboard']['prob'].mean():.3f}\
+            \
+            \nRearview = {checkpoint_df[0].loc[checkpoint_df[0]['path'].str.partition('_')[0] == 'Rear']['prob'].mean():.3f}\t\t\tRearview = {checkpoint_df[1].loc[checkpoint_df[1]['path'].str.partition('_')[0] == 'Rear']['prob'].mean():.3f}\
+            \
+            \nRight Side Window = {checkpoint_df[0].loc[checkpoint_df[0]['path'].str.partition('_')[0] == 'Right']['prob'].mean():.3f}\t\tRight Side Window = {checkpoint_df[1].loc[checkpoint_df[1]['path'].str.partition('_')[0] == 'Right']['prob'].mean():.3f}\
+            \
+            \n\nincorrect pred confidence ranking:\
+            \n\n{inc_pred_conf_rank_df}\
             \n")
+        
+        with open(save_dir + "/" + model_name + f"_{trained_epochs_list[i]}_epochs_checkpoint_stats.txt", "a+") as f:
+            f.writelines(stats_str)
 
 
 if __name__ == '__main__':  
 
     inc_dir = os.getcwd() + "/evaluation/val_preds/incorrect_preds/"
     cor_dir = os.getcwd() + "/evaluation/val_preds/correct_preds/"
+    save_dir = os.getcwd() + "/evaluation/val_preds/checkpoint_stats"
 
     csv_filepaths = [["val_incorrect_pred_probs_mvitv2-b_100_epochs.txt", "val_correct_pred_probs_mvitv2-b_100_epochs.txt"],
                      ["val_incorrect_pred_probs_mvitv2-b_120_epochs.txt", "val_correct_pred_probs_mvitv2-b_120_epochs.txt"],
@@ -73,5 +86,6 @@ if __name__ == '__main__':
 
     print_incorrect_pred_stats(csv_filepath_arr=csv_filepaths,
                                model_name="MViTv2-B",
-                               trained_epochs_list=[100, 120, 140, 160, 240])
+                               trained_epochs_list=[100, 120, 140, 160, 240],
+                               save_dir=save_dir)
     
