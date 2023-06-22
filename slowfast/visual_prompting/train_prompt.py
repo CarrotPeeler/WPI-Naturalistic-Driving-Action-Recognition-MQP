@@ -223,7 +223,7 @@ def main(args, cfg):
         train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args, cfg)
        
         # evaluate on validation set
-        acc1 = validate(val_loader, model, prompter, criterion, args, cfg)
+        acc1 = validate(val_loader, model, prompter, criterion, args, cfg, epoch)
 
         # remember best acc@1 and save checkpoint
         is_best = acc1 > best_acc1
@@ -295,19 +295,6 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         prompted_images = prompter(images)
 
         output = model(prompted_images)
-
-        # save prompted_images for visualization
-        if((epoch == 1 or epoch % args.save_freq/2 == 0) and batch_iter == 0):
-            for idx in range(len(prompted_images[0])): 
-                # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
-                prompted_clip = prompted_images[0][idx].permute(1, 0, 2, 3) # prompted clip
-
-                for jdx in range(prompted_clip.shape[0]):
-                    if(jdx == 0):
-                        # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
-                        save_image(prompted_clip[jdx], f"{args.image_folder}/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
-                    else: 
-                        break
     
         loss = criterion(output, target)
 
@@ -350,7 +337,7 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
     return losses.avg, top1.avg
 
 
-def validate(val_loader, model, prompter, criterion, args, cfg):
+def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
     batch_time = AverageMeter('Time', ':6.3f')
     losses = AverageMeter('Loss', ':.4e')
     top1_org = AverageMeter('Original Acc@1', ':6.2f')
@@ -385,6 +372,19 @@ def validate(val_loader, model, prompter, criterion, args, cfg):
             # compute output
             output_prompt = model(prompted_images)
             output_org = model(inputs)
+
+            # save prompted_images for visualization
+            if((epoch == 1 or epoch % args.save_freq == 0) and batch_iter == 0):
+                for idx in range(len(prompted_images[0])): 
+                    # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
+                    prompted_clip = prompted_images[0][idx].permute(1, 0, 2, 3) # prompted clip
+
+                    for jdx in range(prompted_clip.shape[0]):
+                        if(jdx == 0):
+                            # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
+                            save_image(prompted_clip[jdx], f"{args.image_folder}/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
+                        else: 
+                            break
 
             loss = criterion(output_prompt, target)
 
