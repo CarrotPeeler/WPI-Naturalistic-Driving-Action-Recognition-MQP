@@ -72,16 +72,16 @@ class RandomPatchPrompter(nn.Module):
         super(RandomPatchPrompter, self).__init__()
         self.isize = args.image_size
         self.psize = args.prompt_size
-        self.patch = nn.Parameter(torch.randn([1, 3, self.psize, self.psize]))
+        self.patch = nn.Parameter(torch.randn([1, 3, 1, self.psize, self.psize]))
 
     def forward(self, x):
         x_ = np.random.choice(self.isize - self.psize)
         y_ = np.random.choice(self.isize - self.psize)
 
-        prompt = torch.zeros([1, 3, self.isize, self.isize]).cuda()
-        prompt[:, :, x_:x_ + self.psize, y_:y_ + self.psize] = self.patch
+        prompt = torch.zeros([1, 3, 1, self.isize, self.isize]).cuda()
+        prompt[:, :, :, x_:x_ + self.psize, y_:y_ + self.psize] = self.patch
 
-        return x + prompt
+        return [x + prompt]
 
 
 def padding(args):

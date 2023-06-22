@@ -96,7 +96,7 @@ def parse_option():
     # optimization
     parser.add_argument('--optim', type=str, default='sgd',
                         help='optimizer to use')
-    parser.add_argument('--learning_rate', type=float, default=40,
+    parser.add_argument('--learning_rate', type=float, default=0.2,
                         help='learning rate')
     parser.add_argument("--weight_decay", type=float, default=1e-3,
                         help="weight decay")
@@ -297,7 +297,7 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         output = model(prompted_images)
 
         # save prompted_images for visualization
-        if(epoch % args.save_freq == 0 and batch_iter == 0):
+        if((epoch == 1 or epoch % args.save_freq/2 == 0) and batch_iter == 0):
             for idx in range(len(prompted_images[0])): 
                 # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
                 prompted_clip = prompted_images[0][idx].permute(1, 0, 2, 3) # prompted clip
@@ -305,7 +305,7 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
                 for jdx in range(prompted_clip.shape[0]):
                     if(jdx == 0):
                         # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
-                        save_image(prompted_clip[jdx], os.getcwd() + f"/visual_prompting/images/prompts/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
+                        save_image(prompted_clip[jdx], f"{args.image_folder}/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
                     else: 
                         break
     
