@@ -42,6 +42,7 @@ def refine_classname(class_names):
 
 
 def save_checkpoint(state, args, is_best=False, filename='checkpoint.pth.tar'):
+    filename = f"checkpoint_{state['epoch']}_epochs.pth.tar"
     savefile = os.path.join(args.model_folder, filename)
     bestfile = os.path.join(args.model_folder, 'model_best.pth.tar')
     torch.save(state, savefile)

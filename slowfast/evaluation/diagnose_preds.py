@@ -233,25 +233,36 @@ def main(args, cfg):
                 for idx in range(len(batch_preds)):
                     clip_name = lder.dataset._path_to_videos[index[idx]].rpartition('/')[-1]
 
-                    if(batch_preds[idx] != labels[idx]):
+                    if(batch_preds[idx] != labels[idx] and save_incorrect_preds == True):
                         pass
                         with open(filepath, "a+") as f:
                             f.writelines(f"{clip_name},{class_dict[batch_preds[idx]]},{batch_probs[idx]:.3f},{class_dict[labels[idx]]}\n")
-                    else:
+                    elif(batch_preds[idx] == labels[idx] and save_correct_preds == True):
                         with open(filepath_2, "a+") as f:
                             f.writelines(f"{clip_name},{class_dict[batch_preds[idx]]},{batch_probs[idx]:.3f},{class_dict[labels[idx]]}\n")
                             
-                    # if(batch_preds[idx] != labels[idx] and (labels[idx] == 11 or labels[idx] == 12)):
-                    #     clip = images[idx].permute(1, 0, 2, 3)
-                    #     for jdx, image in enumerate(clip):
-                    #         if(jdx == 0):
-                    #             save_image(image, os.getcwd() + f"/visual_prompting/images/bad_val_images_passenger_talk/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
-                    #         else: 
-                    #             break
+                    if(batch_preds[idx] != labels[idx] and labels[idx] in classes_to_match and save_incorrect_image == True):
+                        clip = images[idx].permute(1, 0, 2, 3)
+                        for jdx in range(clip.shape[0]):
+                            if(jdx == 3):
+                                save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/bad_val_images_passenger_talk/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
+                    elif(batch_preds[idx] == labels[idx] and labels[idx] in classes_to_match and save_correct_image == True):
+                        clip = images[idx].permute(1, 0, 2, 3)
+                        for jdx in range(clip.shape[0]):
+                            if(jdx == 3):
+                                save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/good_val_images_passenger_talk/{clip_name}_{jdx}_pred_{class_dict[batch_preds[idx]]}_prob_{batch_probs[idx]:.3f}_target_{class_dict[labels[idx]]}.png")
 
 
 
 if __name__ == '__main__':
+
+    save_conf_mat = False
+    save_incorrect_preds = False
+    save_correct_preds = False
+    save_incorrect_image = True
+    save_correct_image = True
+
+    classes_to_match = [11, 12]
 
     # parse config and params
     args = parse_option()
@@ -301,7 +312,8 @@ if __name__ == '__main__':
     fig.suptitle("Validation Confusion Matrix for MViTv2-B", fontsize=15)
     
     # save figure
-    fig.savefig(os.getcwd() + "/evaluation/graphs/val_confusion_matrix_mvitv2-b_normal_data.png") # save the figure to file
+    if(save_conf_mat == True):
+        fig.savefig(os.getcwd() + "/evaluation/graphs/val_confusion_matrix_mvitv2-b_normal_data.png") # save the figure to file
     
     print("Done diagnosing predictions")
 

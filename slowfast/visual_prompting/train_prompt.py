@@ -90,7 +90,7 @@ def parse_option():
                         help='print frequency')
     parser.add_argument('--save_freq', type=int, default=20,
                         help='save frequency')
-    parser.add_argument('--epochs', type=int, default=400,
+    parser.add_argument('--epochs', type=int, default=1000,
                         help='number of training epochs')
 
     # optimization
@@ -104,7 +104,7 @@ def parse_option():
                         help="number of steps to warmup for")
     parser.add_argument('--momentum', type=float, default=0.9,
                         help='momentum')
-    parser.add_argument('--patience', type=int, default=400)
+    parser.add_argument('--patience', type=int, default=1000)
 
     # model
     parser.add_argument('--method', type=str, default='padding',
@@ -294,17 +294,20 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
 
         prompted_images = prompter(images)
 
+        output = model(prompted_images)
+
         # save prompted_images for visualization
-        if(epoch == 1 and batch_iter == 0):
+        if(epoch % args.save_freq == 0 and batch_iter == 0):
             for idx in range(len(prompted_images[0])): 
-                clip = images[idx].permute(1, 0, 2, 3)
-                for jdx, image in enumerate(clip):
+                # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
+                prompted_clip = prompted_images[0][idx].permute(1, 0, 2, 3) # prompted clip
+
+                for jdx in range(prompted_clip.shape[0]):
                     if(jdx == 0):
-                        save_image(image, os.getcwd() + f"/visual_prompting/images/prompts/batch_{batch_iter}_clip_{idx}.png")
+                        # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
+                        save_image(prompted_clip[jdx], os.getcwd() + f"/visual_prompting/images/prompts/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
                     else: 
                         break
-
-        output = model(prompted_images)
     
         loss = criterion(output, target)
 
