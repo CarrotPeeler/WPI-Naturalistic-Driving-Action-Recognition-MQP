@@ -374,7 +374,7 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
             output_org = model(inputs)
 
             # save prompted_images for visualization
-            if((epoch == 1 or epoch % args.save_freq == 0) and batch_iter == 0):
+            if((epoch == 1 or epoch % args.print_freq == 0) and batch_iter == 0):
                 for idx in range(len(prompted_images[0])): 
                     # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
                     prompted_clip = prompted_images[0][idx].permute(1, 0, 2, 3) # prompted clip
