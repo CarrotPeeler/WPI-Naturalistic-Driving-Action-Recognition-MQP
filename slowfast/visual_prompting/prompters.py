@@ -82,6 +82,14 @@ class RandomPatchPrompter(nn.Module):
         prompt[:, :, :, x_:x_ + self.psize, y_:y_ + self.psize] = self.patch
 
         return [x + prompt]
+    
+
+class CropPrompter(nn.Module):
+    def __init__(self, args):
+        super(CropPrompter, self).__init__()
+
+    def forward(self, x):
+        return []
 
 
 def padding(args):
@@ -94,3 +102,6 @@ def fixed_patch(args):
 
 def random_patch(args):
     return RandomPatchPrompter(args)
+
+def crop(args):
+    return CropPrompter(args)
