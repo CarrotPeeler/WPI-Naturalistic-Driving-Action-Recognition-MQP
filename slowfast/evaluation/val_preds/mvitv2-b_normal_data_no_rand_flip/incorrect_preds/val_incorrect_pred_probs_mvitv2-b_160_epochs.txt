@@ -1,0 +1,97 @@
+Right_side_window_user_id_84935_NoAudio_7-start197-end219.MP4,Yawning,0.999,Talk to passenger at the right
+Dashboard_user_id_30932_NoAudio_5-start9-end12.MP4,Text (Right),0.968,Adjust control panel
+Rear_view_user_id_30932_NoAudio_7-start296-end299.MP4,Talk to passenger at backseat,0.892,Eating
+Rear_view_user_id_30932_NoAudio_7-start201-end220.MP4,Talk to passenger at backseat,0.922,Talk to passenger at the right
+Rear_view_user_id_30932_NoAudio_7-start357-end361.MP4,Drinking,0.999,Hand on head
+Dashboard_user_id_30932_NoAudio_7-start357-end361.MP4,Hand on head,0.999,Drinking
+Rear_view_user_id_30932_NoAudio_5-start74-end89.MP4,Normal Forward Driving,0.580,Talk to passenger at backseat
+Right_side_window_user_id_30932_NoAudio_5-start74-end89.MP4,Talk to passenger at the right,0.491,Talk to passenger at backseat
+Rear_view_user_id_13522_NoAudio_7-start11-end21.MP4,Normal Forward Driving,0.990,Adjust control panel
+Right_side_window_user_id_13522_NoAudio_7-start362-end370.MP4,Eating,0.634,Phone Call(left)
+Dashboard_user_id_13522_NoAudio_5-start11-end31.MP4,Text (Right),0.992,Adjust control panel
+Dashboard_user_id_13522_NoAudio_5-start452-end470.MP4,Talk to passenger at backseat,0.948,Singing or dancing with music
+Rear_view_user_id_13522_NoAudio_5-start220-end229.MP4,Hand on head,0.909,Yawning
+Dashboard_user_id_13522_NoAudio_7-start11-end21.MP4,Normal Forward Driving,0.999,Adjust control panel
+Right_side_window_user_id_13522_NoAudio_5-start48-end69.MP4,Text (Left),0.975,Talk to passenger at backseat
+Right_side_window_user_id_13522_NoAudio_5-start220-end229.MP4,Text (Left),0.991,Yawning
+Right_side_window_user_id_13522_NoAudio_5-start452-end470.MP4,Eating,0.484,Singing or dancing with music
+Right_side_window_user_id_28557_NoAudio_5-start360-end376.MP4,Talk to passenger at the right,0.854,Talk to passenger at backseat
+Rear_view_user_id_28557_NoAudio_7-start434-end449.MP4,Talk to passenger at backseat,0.997,Talk to passenger at the right
+Rear_view_user_id_71436_NoAudio_5-start151-end167.MP4,Singing or dancing with music,0.741,Talk to passenger at backseat
+Dashboard_user_id_60768_NoAudio_5-start442-end463.MP4,Talk to passenger at the right,0.418,Yawning
+Right_side_window_user_id_60768_NoAudio_7-start43-end64.MP4,Text (Right),0.756,Eating
+Right_side_window_user_id_60768_NoAudio_7-start109-end129.MP4,Yawning,0.840,Normal Forward Driving
+Dashboard_user_id_85870_NoAudio_7-start448-end463.MP4,Hand on head,0.748,Talk to passenger at backseat
+Rear_view_user_id_85870_NoAudio_7-start360-end370.MP4,Text (Left),0.531,Text (Right)
+Right_side_window_user_id_61962_NoAudio_7-start212-end230.MP4,Adjust control panel,0.622,Talk to passenger at the right
+Right_side_window_user_id_61962_NoAudio_7-start444-end466.MP4,Eating,0.627,Drinking
+Dashboard_user_id_61962_NoAudio_7-start181-end191.MP4,Adjust control panel,0.584,Reaching behind
+Dashboard_user_id_61962_NoAudio_7-start212-end230.MP4,Talk to passenger at backseat,0.973,Talk to passenger at the right
+Dashboard_user_id_61962_NoAudio_7-start444-end466.MP4,Eating,0.997,Drinking
+Dashboard_user_id_61962_NoAudio_7-start479-end501.MP4,Adjust control panel,0.712,Phone Call(right)
+Rear_view_user_id_61962_NoAudio_7-start212-end230.MP4,Talk to passenger at backseat,0.983,Talk to passenger at the right
+Dashboard_user_id_61962_NoAudio_5-start8-end30.MP4,Adjust control panel,0.847,Hand on head
+Dashboard_user_id_61962_NoAudio_5-start278-end286.MP4,Reaching behind,0.759,Pick up from floor (Driver)
+Dashboard_user_id_83756_NoAudio_3-start170-end189.MP4,Text (Right),0.994,Adjust control panel
+Dashboard_user_id_83756_NoAudio_7-start168-end190.MP4,Talk to passenger at the right,0.875,Adjust control panel
+Rear_view_user_id_83756_NoAudio_3-start170-end189.MP4,Text (Right),0.516,Adjust control panel
+Dashboard_user_id_83323_NoAudio_3-start379-end404.MP4,Text (Right),0.975,Phone Call(right)
+Rear_view_user_id_83323_NoAudio_3-start146-end157.MP4,Text (Left),0.433,Pick up from floor (Driver)
+Rear_view_user_id_83323_NoAudio_3-start228-end249.MP4,Text (Left),0.891,Phone Call(left)
+Rear_view_user_id_83323_NoAudio_5-start7-end19.MP4,Adjust control panel,0.308,Pick up from floor (Passenger)
+Right_side_window_user_id_83323_NoAudio_5-start359-end367.MP4,Pick up from floor (Driver),0.401,Reaching behind
+Right_side_window_user_id_83323_NoAudio_3-start7-end19.MP4,Yawning,0.768,Pick up from floor (Passenger)
+Right_side_window_user_id_83323_NoAudio_3-start359-end367.MP4,Talk to passenger at backseat,0.957,Reaching behind
+Right_side_window_user_id_83323_NoAudio_3-start416-end438.MP4,Adjust control panel,0.466,Hand on head
+Dashboard_user_id_83323_NoAudio_5-start324-end345.MP4,Eating,0.993,Normal Forward Driving
+Dashboard_user_id_83323_NoAudio_5-start359-end367.MP4,Pick up from floor (Driver),0.449,Reaching behind
+Right_side_window_user_id_96269_NoAudio_5-start33-end50.MP4,Text (Left),0.629,Hand on head
+Rear_view_user_id_96269_NoAudio_7-start223-end294.MP4,Eating,0.476,Drinking
+Rear_view_user_id_96269_NoAudio_7-start434-end484.MP4,Pick up from floor (Passenger),0.349,Talk to passenger at the right
+Dashboard_user_id_96269_NoAudio_7-start158-end237.MP4,Pick up from floor (Passenger),0.588,Text (Left)
+Dashboard_user_id_96269_NoAudio_7-start223-end294.MP4,Talk to passenger at the right,0.532,Drinking
+Right_side_window_user_id_96269_NoAudio_7-start70-end87.MP4,Pick up from floor (Passenger),0.994,Phone Call(right)
+Rear_view_user_id_99882_NoAudio_5-start65-end84.MP4,Eating,0.711,Normal Forward Driving
+Right_side_window_user_id_63764_NoAudio_5-start118-end122.MP4,Yawning,0.668,Phone Call(left)
+Rear_view_user_id_57207_NoAudio_1-start130-end140.MP4,Reaching behind,0.458,Pick up from floor (Driver)
+Dashboard_user_id_57207_NoAudio_1-start42-end57.MP4,Adjust control panel,0.972,Text (Right)
+Dashboard_user_id_57207_NoAudio_1-start130-end140.MP4,Pick up from floor (Passenger),0.965,Pick up from floor (Driver)
+Right_side_window_user_id_57207_NoAudio_1-start481-end498.MP4,Hand on head,0.484,Phone Call(left)
+Right_side_window_user_id_46856_NoAudio_7-start170-end176.MP4,Eating,0.999,Adjust control panel
+Right_side_window_user_id_46856_NoAudio_7-start264-end269.MP4,Normal Forward Driving,0.806,Yawning
+Rear_view_user_id_63513_NoAudio_5-start380-end390.MP4,Adjust control panel,0.602,Text (Right)
+Rear_view_user_id_39367_NoAudio_5-start418-end422.MP4,Reaching behind,0.999,Pick up from floor (Passenger)
+Right_side_window_user_id_39367_NoAudio_5-start418-end422.MP4,Pick up from floor (Driver),0.950,Pick up from floor (Passenger)
+Rear_view_user_id_39367_NoAudio_7-start418-end423.MP4,Reaching behind,0.992,Pick up from floor (Passenger)
+Right_side_window_user_id_47457_NoAudio_5-start202-end224.MP4,Phone Call(left),0.998,Phone Call(right)
+Right_side_window_user_id_47457_NoAudio_5-start390-end411.MP4,Yawning,0.527,Normal Forward Driving
+Dashboard_user_id_47457_NoAudio_5-start9-end29.MP4,Talk to passenger at backseat,0.645,Pick up from floor (Passenger)
+Dashboard_user_id_47457_NoAudio_5-start135-end146.MP4,Talk to passenger at the right,0.748,Adjust control panel
+Dashboard_user_id_47457_NoAudio_5-start202-end224.MP4,Phone Call(left),0.904,Phone Call(right)
+Dashboard_user_id_47457_NoAudio_5-start390-end411.MP4,Yawning,0.392,Normal Forward Driving
+Right_side_window_user_id_47457_NoAudio_7-start391-end412.MP4,Eating,0.994,Normal Forward Driving
+Right_side_window_user_id_47457_NoAudio_7-start458-end474.MP4,Eating,0.997,Singing or dancing with music
+Rear_view_user_id_47457_NoAudio_5-start135-end146.MP4,Singing or dancing with music,0.529,Adjust control panel
+Dashboard_user_id_47457_NoAudio_7-start67-end80.MP4,Talk to passenger at the right,0.798,Talk to passenger at backseat
+Dashboard_user_id_47457_NoAudio_7-start391-end412.MP4,Singing or dancing with music,0.204,Normal Forward Driving
+Rear_view_user_id_86356_NoAudio_5-start452-end459.MP4,Pick up from floor (Passenger),0.998,Pick up from floor (Driver)
+Right_side_window_user_id_59581_NoAudio_7-start155-end157.MP4,Singing or dancing with music,0.901,Normal Forward Driving
+Right_side_window_user_id_59581_NoAudio_5-start34-end36.MP4,Phone Call(left),0.612,Drinking
+Right_side_window_user_id_59581_NoAudio_5-start325-end334.MP4,Talk to passenger at backseat,0.771,Talk to passenger at the right
+Dashboard_user_id_59581_NoAudio_7-start412-end431.MP4,Text (Right),0.939,Text (Left)
+Right_side_window_user_id_31903_NoAudio_7-start379-end394.MP4,Hand on head,0.998,Phone Call(right)
+Right_side_window_user_id_31903_NoAudio_7-start405-end425.MP4,Drinking,0.968,Yawning
+Right_side_window_user_id_31903_NoAudio_7-start437-end458.MP4,Talk to passenger at backseat,0.320,Text (Right)
+Right_side_window_user_id_31903_NoAudio_5-start277-end293.MP4,Text (Left),0.558,Normal Forward Driving
+Right_side_window_user_id_31903_NoAudio_5-start379-end395.MP4,Talk to passenger at backseat,0.996,Phone Call(right)
+Right_side_window_user_id_31903_NoAudio_5-start406-end425.MP4,Drinking,0.999,Yawning
+Rear_view_user_id_31903_NoAudio_5-start183-end196.MP4,Phone Call(right),0.999,Eating
+Dashboard_user_id_86952_NoAudio_9-start355-end360.MP4,Text (Right),0.889,Adjust control panel
+Rear_view_user_id_86952_NoAudio_9-start111-end126.MP4,Hand on head,0.721,Text (Left)
+Right_side_window_user_id_86952_NoAudio_11-start493-end514.MP4,Normal Forward Driving,0.979,Talk to passenger at backseat
+Rear_view_user_id_86952_NoAudio_11-start73-end77.MP4,Phone Call(right),0.978,Yawning
+Dashboard_user_id_78052_NoAudio_9-start33-end40.MP4,Talk to passenger at backseat,0.596,Pick up from floor (Driver)
+Dashboard_user_id_78052_NoAudio_9-start115-end136.MP4,Talk to passenger at the right,0.473,Singing or dancing with music
+Dashboard_user_id_78052_NoAudio_9-start385-end399.MP4,Text (Left),0.943,Text (Right)
+Rear_view_user_id_78052_NoAudio_9-start479-end500.MP4,Talk to passenger at backseat,0.639,Normal Forward Driving
+Rear_view_user_id_78052_NoAudio_11-start191-end202.MP4,Talk to passenger at backseat,0.444,Talk to passenger at the right

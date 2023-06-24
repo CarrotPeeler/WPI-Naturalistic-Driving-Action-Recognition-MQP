@@ -79,6 +79,7 @@ if __name__ == '__main__':
                      ["val_incorrect_pred_probs_mvitv2-b_120_epochs.txt", "val_correct_pred_probs_mvitv2-b_120_epochs.txt"],
                      ["val_incorrect_pred_probs_mvitv2-b_140_epochs.txt", "val_correct_pred_probs_mvitv2-b_140_epochs.txt"],
                      ["val_incorrect_pred_probs_mvitv2-b_160_epochs.txt", "val_correct_pred_probs_mvitv2-b_160_epochs.txt"],
+                     ["val_incorrect_pred_probs_mvitv2-b_180_epochs.txt", "val_correct_pred_probs_mvitv2-b_180_epochs.txt"],
                      ["val_incorrect_pred_probs_mvitv2-b_240_epochs.txt", "val_correct_pred_probs_mvitv2-b_240_epochs.txt"]]
     
     for k in range(len(csv_filepaths)):
@@ -87,6 +88,6 @@ if __name__ == '__main__':
 
     print_incorrect_pred_stats(csv_filepath_arr=csv_filepaths,
                                model_name="MViTv2-B",
-                               trained_epochs_list=[100, 120, 140, 160, 240],
+                               trained_epochs_list=[100, 120, 140, 160, 180, 240],
                                save_dir=save_dir)
     

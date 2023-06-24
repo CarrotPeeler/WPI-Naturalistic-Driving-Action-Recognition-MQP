@@ -274,11 +274,11 @@ if __name__ == '__main__':
     cfg.TRAIN.BATCH_SIZE = 4
 
     # delete existing post_processed_data.txt if exists
-    filepath = os.getcwd() + "/evaluation/val_preds/incorrect_preds/" + "val_incorrect_pred_probs.txt"
+    filepath = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/incorrect_preds/" + "val_incorrect_pred_probs_mvitv2-b_180_epochs.txt"
     if os.path.exists(filepath):
         os.remove(filepath)
 
-    filepath_2 = os.getcwd() + "/evaluation/val_preds/correct_preds/" + "val_correct_pred_probs.txt"
+    filepath_2 = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/correct_preds/" + "val_correct_pred_probs_mvitv2-b_180_epochs.txt"
     if os.path.exists(filepath_2):
         os.remove(filepath_2)
 
@@ -313,7 +313,7 @@ if __name__ == '__main__':
     
     # save figure
     if(save_conf_mat == True):
-        fig.savefig(os.getcwd() + "/evaluation/graphs/val_confusion_matrix_mvitv2-b_normal_data.png") # save the figure to file
+        fig.savefig(os.getcwd() + "/evaluation/graphs/mvitv2-b_normal_data_16x4_no_rand_flip/val_confusion_matrix_mvitv2-b_normal_data_180_epochs.png") # save the figure to file
     
     print("Done diagnosing predictions")
 
