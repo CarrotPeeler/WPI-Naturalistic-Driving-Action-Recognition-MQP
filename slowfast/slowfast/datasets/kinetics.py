@@ -487,6 +487,16 @@ class Kinetics(torch.utils.data.Dataset):
                             if self.mode in ["train"]
                             else False,
                         )
+                    else:
+                        print(f"min_scale: {min_scale[i]}\n\
+                        max_scale: {max_scale[i]}\n\
+                        crop_size: {crop_size[i]}\n\
+                        RAND_FLIP: {self.cfg.DATA.RANDOM_FLIP}\n\
+                        INV_UNF_SAM: {self.cfg.DATA.INV_UNIFORM_SAMPLE}\n\
+                        REL_ASP: {relative_aspect}\n\
+                        REL_SCAL: {relative_scales}\n\
+                        JIT_MOT_SHIFT: {self.cfg.DATA.TRAIN_JITTER_MOTION_SHIFT}\n"
+                        )
 
                     if self.rand_erase:
                         erase_transform = RandomErasing(

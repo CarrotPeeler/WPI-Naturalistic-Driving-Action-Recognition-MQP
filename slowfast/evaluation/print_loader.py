@@ -203,8 +203,8 @@ def main(args, cfg):
                     for idx in range(images.shape[0]):
                         frames_crop = transform_func(
                             images=images[idx],
-                            target_height=224,
-                            target_width=224,
+                            target_height=256,
+                            target_width=256,
                             scale=relative_scales,
                             ratio=relative_aspect,
                         )
@@ -228,7 +228,7 @@ if __name__ == '__main__':
         cfg = assert_and_infer_cfg(cfg)
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
-    cfg.DATA.CROP_PROMPT = False
+    cfg.DATA.CROP_PROMPT = True
 
     # gather preds and targets from validation dataset
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)
