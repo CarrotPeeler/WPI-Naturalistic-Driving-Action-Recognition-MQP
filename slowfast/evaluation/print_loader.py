@@ -165,49 +165,35 @@ def main(args, cfg):
         cudnn.deterministic = True
 
     # create dataloaders
-    train_loader = loader.construct_loader(cfg, "train")
+    # train_loader = loader.construct_loader(cfg, "train")
     val_loader = loader.construct_loader(cfg, "val")
-    test_loader = loader.construct_loader(cfg, "test")
+    # test_loader = loader.construct_loader(cfg, "test")
 
-    lder = train_loader
+    lder = val_loader
 
     for epoch in range(args.epochs):
         # remove zero-based indexing on epoch
-        epoch += 1 
-
-        # Shuffle the dataset.
-        loader.shuffle_dataset(train_loader, epoch)
-        if hasattr(train_loader.dataset, "_set_epoch_num"):
-            train_loader.dataset._set_epoch_num(epoch)
+        epoch += 1
 
         # train for one epoch
         if(epoch == 1): 
-            for batch_iter, (inputs, labels, index, times, meta) in enumerate(lder):
+            for batch_iter, (inputs, labels, index, times, meta, crop_params_dict) in enumerate(lder):
 
                 images = inputs[0]
 
-                scl, asp = (
-                    cfg.DATA.TRAIN_JITTER_SCALES_RELATIVE,
-                    cfg.DATA.TRAIN_JITTER_ASPECT_RELATIVE,
-                )
-                relative_scales = (
-                    scl
-                )
-                relative_aspect = (
-                    asp
-                )
-
-                transform_func = transform.random_resized_crop
-
+                transform_func = transform.random_crop
+                
                 if(batch_iter <= 5):
                     for idx in range(images.shape[0]):
-                        frames_crop = transform_func(
+                        frames_crop, _ = transform.random_short_side_scale_jitter(
                             images=images[idx],
-                            target_height=256,
-                            target_width=256,
-                            scale=relative_scales,
-                            ratio=relative_aspect,
+                            min_size=crop_params_dict["min_size"],
+                            max_size=crop_params_dict["max_size"],
+                            inverse_uniform_sampling=["inverse_uniform_sampling"],
                         )
+
+                        frames_crop, _ = transform.random_crop(frames_crop, crop_params_dict["crop_size"])
+
                         frames_orig = images[idx]
                         
                         clip_crop = frames_crop.permute(1, 0, 2, 3)
@@ -229,6 +215,7 @@ if __name__ == '__main__':
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
     cfg.DATA.CROP_PROMPT = True
+    cfg.DATA.TRAIN_CROP_PROMPT = True
 
     # gather preds and targets from validation dataset
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)

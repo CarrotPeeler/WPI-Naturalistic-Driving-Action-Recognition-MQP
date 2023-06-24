@@ -71,9 +71,9 @@ def print_incorrect_pred_stats(csv_filepath_arr, model_name, trained_epochs_list
 
 if __name__ == '__main__':  
 
-    inc_dir = os.getcwd() + "/evaluation/val_preds/incorrect_preds/"
-    cor_dir = os.getcwd() + "/evaluation/val_preds/correct_preds/"
-    save_dir = os.getcwd() + "/evaluation/val_preds/checkpoint_stats"
+    inc_dir = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/incorrect_preds/"
+    cor_dir = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/correct_preds/"
+    save_dir = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/checkpoint_stats"
 
     csv_filepaths = [["val_incorrect_pred_probs_mvitv2-b_100_epochs.txt", "val_correct_pred_probs_mvitv2-b_100_epochs.txt"],
                      ["val_incorrect_pred_probs_mvitv2-b_120_epochs.txt", "val_correct_pred_probs_mvitv2-b_120_epochs.txt"],

@@ -7,3 +7,4 @@
 def add_custom_config(_C):
     # Add your own customized configs.
     _C.DATA.CROP_PROMPT = False
+    _C.DATA.TRAIN_CROP_PROMPT = False

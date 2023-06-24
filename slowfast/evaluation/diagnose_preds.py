@@ -256,11 +256,11 @@ def main(args, cfg):
 
 if __name__ == '__main__':
 
-    save_conf_mat = False
-    save_incorrect_preds = False
-    save_correct_preds = False
-    save_incorrect_image = True
-    save_correct_image = True
+    save_conf_mat = True
+    save_incorrect_preds = True
+    save_correct_preds = True
+    save_incorrect_image = False
+    save_correct_image = False
 
     classes_to_match = [11, 12]
 

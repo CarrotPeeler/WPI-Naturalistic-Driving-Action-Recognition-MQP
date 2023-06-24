@@ -424,6 +424,7 @@ if __name__ == '__main__':
         cfg = assert_and_infer_cfg(cfg)
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
-    cfg.DATA.CROP_PROMPT = False
+    cfg.DATA.CROP_PROMPT = True
+    cfg.DATA.TRAIN_CROP_PROMPT = True
 
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)

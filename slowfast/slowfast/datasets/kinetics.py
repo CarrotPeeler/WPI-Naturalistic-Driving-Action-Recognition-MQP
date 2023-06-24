@@ -488,15 +488,19 @@ class Kinetics(torch.utils.data.Dataset):
                             else False,
                         )
                     else:
-                        print(f"min_scale: {min_scale[i]}\n\
-                        max_scale: {max_scale[i]}\n\
-                        crop_size: {crop_size[i]}\n\
-                        RAND_FLIP: {self.cfg.DATA.RANDOM_FLIP}\n\
-                        INV_UNF_SAM: {self.cfg.DATA.INV_UNIFORM_SAMPLE}\n\
-                        REL_ASP: {relative_aspect}\n\
-                        REL_SCAL: {relative_scales}\n\
-                        JIT_MOT_SHIFT: {self.cfg.DATA.TRAIN_JITTER_MOTION_SHIFT}\n"
-                        )
+                        crop_param_dict = {
+                            "min_scale": min_scale[i],
+                            "max_scale": max_scale[i],
+                            "crop_size": crop_size[i],
+                            "random_flip": self.cfg.DATA.RANDOM_FLIP,
+                            "inverse_uniform_sampling": self.cfg.DATA.INV_UNIFORM_SAMPLE,
+                            "aspect_ratio": relative_aspect,
+                            "scale": relative_scales,
+                            "motion_shift": self.cfg.DATA.TRAIN_JITTER_MOTION_SHIFT
+                        }
+
+                        if(index == 0):
+                            print(crop_param_dict)
 
                     if self.rand_erase:
                         erase_transform = RandomErasing(
@@ -533,6 +537,9 @@ class Kinetics(torch.utils.data.Dataset):
             
             elif(self.mode == "test" and self.using_proposals == False):
                 return frames, label, index, time_idx, {}, None
+            
+            elif(self.mode == "val" and self.cfg.DATA.CROP_PROMPT == True and self.cfg.DATA.TRAIN_CROP_PROMPT == True):
+                return frames, label, index, time_idx, {}, crop_param_dict
                     
             return frames, label, index, time_idx, {}
         else:
