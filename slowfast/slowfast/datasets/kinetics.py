@@ -488,19 +488,20 @@ class Kinetics(torch.utils.data.Dataset):
                             else False,
                         )
                     else:
-                        crop_param_dict = {
+                        crop_params_dict = {
+                            "spatial_index": spatial_sample_index,
                             "min_scale": min_scale[i],
                             "max_scale": max_scale[i],
                             "crop_size": crop_size[i],
-                            "random_flip": self.cfg.DATA.RANDOM_FLIP,
-                            "inverse_uniform_sampling": self.cfg.DATA.INV_UNIFORM_SAMPLE,
-                            "aspect_ratio": relative_aspect,
-                            "scale": relative_scales,
-                            "motion_shift": self.cfg.DATA.TRAIN_JITTER_MOTION_SHIFT
+                            "random_flip": 0 if self.cfg.DATA.RANDOM_FLIP == False else 1,
+                            "inverse_uniform_sampling": 0 if self.cfg.DATA.INV_UNIFORM_SAMPLE == False else 1,
+                            "aspect_ratio": asp,
+                            "scale": scl,
+                            "motion_shift": 0 if self.cfg.DATA.TRAIN_JITTER_MOTION_SHIFT == False else 1
                         }
 
                         if(index == 0):
-                            print(crop_param_dict)
+                            print(crop_params_dict)
 
                     if self.rand_erase:
                         erase_transform = RandomErasing(
@@ -526,6 +527,7 @@ class Kinetics(torch.utils.data.Dataset):
             ):
                 label = [label] * num_aug * num_decode
                 index = [index] * num_aug * num_decode
+                
             if self.cfg.DATA.DUMMY_LOAD:
                 if self.dummy_output is None:
                     self.dummy_output = (frames, label, index, time_idx, {})
@@ -536,10 +538,10 @@ class Kinetics(torch.utils.data.Dataset):
                 return frames, label, index, time_idx, {}, proposal
             
             elif(self.mode == "test" and self.using_proposals == False):
-                return frames, label, index, time_idx, {}, None
+                return frames, label, index, time_idx, {}, []
             
-            elif(self.mode == "val" and self.cfg.DATA.CROP_PROMPT == True and self.cfg.DATA.TRAIN_CROP_PROMPT == True):
-                return frames, label, index, time_idx, {}, crop_param_dict
+            elif(self.mode == "val" and self.cfg.DATA.CROP_PROMPT == True and self.cfg.DATA.RETURN_CROPPING_PARAMS == True):
+                return frames, label, index, time_idx, {}, crop_params_dict
                     
             return frames, label, index, time_idx, {}
         else:

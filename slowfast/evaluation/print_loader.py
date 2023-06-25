@@ -1,30 +1,4 @@
-"""
-MIT License
-
-Copyright (c) 2022 Hyojin Bahng
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-
-
-
-# THIS FILE CREATES CONFUSION MATRICES, INCORRECT PRED INFO CSVS, AND SAVES INCORRECT PRED IMAGES
+# FOR PRINTING OUT SIDE-BY-SIDE IMAGE TRANSFORMATION COMPARISONS FROM DATA LOADER
 
 
 
@@ -39,28 +13,16 @@ from __future__ import print_function
 
 import argparse
 import os
-from tqdm import tqdm
-import time
 import random
-import numpy as np
 
 import torch
 import torch.backends.cudnn as cudnn
 from torchvision.utils import save_image
 
-import slowfast.utils.checkpoint as cu
-import slowfast.utils.distributed as du
 from slowfast.datasets import loader
-from slowfast.models import build_model
 from slowfast.config.defaults import assert_and_infer_cfg
 from slowfast.utils.parser import load_config
-from slowfast.utils.metrics import topk_accuracies
 from slowfast.datasets import transform
-from prepare_data import getClassNamesDict
-
-from torchmetrics import ConfusionMatrix
-from mlxtend.plotting import plot_confusion_matrix
-from textwrap import wrap
 
 from visual_prompting.utils import launch_job
 
@@ -102,54 +64,6 @@ def parse_option():
         nargs=argparse.REMAINDER,
     )
 
-    # visual prompting
-
-    parser.add_argument('--print_freq', type=int, default=10,
-                        help='print frequency')
-    parser.add_argument('--save_freq', type=int, default=20,
-                        help='save frequency')
-    parser.add_argument('--epochs', type=int, default=400,
-                        help='number of training epochs')
-
-    # optimization
-    parser.add_argument('--optim', type=str, default='sgd',
-                        help='optimizer to use')
-    parser.add_argument('--learning_rate', type=float, default=40,
-                        help='learning rate')
-    parser.add_argument("--weight_decay", type=float, default=1e-3,
-                        help="weight decay")
-    parser.add_argument("--warmup", type=int, default=30,
-                        help="number of steps to warmup for")
-    parser.add_argument('--momentum', type=float, default=0.9,
-                        help='momentum')
-    parser.add_argument('--patience', type=int, default=10)
-
-    # model
-    parser.add_argument('--method', type=str, default='padding',
-                        choices=['padding', 'random_patch', 'fixed_patch'],
-                        help='choose visual prompting method')
-    parser.add_argument('--prompt_size', type=int, default=30,
-                        help='size for visual prompts')
-
-    # other
-    parser.add_argument('--seed', type=int, default=0,
-                        help='seed for initializing training')
-    parser.add_argument('--model_dir', type=str, default='./visual_prompting/save/models',
-                        help='path to save models')
-    parser.add_argument('--image_dir', type=str, default='./visual_prompting/save/images',
-                        help='path to save images')
-    parser.add_argument('--filename', type=str, default=None,
-                        help='filename to save')
-    parser.add_argument('--trial', type=int, default=1,
-                        help='number of trials')
-    parser.add_argument('--resume', type=str, default=None,
-                        help='path to resume from checkpoint')
-    parser.add_argument('--evaluate', default=False,
-                        action="store_true",
-                        help='evaluate model test set')
-    parser.add_argument('--gpu', type=int, default=None,
-                        help='gpu to use')
-
     args = parser.parse_args()
 
     return args
@@ -159,11 +73,6 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 def main(args, cfg):
     global device
 
-    if args.seed is not None:
-        random.seed(args.seed)
-        torch.manual_seed(args.seed)
-        cudnn.deterministic = True
-
     # create dataloaders
     # train_loader = loader.construct_loader(cfg, "train")
     val_loader = loader.construct_loader(cfg, "val")
@@ -171,38 +80,62 @@ def main(args, cfg):
 
     lder = val_loader
 
-    for epoch in range(args.epochs):
-        # remove zero-based indexing on epoch
-        epoch += 1
+    for batch_iter, data in enumerate(lder):
+        if(cfg.DATA.CROP_PROMPT == True and cfg.DATA.TRAIN_CROP_PROMPT == True):
+            inputs, labels, index, times, meta, crop_params_dict = data
 
-        # train for one epoch
-        if(epoch == 1): 
-            for batch_iter, (inputs, labels, index, times, meta, crop_params_dict) in enumerate(lder):
+            aspect_ratio_0_batch = crop_params_dict["aspect_ratio"][0].tolist()
+            aspect_ratio_1_batch = crop_params_dict["aspect_ratio"][1].tolist()
 
-                images = inputs[0]
+            scale_0_batch = crop_params_dict["scale"][0].tolist()
+            scale_1_batch = crop_params_dict["scale"][1].tolist()
+        else:
+            inputs, labels, index, times, meta = data
+        
+        images = inputs[0]
+        
+        if(batch_iter <= 5):
+            for idx in range(images.shape[0]):
+                if(cfg.DATA.CROP_PROMPT == True and cfg.DATA.TRAIN_CROP_PROMPT == True):
+                    frames_crop_train = transform.random_resized_crop(
+                        images=images[idx],
+                        target_height=crop_params_dict["crop_size"][idx].item(),
+                        target_width=crop_params_dict["crop_size"][idx].item(),
+                        scale=(scale_0_batch[idx], scale_1_batch[idx]),
+                        ratio=(aspect_ratio_0_batch[idx], aspect_ratio_1_batch[idx]),
+                    )
 
-                transform_func = transform.random_crop
-                
-                if(batch_iter <= 5):
-                    for idx in range(images.shape[0]):
-                        frames_crop, _ = transform.random_short_side_scale_jitter(
-                            images=images[idx],
-                            min_size=crop_params_dict["min_size"],
-                            max_size=crop_params_dict["max_size"],
-                            inverse_uniform_sampling=["inverse_uniform_sampling"],
-                        )
+                    frames_crop_jit, _ = transform.random_short_side_scale_jitter(
+                        images=images[idx],
+                        min_size=crop_params_dict["min_scale"][idx].item(),
+                        max_size=crop_params_dict["max_scale"][idx].item(),
+                        inverse_uniform_sampling=crop_params_dict["inverse_uniform_sampling"][idx].item(),
+                    )
 
-                        frames_crop, _ = transform.random_crop(frames_crop, crop_params_dict["crop_size"])
+                    frames_crop_val, _ = transform.random_crop(frames_crop_jit, crop_params_dict["crop_size"][idx].item())
+                    frames_crop_test, _ = transform.uniform_crop(frames_crop_jit, crop_params_dict["crop_size"][idx].item(), spatial_idx=1)
+                    frames_orig = images[idx]
+                    
+                    clip_crop_train = frames_crop_train.permute(1, 0, 2, 3)
+                    clip_crop_val = frames_crop_val.permute(1, 0, 2, 3)
+                    clip_crop_test = frames_crop_test.permute(1, 0, 2, 3)
 
-                        frames_orig = images[idx]
-                        
-                        clip_crop = frames_crop.permute(1, 0, 2, 3)
-                        clip_orig = frames_orig.permute(1, 0, 2, 3)
+                    clip_orig = torch.nn.functional.interpolate(
+                        frames_orig.permute(1, 0, 2, 3),
+                        size=(crop_params_dict["crop_size"][idx].item(), crop_params_dict["crop_size"][idx].item()),
+                        mode="bilinear",
+                        align_corners=False,
+                    )
 
-                        clip = torch.cat([clip_orig, clip_crop], dim=3)
-                        for jdx in range(clip.shape[0]):
-                            if(jdx == 0):
-                                save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/side_by_sides/{batch_iter}_{idx}_{jdx}.png")
+                    clip = torch.cat([clip_orig, clip_crop_train, clip_crop_val, clip_crop_test], dim=3)
+
+                else:
+                    frames = images[idx]
+                    clip = frames.permute(1, 0, 2, 3)
+            
+                for jdx in range(clip.shape[0]):
+                    if(jdx == 0):
+                        save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/side_by_sides/{batch_iter}_{idx}_{jdx}.png")
 
 
 if __name__ == '__main__':
@@ -215,7 +148,7 @@ if __name__ == '__main__':
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
     cfg.DATA.CROP_PROMPT = True
-    cfg.DATA.TRAIN_CROP_PROMPT = True
+    cfg.DATA.RETURN_CROPPING_PARAMS = True
 
     # gather preds and targets from validation dataset
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)

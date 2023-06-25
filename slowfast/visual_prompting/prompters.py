@@ -87,9 +87,36 @@ class RandomPatchPrompter(nn.Module):
 class CropPrompter(nn.Module):
     def __init__(self, args):
         super(CropPrompter, self).__init__()
+        self.crop_size = args.image_size
+        self.resize = nn.Parameter(torch.tensor(256.))
+        self.y_offset = nn.Parameter(torch.tensor(0.))
+        self.x_offset = nn.Parameter(torch.tensor(0.))
 
     def forward(self, x):
-        return []
+        clamped_size = max(0, min(1024, self.resize.data.item()))
+        clamped_y_offset = max(0, min(clamped_size, self.y_offset.data.item()))
+        clamped_x_offset = max(0, min(clamped_size, self.x_offset.data.item()))
+
+        crops = []
+
+        for clip_idx in range(x.shape[0]):
+            
+            resized_images = torch.nn.functional.interpolate(
+                x[clip_idx],
+                size=(clamped_size, clamped_size),
+                mode="bilinear",
+                align_corners=False,
+            )
+
+            crop = resized_images[
+                :, :, clamped_y_offset : clamped_y_offset + self.crop_size, clamped_x_offset : clamped_x_offset + self.crop_size
+            ]
+
+            crops.append(crop)
+
+        prompt = torch.cat(crops, dim=0)
+
+        return [prompt]
 
 
 def padding(args):

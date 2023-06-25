@@ -107,8 +107,8 @@ def parse_option():
     parser.add_argument('--patience', type=int, default=1000)
 
     # model
-    parser.add_argument('--method', type=str, default='padding',
-                        choices=['padding', 'random_patch', 'fixed_patch'],
+    parser.add_argument('--method', type=str, default='crop',
+                        choices=['padding', 'random_patch', 'fixed_patch', 'crop'],
                         help='choose visual prompting method')
     parser.add_argument('--prompt_size', type=int, default=30,
                         help='size for visual prompts')
@@ -424,7 +424,5 @@ if __name__ == '__main__':
         cfg = assert_and_infer_cfg(cfg)
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
-    cfg.DATA.CROP_PROMPT = True
-    cfg.DATA.TRAIN_CROP_PROMPT = True
 
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)
