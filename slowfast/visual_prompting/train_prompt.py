@@ -42,6 +42,7 @@ from slowfast.models import build_model
 from slowfast.config.defaults import assert_and_infer_cfg
 from slowfast.utils.parser import load_config
 from slowfast.utils.metrics import topk_accuracies
+from slowfast.datasets import transform
 
 import prompters
 from utils import AverageMeter, ProgressMeter, save_checkpoint, cosine_lr, launch_job
@@ -96,7 +97,7 @@ def parse_option():
     # optimization
     parser.add_argument('--optim', type=str, default='sgd',
                         help='optimizer to use')
-    parser.add_argument('--learning_rate', type=float, default=0.2,
+    parser.add_argument('--learning_rate', type=float, default=0.02,
                         help='learning rate')
     parser.add_argument("--weight_decay", type=float, default=1e-3,
                         help="weight decay")
@@ -352,7 +353,13 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
 
     with torch.no_grad():
         end = time.time()
-        for batch_iter, (inputs, labels, index, times, meta) in enumerate(val_loader):
+        for batch_iter, data in enumerate(val_loader):
+
+            if(args.method == 'crop'):
+                inputs, labels, index, times, meta, crop_params_dict = data
+            else:
+                inputs, labels, index, times, meta = data
+
             if cfg.NUM_GPUS:
                 # Transferthe data to the current GPU device.
                 if isinstance(inputs, (list,)):
@@ -371,7 +378,32 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
 
             # compute output
             output_prompt = model(prompted_images)
-            output_org = model(inputs)
+
+            if(args.method == 'crop'):
+                clips = []
+
+                # apply jitter and rand crop for each clip in batch; this is the original crop method used on val data
+                for idx in range(images.shape[0]):
+
+                    frames_crop_val, _ = transform.random_short_side_scale_jitter(
+                        images=images[idx],
+                        min_size=crop_params_dict["min_scale"][idx].item(),
+                        max_size=crop_params_dict["max_scale"][idx].item(),
+                        inverse_uniform_sampling=crop_params_dict["inverse_uniform_sampling"][idx].item(),
+                    )
+
+                    frames_crop_val, _ = transform.random_crop(frames_crop_val, crop_params_dict["crop_size"][idx].item())
+
+                    frames_crop_val = frames_crop_val.unsqueeze(dim=0)
+
+                    clips.append(frames_crop_val)
+
+                inputs_org = [torch.cat(clips, dim=0)]
+                
+                output_org = model(inputs_org)
+
+            else:
+                output_org = model(inputs)
 
             # save prompted_images for visualization
             if((epoch == 1 or epoch % args.print_freq == 0) and batch_iter == 0):
@@ -427,5 +459,6 @@ if __name__ == '__main__':
 
     if(args.method == 'crop'):
         cfg.DATA.CROP_PROMPT = True
+        cfg.DATA.RETURN_CROPPING_PARAMS = True
 
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)

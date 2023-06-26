@@ -115,7 +115,7 @@ class CropPrompter(nn.Module):
             crop = crop.unsqueeze(dim=0) # 3 x 16 x 224 x 224 => 1 x 3 x 16 x 224 x 224
             crops.append(crop)
 
-        prompt = torch.cat(crops, dim=0) # => 16 x 3 x 16 x 224 x 224
+        prompt = torch.cat(crops, dim=0) # => 16 x 3 x 16 x 224 x 224)
 
         return [prompt]
 
