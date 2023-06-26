@@ -97,7 +97,7 @@ def parse_option():
     # optimization
     parser.add_argument('--optim', type=str, default='sgd',
                         help='optimizer to use')
-    parser.add_argument('--learning_rate', type=float, default=0.02,
+    parser.add_argument('--learning_rate', type=float, default=0.2,
                         help='learning rate')
     parser.add_argument("--weight_decay", type=float, default=1e-3,
                         help="weight decay")
