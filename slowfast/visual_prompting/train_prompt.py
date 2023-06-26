@@ -425,4 +425,7 @@ if __name__ == '__main__':
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
 
+    if(args.method == 'crop'):
+        cfg.DATA.CROP_PROMPT = True
+
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)
