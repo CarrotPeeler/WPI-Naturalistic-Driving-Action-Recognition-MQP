@@ -109,7 +109,7 @@ def parse_option():
 
     # model
     parser.add_argument('--method', type=str, default='crop',
-                        choices=['padding', 'random_patch', 'fixed_patch', 'crop'],
+                        choices=['padding', 'random_patch', 'fixed_patch', 'crop', 'noise_crop'],
                         help='choose visual prompting method')
     parser.add_argument('--prompt_size', type=int, default=30,
                         help='size for visual prompts')
@@ -167,6 +167,10 @@ def main(args, cfg):
 
     # create prompt
     prompter = prompters.__dict__[args.method](args).to(device)
+    print(f"Prompt Params:")
+    for name, param in prompter.named_parameters():
+        if param.requires_grad and '.' not in name:
+            print(name, param.data)
 
     # optionally resume from a checkpoint
     if args.resume:
@@ -406,7 +410,7 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
                 output_org = model(inputs)
 
             # save prompted_images for visualization
-            if((epoch == 1 or epoch % args.print_freq == 0) and batch_iter == 0):
+            if((epoch == 1 or epoch % 5 == 0) and batch_iter == 0):
                 for idx in range(len(prompted_images[0])): 
                     # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
                     prompted_clip = prompted_images[0][idx].permute(1, 0, 2, 3) # prompted clip
@@ -457,7 +461,7 @@ if __name__ == '__main__':
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
 
-    if(args.method == 'crop'):
+    if(args.method == 'crop' or args.method == 'noise_crop'):
         cfg.DATA.CROP_PROMPT = True
         cfg.DATA.RETURN_CROPPING_PARAMS = True
 
