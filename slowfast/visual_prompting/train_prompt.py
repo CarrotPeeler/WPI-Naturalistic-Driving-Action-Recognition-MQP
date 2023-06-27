@@ -306,6 +306,15 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         # compute gradient and do SGD step
         optimizer.zero_grad()
         loss.backward()
+
+        # print gradients for each named param
+        for idx, (name, param) in enumerate(prompter.named_parameters()):
+
+            grad_val = optimizer.param_groups[0]['params'][idx].grad
+
+            if param.requires_grad and '.' not in name:
+                print(f"{name}: {grad_val}")
+
         optimizer.step()
 
         # measure accuracy

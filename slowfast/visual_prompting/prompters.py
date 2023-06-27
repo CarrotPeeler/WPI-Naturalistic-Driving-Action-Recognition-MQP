@@ -93,11 +93,11 @@ class CropPrompter(nn.Module):
         self.x_offset = nn.Parameter(torch.randint(low=0, high=32, size=(1,), dtype=torch.float16))
 
     def forward(self, x):
-        clamped_size = int(max(self.crop_size, min(1024, self.resize.data.item())))
-        clamped_y_offset = int(max(0, min(abs(x.shape[3] - clamped_size), self.y_offset.data.item())))
-        clamped_x_offset = int(max(0, min(abs(x.shape[4] - clamped_size), self.x_offset.data.item())))
+        clamped_size = int(torch.clamp(self.resize, min=self.crop_size, max=1024).item())
+        clamped_y_offset = int(torch.clamp(self.y_offset, min=0, max=torch.abs(torch.tensor([x.shape[3] - clamped_size])).item()))
+        clamped_x_offset = int(torch.clamp(self.x_offset, min=0, max=torch.abs(torch.tensor([x.shape[4] - clamped_size])).item()))
 
-        print(f"size: {clamped_size} y: {clamped_y_offset} x: {clamped_x_offset}")
+        # print(f"size: {clamped_size} y: {clamped_y_offset} x: {clamped_x_offset}")
 
         crops = []
 
