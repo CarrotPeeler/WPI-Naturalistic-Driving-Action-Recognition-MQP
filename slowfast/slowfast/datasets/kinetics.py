@@ -503,6 +503,13 @@ class Kinetics(torch.utils.data.Dataset):
                         if(index == 0):
                             print(crop_params_dict)
 
+                        f_out[idx] = torch.nn.functional.interpolate(
+                            f_out[idx],
+                            size=(512, 512),
+                            mode="bilinear",
+                            align_corners=False,
+                        )
+
                     if self.rand_erase:
                         erase_transform = RandomErasing(
                             self.cfg.AUG.RE_PROB,

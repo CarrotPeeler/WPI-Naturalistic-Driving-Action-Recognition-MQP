@@ -87,37 +87,49 @@ class RandomPatchPrompter(nn.Module):
 class CropPrompter(nn.Module):
     def __init__(self, args):
         super(CropPrompter, self).__init__()
-        self.crop_size = args.image_size
-        self.resize = nn.Parameter(torch.tensor(256.)) #(torch.randint(low=self.crop_size, high=1024, size=(1,), dtype=torch.float16, requires_grad=True))
-        self.y_offset = nn.Parameter(torch.randint(low=0, high=32, size=(1,), dtype=torch.float16))
-        self.x_offset = nn.Parameter(torch.randint(low=0, high=32, size=(1,), dtype=torch.float16))
+        self.crop_size = torch.tensor(args.image_size, dtype=torch.int16)
+        self.cam_view_dict = {
+            'Dashboard': 0,
+            'Right_side_window': 1,
+            'Rear_view': 2
+        }
 
-    def forward(self, x):
-        clamped_size = int(torch.clamp(self.resize, min=self.crop_size, max=1024).item())
-        clamped_y_offset = int(torch.clamp(self.y_offset, min=0, max=torch.abs(torch.tensor([x.shape[3] - clamped_size])).item()))
-        clamped_x_offset = int(torch.clamp(self.x_offset, min=0, max=torch.abs(torch.tensor([x.shape[4] - clamped_size])).item()))
+        # corresponding cam_view indices for parameter tensors: Dashboard = 0, Right_side_window = 1, Rear_view = 2
+        self.resize = torch.nn.Parameter(torch.randint(low=self.crop_size, high=1024, size=(3,), dtype=torch.float32))
+        self.y_offset = torch.nn.Parameter(torch.randint(low=0, high=32, size=(3,), dtype=torch.float32))
+        self.x_offset = torch.nn.Parameter(torch.randint(low=0, high=32, size=(3,), dtype=torch.float32))
 
-        # print(f"size: {clamped_size} y: {clamped_y_offset} x: {clamped_x_offset}")
+    def forward(self, x, cam_views):
+        assert x.shape[3] == x.shape[4], f"input x does not have matching height and width dimensions; got ({x.shape[3]}, {x.shape[4]})"
+        assert x.shape[3] >= self.crop_size.item(), "input x height and width dimensions are smaller than the desired crop size"
+        assert x.shape[0] == len(cam_views), f"len of cam_views does not match batch size of x; expected {x.shape[0]}, got {len(cam_views)} instead"
 
-        crops = []
+        clamped_resize = torch.clamp(self.resize, min=x.shape[3], max=1024).type(torch.int16).cuda()
+        clamped_y_offset = torch.clamp(self.y_offset, min=torch.zeros(1).cuda(), max=clamped_resize - self.crop_size).type(torch.int16).cuda()
+        clamped_x_offset = torch.clamp(self.x_offset, min=torch.zeros(1).cuda(), max=clamped_resize - self.crop_size).type(torch.int16).cuda()
+
+        prompted_clips = []
 
         for clip_idx in range(x.shape[0]):
+            cam_view_idx = self.cam_view_dict[cam_views[clip_idx]]
             
-            resized_images = torch.nn.functional.interpolate(
+            resized_clip = torch.nn.functional.interpolate(
                 x[clip_idx],
-                size=(clamped_size, clamped_size),
+                size=(clamped_resize[cam_view_idx], clamped_resize[cam_view_idx]),
                 mode="bilinear",
                 align_corners=False,
             )
 
-            crop = resized_images[
-                :, :, clamped_y_offset : clamped_y_offset + self.crop_size, clamped_x_offset : clamped_x_offset + self.crop_size
-            ]
+            cropped_clip = resized_clip[
+                :, 
+                :, 
+                clamped_y_offset[cam_view_idx] : clamped_y_offset[cam_view_idx] + self.crop_size, 
+                clamped_x_offset[cam_view_idx] : clamped_x_offset[cam_view_idx] + self.crop_size
+            ].unsqueeze(dim=0)
 
-            crop = crop.unsqueeze(dim=0) # 3 x 16 x 224 x 224 => 1 x 3 x 16 x 224 x 224
-            crops.append(crop)
+            prompted_clips.append(cropped_clip)
 
-        prompt = torch.cat(crops, dim=0) # => 16 x 3 x 16 x 224 x 224)
+        prompt = torch.cat(prompted_clips, dim=0)
 
         return [prompt]
     

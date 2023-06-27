@@ -93,6 +93,7 @@ def parse_option():
                         help='save frequency')
     parser.add_argument('--epochs', type=int, default=1000,
                         help='number of training epochs')
+    parser.add_argument('--prompt_save_freq', type=int, default=5)
 
     # optimization
     parser.add_argument('--optim', type=str, default='sgd',
@@ -132,6 +133,7 @@ def parse_option():
                         help='evaluate model test set')
     parser.add_argument('--gpu', type=int, default=None,
                         help='gpu to use')
+    parser.add_argument('--print_grads', type=bool, default=False)
 
     args = parser.parse_args()
 
@@ -287,6 +289,12 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         images = inputs[0]
         target = labels
 
+        cam_views = []
+
+        for clip_idx in range(len(inputs[0])):
+            cam_view = train_loader.dataset._path_to_videos[index[clip_idx]].rpartition('/')[-1].partition('_user')[0]
+            cam_views.append(cam_view)
+
         # measure data loading time
         data_time.update(time.time() - end)
 
@@ -297,8 +305,11 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         images = images.to(device)
         target = target.to(device)
 
-        prompted_images = prompter(images)
-
+        if(args.method == 'crop'):
+            prompted_images = prompter(images, cam_views)
+        else:
+            prompted_images = prompter(images)
+    
         output = model(prompted_images)
     
         loss = criterion(output, target)
@@ -308,12 +319,13 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         loss.backward()
 
         # print gradients for each named param
-        for idx, (name, param) in enumerate(prompter.named_parameters()):
+        if(args.print_grads == True):
+            for idx, (name, param) in enumerate(prompter.named_parameters()):
 
-            grad_val = optimizer.param_groups[0]['params'][idx].grad
+                grad_val = optimizer.param_groups[0]['params'][idx].grad
 
-            if param.requires_grad and '.' not in name:
-                print(f"{name}: {grad_val}")
+                if param.requires_grad and '.' not in name:
+                    print(f"{name}: {grad_val}")
 
         optimizer.step()
 
@@ -332,14 +344,6 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
 
         if batch_iter % args.print_freq == 0 and du.get_rank() == 0:
             progress.display(batch_iter)
-
-        # if i % args.save_freq == 0:
-        #     save_checkpoint({
-        #         'epoch': epoch + 1,
-        #         'state_dict': prompter.state_dict(),
-        #         'best_acc1': best_acc1,
-        #         'optimizer': optimizer.state_dict(),
-        #     }, args)
         
         torch.cuda.synchronize()
    
@@ -385,9 +389,19 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
             images = inputs[0]
             target = labels
 
+            cam_views = []
+
+            for clip_idx in range(len(inputs[0])):
+                cam_view = val_loader.dataset._path_to_videos[index[clip_idx]].rpartition('/')[-1].partition('_user')[0]
+                cam_views.append(cam_view)
+
             images = images.to(device)
             target = target.to(device)
-            prompted_images = prompter(images)
+            
+            if(args.method == 'crop'):
+                prompted_images = prompter(images, cam_views)
+            else:
+                prompted_images = prompter(images)
 
             # compute output
             output_prompt = model(prompted_images)
@@ -419,17 +433,21 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
                 output_org = model(inputs)
 
             # save prompted_images for visualization
-            if((epoch == 1 or epoch % 5 == 0) and batch_iter == 0):
+            if((epoch == 1 or epoch % args.prompt_save_freq == 0)):
                 for idx in range(len(prompted_images[0])): 
-                    # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
-                    prompted_clip = prompted_images[0][idx].permute(1, 0, 2, 3) # prompted clip
+                    if(index[idx] <= 5):
 
-                    for jdx in range(prompted_clip.shape[0]):
-                        if(jdx == 0):
-                            # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
-                            save_image(prompted_clip[jdx], f"{args.image_folder}/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
-                        else: 
-                            break
+                        # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
+                        prompted_clip = prompted_images[0][idx].permute(1, 0, 2, 3) # prompted clip
+                        # prompt = prompted_images[1][0].permute(1, 0, 2, 3) # prompted clip
+
+                        for jdx in range(prompted_clip.shape[0]):
+                            if(jdx == 0):
+                                # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
+                                save_image(prompted_clip[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompted_clip_{idx}.png")
+                                # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
+                            else: 
+                                break
 
             loss = criterion(output_prompt, target)
 
