@@ -112,7 +112,7 @@ def parse_option():
 
     # model
     parser.add_argument('--method', type=str, default='noise_crop',
-                        choices=['padding', 'random_patch', 'fixed_patch', 'crop', 'noise_crop'],
+                        choices=['padding', 'random_patch', 'fixed_patch', 'crop', 'noise_crop', 'self_attn'],
                         help='choose visual prompting method')
     parser.add_argument('--prompt_size', type=int, default=30,
                         help='size for visual prompts')
@@ -493,5 +493,6 @@ if __name__ == '__main__':
         cfg.DATA.RETURN_CROPPING_PARAMS = True
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
+    cfg.TRAIN.BATCH_SIZE = 2
 
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)

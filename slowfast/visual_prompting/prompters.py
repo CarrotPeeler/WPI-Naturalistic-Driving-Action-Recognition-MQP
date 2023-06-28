@@ -140,7 +140,7 @@ class NoiseCropPrompter(nn.Module):
 
         # Parameters below may need to be manually adjusted
         image_size = args.image_size
-        self.crop_size = 75
+        self.crop_size = 189
 
         temp = image_size - self.crop_size
         
@@ -224,6 +224,56 @@ class NoiseCropPrompter(nn.Module):
         #     x_offset = torch.randint(0, self.max_offset, size=(1,), dtype=torch.int16)
 
         return [x + prompt]
+    
+
+class Self_Attn(nn.Module):
+    """ Self attention Layer"""
+    def __init__(self, args, in_dim, activation):
+        super(Self_Attn,self).__init__()
+        self.chanel_in = in_dim
+        self.activation = activation
+        
+        self.query_conv = nn.Conv2d(in_channels = in_dim , out_channels = 32 , kernel_size= 1)
+        self.key_conv = nn.Conv2d(in_channels = in_dim , out_channels = 32 , kernel_size= 1)
+        self.value_conv = nn.Conv2d(in_channels = in_dim , out_channels = in_dim , kernel_size= 1)
+        self.gamma = nn.Parameter(torch.zeros(1))
+
+        self.softmax  = nn.Softmax(dim=-1) #
+        
+    def forward(self,x):
+        """
+            inputs :
+                x : input feature maps( B X C X W X H)
+            returns :
+                out : self attention value + input feature 
+                attention: B X N X N (N is Width*Height)
+        """
+        x = x.permute(0, 2, 1, 4, 3) # (B X C X T X H X W) => (B X T X C X W X H)
+
+        prompt_clips = []
+
+        for clip in x: # => (T X C X W X H) => wherever dim B appears below its actually dim T
+            print(self.query_conv(clip).shape)
+            
+            m_batchsize, C, width, height = clip.size()
+            proj_query  = self.query_conv(clip).view(m_batchsize,-1,width*height).permute(0,2,1) # B X C X (N)
+            proj_key =  self.key_conv(clip).view(m_batchsize,-1,width*height) # B X C x (*W*H)
+            energy =  torch.bmm(proj_query,proj_key) # transpose check
+            attention = self.softmax(energy) # BX (N) X (N) 
+            proj_value = self.value_conv(clip).view(m_batchsize,-1,width*height) # B X C X N
+
+            out = torch.bmm(proj_value,attention.permute(0,2,1) )
+            out = out.view(m_batchsize,C,width,height)
+            
+            out = self.gamma*out + clip
+            # return out,attention
+            out = out.unsqueeze(dim=0)
+            prompt_clips.append(out)
+        
+        prompt = torch.cat(prompt_clips, dim=0)
+
+        return [prompt]
+
 
 
 
@@ -245,3 +295,7 @@ def crop(args):
 
 def noise_crop(args):
     return NoiseCropPrompter(args)
+
+
+def self_attn(args):
+    return Self_Attn(args, in_dim=3, activation='relu') # num color channels = 3
