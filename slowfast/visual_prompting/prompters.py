@@ -139,10 +139,10 @@ class NoiseCropPrompter(nn.Module):
         super(NoiseCropPrompter, self).__init__()
 
         # Parameters below may need to be manually adjusted
-        image_size = 512
-        self.crop_size = 224
+        image_size = args.image_size
+        self.crop_size = 75
 
-        temp = 512-224
+        temp = image_size - self.crop_size
         
         pad_up_size = {
             'Dashboard': temp,
@@ -202,29 +202,18 @@ class NoiseCropPrompter(nn.Module):
             f"len of cam_views does not match batch size of x; expected {x.shape[0]}, got {len(cam_views)} instead"
         
         clip_prompts = []
-        resized_clips = []
 
         base = torch.zeros(3, 1, self.crop_size, self.crop_size).cuda()
 
         for clip_idx in range(x.shape[0]):
             cam_view = cam_views[clip_idx]
-            
-            resized_clip = torch.nn.functional.interpolate(
-                x[clip_idx],
-                size=(self.target_resize, self.target_resize),
-                mode="bilinear",
-                align_corners=False,
-            ).unsqueeze(dim=0)
-            
-            resized_clips.append(resized_clip)
 
             clip_prompt = torch.cat([self.pad_left[cam_view], base, self.pad_right[cam_view]], dim=3)
             clip_prompt = torch.cat([self.pad_up[cam_view], clip_prompt, self.pad_down[cam_view]], dim=2)
-            clip_prompt = torch.cat(x.size(2) * [clip_prompt], dim=1)
+            clip_prompt = torch.cat(x.size(2) * [clip_prompt], dim=1).unsqueeze(dim=0)
 
             clip_prompts.append(clip_prompt)
 
-        resized = torch.cat(resized_clips, dim=0) # => 16 x 3 x 16 x 224 x 224)
         prompt = torch.cat(clip_prompts, dim=0)
 
         # y_offset = 0
@@ -234,9 +223,7 @@ class NoiseCropPrompter(nn.Module):
         #     y_offset = torch.randint(0, self.max_offset, size=(1,), dtype=torch.int16)
         #     x_offset = torch.randint(0, self.max_offset, size=(1,), dtype=torch.int16)
 
-        print(f"resize: {resized.shape} prompt: {prompt.shape}")
-
-        return [resized + prompt]
+        return [x + prompt]
 
 
 

@@ -229,7 +229,7 @@ def main(args, cfg):
             train_loader.dataset._set_epoch_num(epoch)
 
         # train for one epoch
-        train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args, cfg)
+        # train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args, cfg)
        
         # evaluate on validation set
         acc1 = validate(val_loader, model, prompter, criterion, args, cfg, epoch)
@@ -374,7 +374,7 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
         end = time.time()
         for batch_iter, data in enumerate(val_loader):
 
-            if(args.method == 'crop'):
+            if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
                 inputs, labels, index, times, meta, crop_params_dict = data
             else:
                 inputs, labels, index, times, meta = data
@@ -408,7 +408,7 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
             # compute output
             output_prompt = model(prompted_images)
 
-            if(args.method == 'crop'):
+            if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
                 clips = []
 
                 # apply jitter and rand crop for each clip in batch; this is the original crop method used on val data
@@ -491,9 +491,6 @@ if __name__ == '__main__':
     if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
         cfg.DATA.CROP_PROMPT = True
         cfg.DATA.RETURN_CROPPING_PARAMS = True
-
-        cfg.DATA.TRAIN_CROP_SIZE = 512
-        cfg.DATA.TEST_CROP_SIZE = 512
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
 

@@ -81,7 +81,7 @@ def main(args, cfg):
     lder = val_loader
 
     for batch_iter, data in enumerate(lder):
-        if(cfg.DATA.CROP_PROMPT == True and cfg.DATA.TRAIN_CROP_PROMPT == True):
+        if(cfg.DATA.CROP_PROMPT == True and cfg.DATA.RETURN_CROPPING_PARAMS == True):
             inputs, labels, index, times, meta, crop_params_dict = data
 
             aspect_ratio_0_batch = crop_params_dict["aspect_ratio"][0].tolist()
@@ -96,7 +96,7 @@ def main(args, cfg):
         
         if(batch_iter <= 5):
             for idx in range(images.shape[0]):
-                if(cfg.DATA.CROP_PROMPT == True and cfg.DATA.TRAIN_CROP_PROMPT == True):
+                if(cfg.DATA.CROP_PROMPT == True and cfg.DATA.RETURN_CROPPING_PARAMS == True):
                     frames_crop_train = transform.random_resized_crop(
                         images=images[idx],
                         target_height=crop_params_dict["crop_size"][idx].item(),
@@ -135,7 +135,7 @@ def main(args, cfg):
             
                 for jdx in range(clip.shape[0]):
                     if(jdx == 0):
-                        save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/side_by_sides/{batch_iter}_{idx}_{jdx}.png")
+                        save_image(clip_orig[jdx], os.getcwd() + f"/visual_prompting/images/originals/{batch_iter}_{idx}_{jdx}.png")
 
 
 if __name__ == '__main__':

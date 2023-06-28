@@ -505,7 +505,7 @@ class Kinetics(torch.utils.data.Dataset):
 
                         f_out[idx] = torch.nn.functional.interpolate(
                             f_out[idx],
-                            size=(512, 512),
+                            size=(self.cfg.DATA.TRAIN_CROP_SIZE, self.cfg.DATA.TRAIN_CROP_SIZE),
                             mode="bilinear",
                             align_corners=False,
                         )
