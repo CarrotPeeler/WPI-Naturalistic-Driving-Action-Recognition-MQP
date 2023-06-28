@@ -229,7 +229,7 @@ def main(args, cfg):
             train_loader.dataset._set_epoch_num(epoch)
 
         # train for one epoch
-        # train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args, cfg)
+        train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch, args, cfg)
        
         # evaluate on validation set
         acc1 = validate(val_loader, model, prompter, criterion, args, cfg, epoch)
