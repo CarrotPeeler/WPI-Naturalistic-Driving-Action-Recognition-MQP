@@ -137,38 +137,106 @@ class CropPrompter(nn.Module):
 class NoiseCropPrompter(nn.Module):
     def __init__(self, args):
         super(NoiseCropPrompter, self).__init__()
-        self.crop_size = args.image_size
-        self.target_resize = 512
-        
 
-    def forward(self, x):
+        # Parameters below may need to be manually adjusted
+        image_size = 512
+        self.crop_size = 224
+
+        temp = 512-224
         
+        pad_up_size = {
+            'Dashboard': temp,
+            'Right_side_window': temp,
+            'Rear_view': temp
+        }
+
+        pad_left_size = {
+            'Dashboard': temp,
+            'Right_side_window': temp,
+            'Rear_view': temp
+        }
+
+        # Parameters below DO NOT need to be manually adjusted
+        self.target_resize = image_size
+        self.max_offset = image_size - self.crop_size
+
+        pad_down_size = {
+            'Dashboard': self.max_offset - pad_up_size['Dashboard'],
+            'Right_side_window': self.max_offset - pad_up_size['Right_side_window'],
+            'Rear_view': self.max_offset - pad_up_size['Rear_view']
+        }
+
+        pad_right_size = {
+            'Dashboard': self.max_offset - pad_left_size['Dashboard'],
+            'Right_side_window': self.max_offset - pad_left_size['Right_side_window'],
+            'Rear_view': self.max_offset - pad_left_size['Rear_view']
+        }
+
+        self.pad_up = nn.ParameterDict({
+            'Dashboard':  torch.randn([3, 1, pad_up_size['Dashboard'], image_size]),
+            'Right_side_window': torch.randn([3, 1, pad_up_size['Right_side_window'], image_size]),
+            'Rear_view': torch.randn([3, 1, pad_up_size['Rear_view'], image_size]),
+        })
+
+        self.pad_down = nn.ParameterDict({
+            'Dashboard':  torch.randn([3, 1, pad_down_size['Dashboard'], image_size]),
+            'Right_side_window': torch.randn([3, 1, pad_down_size['Right_side_window'], image_size]),
+            'Rear_view': torch.randn([3, 1, pad_down_size['Rear_view'], image_size]),
+        })
+
+        self.pad_left = nn.ParameterDict({
+            'Dashboard': torch.randn([3, 1, self.crop_size, pad_left_size['Dashboard']]),
+            'Right_side_window': torch.randn([3, 1, self.crop_size, pad_left_size['Right_side_window']]),
+            'Rear_view': torch.randn([3, 1, self.crop_size, pad_left_size['Rear_view']]),
+        })
+
+        self.pad_right = nn.ParameterDict({
+            'Dashboard': torch.randn([3, 1, self.crop_size, pad_right_size['Dashboard']]),
+            'Right_side_window': torch.randn([3, 1, self.crop_size, pad_right_size['Right_side_window']]),
+            'Rear_view': torch.randn([3, 1, self.crop_size, pad_right_size['Rear_view']]),
+        })
+
+
+    def forward(self, x, cam_views):
+        assert x.shape[0] == len(cam_views), \
+            f"len of cam_views does not match batch size of x; expected {x.shape[0]}, got {len(cam_views)} instead"
+        
+        clip_prompts = []
         resized_clips = []
 
+        base = torch.zeros(3, 1, self.crop_size, self.crop_size).cuda()
+
         for clip_idx in range(x.shape[0]):
+            cam_view = cam_views[clip_idx]
             
             resized_clip = torch.nn.functional.interpolate(
                 x[clip_idx],
                 size=(self.target_resize, self.target_resize),
                 mode="bilinear",
                 align_corners=False,
-            )
-
-            resized_clip = resized_clip.unsqueeze(dim=0) # 3 x 16 x 224 x 224 => 1 x 3 x 16 x 224 x 224
+            ).unsqueeze(dim=0)
+            
             resized_clips.append(resized_clip)
 
-        resized_clips_tensor = torch.cat(resized_clips, dim=0) # => 16 x 3 x 16 x 224 x 224)
+            clip_prompt = torch.cat([self.pad_left[cam_view], base, self.pad_right[cam_view]], dim=3)
+            clip_prompt = torch.cat([self.pad_up[cam_view], clip_prompt, self.pad_down[cam_view]], dim=2)
+            clip_prompt = torch.cat(x.size(2) * [clip_prompt], dim=1)
 
-        height = x.shape[3]
-        width = x.shape[4]
+            clip_prompts.append(clip_prompt)
 
-        y_offset = 0
-        if height > self.crop_size:
-            y_offset = torch.randint(0, height - self.crop_size, size=(1,), dtype=torch.int16)
+        resized = torch.cat(resized_clips, dim=0) # => 16 x 3 x 16 x 224 x 224)
+        prompt = torch.cat(clip_prompts, dim=0)
 
-        x_offset = 0
-        if width > self.crop_size:
-            x_offset = torch.randint(0, width - self.crop_size, size=(1,), dtype=torch.int16)
+        # y_offset = 0
+        # x_offset = 0
+
+        # if self.target_size > self.crop_size:
+        #     y_offset = torch.randint(0, self.max_offset, size=(1,), dtype=torch.int16)
+        #     x_offset = torch.randint(0, self.max_offset, size=(1,), dtype=torch.int16)
+
+        print(f"resize: {resized.shape} prompt: {prompt.shape}")
+
+        return [resized + prompt]
 
 
 

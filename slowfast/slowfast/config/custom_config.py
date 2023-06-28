@@ -12,3 +12,5 @@ def add_custom_config(_C):
 
     # enable to have data loaders return cropping parameters 
     _C.DATA.RETURN_CROPPING_PARAMS = False
+
+    _C.DATA.CAM_VIEWS_METHODS = ['crop', 'noise_crop']

@@ -93,7 +93,9 @@ def parse_option():
                         help='save frequency')
     parser.add_argument('--epochs', type=int, default=1000,
                         help='number of training epochs')
-    parser.add_argument('--prompt_save_freq', type=int, default=5)
+    parser.add_argument('--prompt_save_freq', type=int, default=5,
+                        help='save frequency for prompt images')
+    
 
     # optimization
     parser.add_argument('--optim', type=str, default='sgd',
@@ -109,7 +111,7 @@ def parse_option():
     parser.add_argument('--patience', type=int, default=1000)
 
     # model
-    parser.add_argument('--method', type=str, default='crop',
+    parser.add_argument('--method', type=str, default='noise_crop',
                         choices=['padding', 'random_patch', 'fixed_patch', 'crop', 'noise_crop'],
                         help='choose visual prompting method')
     parser.add_argument('--prompt_size', type=int, default=30,
@@ -171,7 +173,7 @@ def main(args, cfg):
     prompter = prompters.__dict__[args.method](args).to(device)
     print(f"Prompt Params:")
     for name, param in prompter.named_parameters():
-        if param.requires_grad and '.' not in name:
+        if param.requires_grad and 'pad' in name:
             print(name, param.data)
 
     # optionally resume from a checkpoint
@@ -305,7 +307,7 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         images = images.to(device)
         target = target.to(device)
 
-        if(args.method == 'crop'):
+        if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
             prompted_images = prompter(images, cam_views)
         else:
             prompted_images = prompter(images)
@@ -324,7 +326,7 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
 
                 grad_val = optimizer.param_groups[0]['params'][idx].grad
 
-                if param.requires_grad and '.' not in name:
+                if param.requires_grad and 'pad' in name:
                     print(f"{name}: {grad_val}")
 
         optimizer.step()
@@ -398,7 +400,7 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
             images = images.to(device)
             target = target.to(device)
             
-            if(args.method == 'crop'):
+            if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
                 prompted_images = prompter(images, cam_views)
             else:
                 prompted_images = prompter(images)
@@ -444,7 +446,7 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
                         for jdx in range(prompted_clip.shape[0]):
                             if(jdx == 0):
                                 # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
-                                save_image(prompted_clip[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompted_clip_{idx}.png")
+                                save_image(prompted_clip[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompted_{cam_views[idx]}_{idx}.png")
                                 # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
                             else: 
                                 break
@@ -486,10 +488,13 @@ if __name__ == '__main__':
         cfg = load_config(args, path_to_config)
         cfg = assert_and_infer_cfg(cfg)
 
-    args.image_size = cfg.DATA.TRAIN_CROP_SIZE
-
-    if(args.method == 'crop' or args.method == 'noise_crop'):
+    if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
         cfg.DATA.CROP_PROMPT = True
         cfg.DATA.RETURN_CROPPING_PARAMS = True
+
+        cfg.DATA.TRAIN_CROP_SIZE = 512
+        cfg.DATA.TEST_CROP_SIZE = 512
+
+    args.image_size = cfg.DATA.TRAIN_CROP_SIZE
 
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)
