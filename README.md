@@ -135,3 +135,5 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_
 - improve proposal generation and post-processing algorithms :o:
 
 - incorporate visual prompting or experiment with other action recognition aspects :o:
+
+- retrain MViTv2-B separately on each set of camera angle data and then combine results in post-processing
