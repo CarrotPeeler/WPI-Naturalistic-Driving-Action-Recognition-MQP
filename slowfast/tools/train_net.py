@@ -2,7 +2,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
 """Train a video classification model."""
-
+import os
 import math
 import numpy as np
 import pprint
@@ -26,6 +26,8 @@ from slowfast.models.contrastive import (
 )
 from slowfast.utils.meters import AVAMeter, EpochTimer, TrainMeter, ValMeter
 from slowfast.utils.multigrid import MultigridSchedule
+from visual_prompting.utils import cosine_lr, save_checkpoint
+from visual_prompting import prompters
 
 logger = logging.get_logger(__name__)
 
@@ -626,6 +628,44 @@ def train(cfg):
             model.module.init_knn_labels(train_loader)
         else:
             model.init_knn_labels(train_loader)
+
+    if(cfg.PROMPT.ENABLE):
+        # create prompt
+        prompter = prompters.__dict__[args.method](args)
+        print(f"Prompt Params:")
+        for name, param in prompter.named_parameters():
+            if param.requires_grad and 'pad' in name:
+                print(name, param.data)
+
+        # optionally resume from a checkpoint
+        if args.resume:
+            if os.path.isfile(args.resume):
+                print("=> loading checkpoint '{}'".format(args.resume))
+                if args.gpu is None:
+                    checkpoint = torch.load(args.resume)
+                else:
+                    # Map model to be loaded to specified single gpu.
+                    loc = 'cuda:{}'.format(args.gpu)
+                    checkpoint = torch.load(args.resume, map_location=loc)
+                args.start_epoch = checkpoint['epoch']
+                best_acc1 = checkpoint['best_acc1']
+                if args.gpu is not None:
+                    # best_acc1 may be from a checkpoint from a different GPU
+                    best_acc1 = best_acc1.to(args.gpu)
+                prompter.load_state_dict(checkpoint['state_dict'])
+                print("=> loaded checkpoint '{}' (epoch {})"
+                        .format(args.resume, checkpoint['epoch']))
+            else:
+                print("=> no checkpoint found at '{}'".format(args.resume))
+
+        # define criterion and optimizer
+        prompt_optimizer = torch.optim.SGD(prompter.parameters(),
+                                        lr=args.learning_rate,
+                                        momentum=args.momentum,
+                                        weight_decay=args.weight_decay)
+        
+        total_steps = len(train_loader) * args.epochs
+        scheduler = cosine_lr(prompt_optimizer, args.learning_rate, args.warmup, total_steps)
 
     # Create meters.
     if cfg.DETECTION.ENABLE:

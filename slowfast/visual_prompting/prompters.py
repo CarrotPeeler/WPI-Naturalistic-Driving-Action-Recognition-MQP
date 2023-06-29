@@ -56,8 +56,8 @@ class PadPrompter(nn.Module):
 class FixedPatchPrompter(nn.Module):
     def __init__(self, args):
         super(FixedPatchPrompter, self).__init__()
-        self.isize = args.image_size
-        self.psize = args.prompt_size
+        self.isize = args if isinstance(args, int) else args.image_size
+        self.psize = self.isize if isinstance(args, int) else args.prompt_size
         self.patch = nn.Parameter(torch.randn([1, 3, 1, self.psize, self.psize]))
 
     def forward(self, x):
@@ -227,8 +227,8 @@ class NoiseCropPrompter(nn.Module):
     
 
 class Self_Attn(nn.Module):
-    """ Self attention Layer"""
-    def __init__(self, args, in_dim, activation):
+    """ Self attention Layer -- Adapted from SAGAN Paper https://arxiv.org/pdf/1805.08318.pdf """
+    def __init__(self, in_dim, activation):
         super(Self_Attn,self).__init__()
         self.chanel_in = in_dim
         self.activation = activation
@@ -248,32 +248,84 @@ class Self_Attn(nn.Module):
                 out : self attention value + input feature 
                 attention: B X N X N (N is Width*Height)
         """
-        x = x.permute(0, 2, 1, 4, 3) # (B X C X T X H X W) => (B X T X C X W X H)
+        m_batchsize, C, width, height = x.size()
+        proj_query  = self.query_conv(x).view(m_batchsize,-1,width*height).permute(0,2,1) # B X C X (N)
+        proj_key =  self.key_conv(x).view(m_batchsize,-1,width*height) # B X C x (*W*H)
+        energy =  torch.bmm(proj_query,proj_key) # transpose check
+        attention = self.softmax(energy) # BX (N) X (N) 
+        proj_value = self.value_conv(x).view(m_batchsize,-1,width*height) # B X C X N
+
+        out = torch.bmm(proj_value,attention.permute(0,2,1) )
+        out = out.view(m_batchsize,C,width,height)
+        
+        out = self.gamma*out + x
+
+        return out, attention
+    
+
+class Attn(nn.Module):
+    def __init__(self, args):
+        super(Attn, self).__init__()
+        
+        out_dim = 64
+
+        self.l1 = nn.Sequential(
+            nn.Conv2d(3, out_dim, 4, 2, 1),
+            nn.LeakyReLU(0.1)
+        )
+
+        self.l2 = nn.Sequential(
+            nn.Conv2d(out_dim, out_dim*2, 4, 2, 1),
+            nn.LeakyReLU(0.1)
+        )
+
+        out_dim *= 2
+
+        self.l3 = nn.Sequential(
+            nn.Conv2d(out_dim, out_dim*2, 4, 2, 1),
+            nn.LeakyReLU(0.1)
+        )
+
+        out_dim *= 2
+
+        self.self_attn_1 = Self_Attn(out_dim, 'relu')
+
+        self.l4 = nn.Sequential(
+            nn.Conv2d(out_dim, out_dim*2, 4, 2, 1),
+            nn.LeakyReLU(0.1)
+        )
+
+        out_dim *= 2
+
+        self.self_attn_2 = Self_Attn(out_dim, 'relu')
+
+        self.last = nn.Sequential(
+            nn.Conv2d(out_dim, 3, 4)
+        )
+
+    def forward(self, x):
+        assert x.shape[3] == x.shape[4], f"input x does not have matching height and width dimensions; got ({x.shape[3]}, {x.shape[4]})"
+        # assert x.shape[0] == len(cam_views), f"len of cam_views does not match batch size of x; expected {x.shape[0]}, got {len(cam_views)} instead"
+
+        x = x.permute(0, 2, 1, 4, 3) # (B X C X T X H X W) => (B X T X C X W X H) to match Self_Attn input dims
 
         prompt_clips = []
 
         for clip in x: # => (T X C X W X H) => wherever dim B appears below its actually dim T
-            print(self.query_conv(clip).shape)
-            
-            m_batchsize, C, width, height = clip.size()
-            proj_query  = self.query_conv(clip).view(m_batchsize,-1,width*height).permute(0,2,1) # B X C X (N)
-            proj_key =  self.key_conv(clip).view(m_batchsize,-1,width*height) # B X C x (*W*H)
-            energy =  torch.bmm(proj_query,proj_key) # transpose check
-            attention = self.softmax(energy) # BX (N) X (N) 
-            proj_value = self.value_conv(clip).view(m_batchsize,-1,width*height) # B X C X N
+            out = self.l1(clip)
+            out = self.l2(out)
+            out = self.l3(out)
+            out, attn_1 = self.self_attn_1(out)
+            out = self.l4(out)
+            out, attn_2 = self.self_attn_2(out)
+            out = self.last(out).unsqueeze(dim=0)
 
-            out = torch.bmm(proj_value,attention.permute(0,2,1) )
-            out = out.view(m_batchsize,C,width,height)
-            
-            out = self.gamma*out + clip
-            # return out,attention
-            out = out.unsqueeze(dim=0)
             prompt_clips.append(out)
-        
+
         prompt = torch.cat(prompt_clips, dim=0)
+        prompt = prompt.permute(0, 2, 1, 4, 3)
 
         return [prompt]
-
 
 
 
@@ -297,5 +349,5 @@ def noise_crop(args):
     return NoiseCropPrompter(args)
 
 
-def self_attn(args):
-    return Self_Attn(args, in_dim=3, activation='relu') # num color channels = 3
+def attn(args):
+    return Attn(args) 

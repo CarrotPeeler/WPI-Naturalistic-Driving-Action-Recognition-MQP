@@ -111,10 +111,10 @@ def parse_option():
     parser.add_argument('--patience', type=int, default=1000)
 
     # model
-    parser.add_argument('--method', type=str, default='noise_crop',
-                        choices=['padding', 'random_patch', 'fixed_patch', 'crop', 'noise_crop', 'self_attn'],
+    parser.add_argument('--method', type=str, default='fixed_patch',
+                        choices=['padding', 'random_patch', 'fixed_patch', 'crop', 'noise_crop', 'attn'],
                         help='choose visual prompting method')
-    parser.add_argument('--prompt_size', type=int, default=30,
+    parser.add_argument('--prompt_size', type=int, default=224,
                         help='size for visual prompts')
 
     # other
