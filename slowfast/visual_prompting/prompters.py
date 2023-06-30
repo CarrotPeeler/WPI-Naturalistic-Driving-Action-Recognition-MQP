@@ -31,25 +31,22 @@ from fvcore.common.config import CfgNode
 class PadPrompter(nn.Module):
     def __init__(self, args):
         super(PadPrompter, self).__init__()
-        pad_size = args.prompt_size
-        image_size = args.image_size
+        pad_size = args.PROMPT.PROMPT_SIZE if isinstance(args, CfgNode) else args.prompt_size
+        image_size = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
 
         self.base_size = image_size - pad_size*2
-        self.pad_up = nn.Parameter(torch.randn([1, 1, 3, pad_size, image_size]))
-        self.pad_down = nn.Parameter(torch.randn([1, 1, 3, pad_size, image_size]))
-        self.pad_left = nn.Parameter(torch.randn([1, 1, 3, image_size - pad_size*2, pad_size]))
-        self.pad_right = nn.Parameter(torch.randn([1, 1, 3, image_size - pad_size*2, pad_size]))
+        self.pad_up = nn.Parameter(torch.randn([1, 3, 1, pad_size, image_size]))
+        self.pad_down = nn.Parameter(torch.randn([1, 3, 1, pad_size, image_size]))
+        self.pad_left = nn.Parameter(torch.randn([1, 3, 1, image_size - pad_size*2, pad_size]))
+        self.pad_right = nn.Parameter(torch.randn([1, 3, 1, image_size - pad_size*2, pad_size]))
 
     def forward(self, x):
         # start with dims [B x T x C x H x W]
-        base = torch.zeros(1, 1, 3, self.base_size, self.base_size).cuda()
+        base = torch.zeros(1, 3, 1, self.base_size, self.base_size).cuda()
         prompt = torch.cat([self.pad_left, base, self.pad_right], dim=4)
         prompt = torch.cat([self.pad_up, prompt, self.pad_down], dim=3)
-        prompt = torch.cat(x.size(2) * [prompt], dim=1)
+        prompt = torch.cat(x.size(2) * [prompt], dim=2)
         prompt = torch.cat(x.size(0) * [prompt], dim=0)
-
-        # permute [B x T x C x H x W] => [B x C x T x H x W] to match input tensor shape
-        prompt = prompt.permute(0, 2, 1, 3, 4)
         
         return [x + prompt] # pyslowfast models expect list of tensors as input
 
@@ -58,7 +55,7 @@ class FixedPatchPrompter(nn.Module):
     def __init__(self, args):
         super(FixedPatchPrompter, self).__init__()
         self.isize = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
-        self.psize = self.isize if isinstance(args, CfgNode) else args.prompt_size
+        self.psize = args.PROMPT.PROMPT_SIZE if isinstance(args, CfgNode) else args.prompt_size
         self.patch = nn.Parameter(torch.randn([1, 3, 1, self.psize, self.psize]))
 
     def forward(self, x):

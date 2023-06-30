@@ -688,7 +688,8 @@ def train(cfg):
 
     if(cfg.PROMPT.ENABLE == True):
         # create prompt
-        prompter = prompters.__dict__[cfg.PROMPT.METHOD](cfg)
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        prompter = prompters.__dict__[cfg.PROMPT.METHOD](cfg).to(device)
 
         print(f"Using Prompting Method {cfg.PROMPT.METHOD} with Params:")
         if(du.get_rank() == 0):
@@ -864,11 +865,12 @@ def train(cfg):
                 scaler if cfg.TRAIN.MIXED_PRECISION else None,
             )
 
-            save_checkpoint({
-                'epoch': cur_epoch,
-                'state_dict': prompter.state_dict(),
-                'optimizer': prompt_optimizer.state_dict(),
-            }, cfg, is_best=False)
+            if(cfg.PROMPT.ENABLE == True):
+                save_checkpoint({
+                    'epoch': cur_epoch,
+                    'state_dict': prompter.state_dict(),
+                    'optimizer': prompt_optimizer.state_dict(),
+                }, cfg, is_best=False)
 
         # Evaluate the model on validation set.
         if is_eval_epoch:

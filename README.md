@@ -47,14 +47,11 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 ### Training
 - edit the config in slowfast/slowfast/configs
 - cd into outermost slowfast folder and run the following:
+to train MViTv2-B (1st round):
 ```console
-python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 &
+python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_A1_train.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
 ```
-OR to train MViTv2-B (higher top1 acc):
-```console
-python3 tools/run_net.py --cfg configs/MVITv2_B_32x3.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
-```
-- train MViTv2-B with prompts injected into input:
+- train MViTv2-B with prompts injected into input (2nd round):
 ```console
 python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_prompted.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
 ```
@@ -74,10 +71,7 @@ python3 inference/prepare_loc_data.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml < 
 ```
 - make sure correct model checkpoint .pyth file is in slowfast/checkpoints folder
 - then run inferencing:
-```console
-python3 tools/run_net.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml DATA.PATH_TO_DATA_DIR .
-```
-OR for MViTv2 (higher top1 acc):
+for MViTv2:
 ```console
 python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_DIR .
 ```
