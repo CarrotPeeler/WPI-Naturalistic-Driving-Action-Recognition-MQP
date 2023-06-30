@@ -425,21 +425,20 @@ def eval_epoch(
                 preds = model(prompted_inputs)
 
                 # save prompted_images for visualization
-                if((cur_epoch == 1 or cur_epoch % cfg.PROMPT.PROMPT_SAVE_FREQ == 0) and du.get_rank() == 0):
-                    for idx in range(len(prompted_inputs[0])): 
-                        if(index[idx] <= 5):
+                for idx in range(len(prompted_inputs[0])): 
+                    if(index[idx] <= 5):
 
-                            # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
-                            prompted_clip = prompted_inputs[0][idx].permute(1, 0, 2, 3) # prompted clip
-                            # prompt = prompted_images[1][0].permute(1, 0, 2, 3) # prompted clip
+                        # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
+                        prompted_clip = prompted_inputs[0][idx].permute(1, 0, 2, 3) # prompted clip
+                        # prompt = prompted_images[1][0].permute(1, 0, 2, 3) # prompted clip
 
-                            for jdx in range(prompted_clip.shape[0]):
-                                if(jdx == 0):
-                                    # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
-                                    save_image(prompted_clip[jdx], f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch}_batch_{cur_iter}_prompted_clip_{idx}.png")
-                                    # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
-                                else: 
-                                    break
+                        for jdx in range(prompted_clip.shape[0]):
+                            if(jdx == 0):
+                                # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
+                                save_image(prompted_clip[jdx], f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch}_batch_{cur_iter}_prompted_clip_{idx}.png")
+                                # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
+                            else: 
+                                break
             else:
                 preds = model(inputs)
 
@@ -701,18 +700,18 @@ def train(cfg):
         if cfg.PROMPT.RESUME:
             if os.path.isfile(cfg.PROMPT.RESUME):
                 print("=> loading checkpoint '{}'".format(cfg.PROMPT.RESUME))
+
                 if cfg.PROMPT.GPU is None:
                     checkpoint = torch.load(cfg.PROMPT.RESUME)
                 else:
                     # Map model to be loaded to specified single GPU.
                     loc = 'cuda:{}'.format(cfg.PROMPT.GPU)
                     checkpoint = torch.load(cfg.PROMPT.RESUME, map_location=loc)
+
                 cfg.PROMPT.START_EPOCH = checkpoint['epoch']
-                best_acc1 = checkpoint['best_acc1']
-                if cfg.PROMPT.GPU is not None:
-                    # best_acc1 may be from a checkpoint from a different GPU
-                    best_acc1 = best_acc1.to(cfg.PROMPT.GPU)
+                
                 prompter.load_state_dict(checkpoint['state_dict'])
+                
                 print("=> loaded checkpoint '{}' (epoch {})"
                         .format(cfg.PROMPT.RESUME, checkpoint['epoch']))
             else:

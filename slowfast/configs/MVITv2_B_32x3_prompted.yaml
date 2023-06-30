@@ -1,5 +1,5 @@
 TRAIN:
-  ENABLE: False
+  ENABLE: True
   DATASET: kinetics
   BATCH_SIZE: 16
   EVAL_PERIOD: 5
@@ -7,6 +7,7 @@ TRAIN:
   AUTO_RESUME: True
   CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b_no_rand_flip_best_epoch_00160.pyth # MViTv2_B_32x3_k400_f304025456.pyth
   CHECKPOINT_TYPE: pytorch
+  CHECKPOINT_EPOCH_RESET: True
 DATA:
   DECODING_BACKEND: torchvision
   NUM_FRAMES: 16
@@ -62,7 +63,7 @@ SOLVER:
   WARMUP_START_LR: 2e-5
   WARMUP_EPOCHS: 30.0
   LR_POLICY: cosine
-  MAX_EPOCH: 300
+  MAX_EPOCH: 400
   MOMENTUM: 0.9
   WEIGHT_DECAY: 1e-4
   OPTIMIZING_METHOD: adamw
@@ -74,24 +75,23 @@ MODEL:
   LOSS_FUNC: soft_cross_entropy
   DROPOUT_RATE: 0.5
 TEST:
-  ENABLE: True
+  ENABLE: False
   DATASET: kinetics
-  BATCH_SIZE: 1
+  BATCH_SIZE: 2
   NUM_SPATIAL_CROPS: 1
-  NUM_ENSEMBLE_VIEWS: 1
+  NUM_ENSEMBLE_VIEWS: 5
 DATA_LOADER:
-  NUM_WORKERS: 8
+  NUM_WORKERS: 4
   PIN_MEMORY: True
 PROMPT:
-  ENABLE: False
+  ENABLE: True
   METHOD: fixed_patch
   PROMPT_SIZE: 224
-  RESUME: None # "./visual_prompting/save/models/..."
+  RESUME: ./visual_prompting/save/models/mvitv2-b_fixed_patch/checkpoint_179_epochs.pth.tar
   LEARNING_RATE: 0.2
   WEIGHT_DECAY: 1e-4
   WARMUP: 30
-LOG_PERIOD: 500
-NUM_GPUS: 1
+NUM_GPUS: 2
 NUM_SHARDS: 1
 RNG_SEED: 0
 OUTPUT_DIR: .

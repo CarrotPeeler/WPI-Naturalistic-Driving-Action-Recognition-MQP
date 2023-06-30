@@ -4,3 +4,4 @@ slowfast/*.csv
 slowfast/post_process/*.txt
 slowfast/debug/*
 slowfast/visual_prompting/images/*
+slowfast/visual_prompting/save/models/*

@@ -40,8 +40,6 @@ def add_custom_config(_C):
 
     _C.PROMPT.WARMUP = 30
 
-    _C.PROMPT.PROMPT_SAVE_FREQ = 5
-
     _C.PROMPT.IMAGE_FOLDER = './visual_prompting/save/images/mvitv2-b_fixed_patch'
 
     _C.PROMPT.PRINT_GRADS = False
