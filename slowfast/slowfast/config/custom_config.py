@@ -46,6 +46,4 @@ def add_custom_config(_C):
 
     _C.PROMPT.PRINT_GRADS = False
 
-    _C.PROMPT.CHECKPOINT_SAVE_FREQ = 20
-
     _C.PROMPT.MODEL_FOLDER = './visual_prompting/save/models/mvitv2-b_fixed_patch'

@@ -113,7 +113,7 @@ def train_epoch(
         lr = optim.get_epoch_lr(epoch_exact, cfg)
         optim.set_lr(optimizer, lr)
 
-        if cfg.PROMPT.ENABLE and prompt_tuple is not None:
+        if cfg.PROMPT.ENABLE  == True and prompt_tuple is not None:
 
             (prompter, prompt_optimizer, prompt_scheduler) = prompt_tuple
 
@@ -150,28 +150,11 @@ def train_epoch(
             elif cfg.MASK.ENABLE:
                 preds, labels = model(inputs)
 
-            elif cfg.PROMPT.ENABLE:
+            elif cfg.PROMPT.ENABLE == True:
                 prompt_optimizer.zero_grad()
 
                 prompted_inputs = prompter(inputs[0])
                 preds = model(prompted_inputs)
-
-                # save prompted_images for visualization
-                if((cur_epoch == 1 or cur_epoch % cfg.PROMPT.PROMPT_SAVE_FREQ == 0)):
-                    for idx in range(len(prompted_inputs[0])): 
-                        if(index[idx] <= 5):
-
-                            # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
-                            prompted_clip = prompted_inputs[0][idx].permute(1, 0, 2, 3) # prompted clip
-                            # prompt = prompted_images[1][0].permute(1, 0, 2, 3) # prompted clip
-
-                            for jdx in range(prompted_clip.shape[0]):
-                                if(jdx == 0):
-                                    # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
-                                    save_image(prompted_clip[jdx], f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch}_batch_{cur_iter}_prompted_clip_{idx}.png")
-                                    # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
-                                else: 
-                                    break
             else:
                 preds = model(inputs)
 
@@ -197,9 +180,9 @@ def train_epoch(
         # Unscales the gradients of optimizer's assigned params in-place
         scaler.unscale_(optimizer)
 
-        if(cfg.PROMPT.ENABLE):
+        if(cfg.PROMPT.ENABLE == True):
             # print gradients for each named param
-            if(cfg.PROMPT.PRINT_GRADS):
+            if(cfg.PROMPT.PRINT_GRADS and du.get_rank() == 0):
                 for idx, (name, param) in enumerate(prompter.named_parameters()):
 
                     grad_val = optimizer.param_groups[0]['params'][idx].grad
@@ -433,13 +416,30 @@ def eval_epoch(
                 )
                 preds = torch.sum(probs, 1)
 
-            elif(cfg.PROMPT.ENABLE):
+            elif(cfg.PROMPT.ENABLE == True):
                 (prompter, prompt_optimizer, prompt_scheduler) = prompt_tuple
 
                 prompter.eval()
 
                 prompted_inputs = prompter(inputs[0])
                 preds = model(prompted_inputs)
+
+                # save prompted_images for visualization
+                if((cur_epoch == 1 or cur_epoch % cfg.PROMPT.PROMPT_SAVE_FREQ == 0) and du.get_rank() == 0):
+                    for idx in range(len(prompted_inputs[0])): 
+                        if(index[idx] <= 5):
+
+                            # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
+                            prompted_clip = prompted_inputs[0][idx].permute(1, 0, 2, 3) # prompted clip
+                            # prompt = prompted_images[1][0].permute(1, 0, 2, 3) # prompted clip
+
+                            for jdx in range(prompted_clip.shape[0]):
+                                if(jdx == 0):
+                                    # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
+                                    save_image(prompted_clip[jdx], f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch}_batch_{cur_iter}_prompted_clip_{idx}.png")
+                                    # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
+                                else: 
+                                    break
             else:
                 preds = model(inputs)
 
@@ -687,14 +687,15 @@ def train(cfg):
         else:
             model.init_knn_labels(train_loader)
 
-    if(cfg.PROMPT.ENABLE):
+    if(cfg.PROMPT.ENABLE == True):
         # create prompt
         prompter = prompters.__dict__[cfg.PROMPT.METHOD](cfg)
 
-        print(f"Prompt Params:")
-        for name, param in prompter.named_parameters():
-            if param.requires_grad and 'pad' in name:
-                print(name, param.data)
+        print(f"Using Prompting Method {cfg.PROMPT.METHOD} with Params:")
+        if(du.get_rank() == 0):
+            for name, param in prompter.named_parameters():
+                if param.requires_grad and '.' not in name:
+                    print(name, param.data)
 
         # optionally resume from a checkpoint
         if cfg.PROMPT.RESUME:
@@ -867,9 +868,8 @@ def train(cfg):
             save_checkpoint({
                 'epoch': cur_epoch,
                 'state_dict': prompter.state_dict(),
-                'best_acc1': best_acc1,
                 'optimizer': prompt_optimizer.state_dict(),
-            }, args, is_best=False)
+            }, cfg, is_best=False)
 
         # Evaluate the model on validation set.
         if is_eval_epoch:

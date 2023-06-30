@@ -5,7 +5,7 @@ TRAIN:
   EVAL_PERIOD: 5
   CHECKPOINT_PERIOD: 20
   AUTO_RESUME: True
-  CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b_no_rand_flip_best_checkpoint_epoch_00160.pyth
+  CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b_no_rand_flip_best_epoch_00160.pyth # MViTv2_B_32x3_k400_f304025456.pyth
   CHECKPOINT_TYPE: pytorch
 DATA:
   DECODING_BACKEND: torchvision
@@ -90,7 +90,6 @@ PROMPT:
   LEARNING_RATE: 0.2
   WEIGHT_DECAY: 1e-3
   WARMUP: 30
-  PRINT_GRADS: False
 LOG_PERIOD: 500
 NUM_GPUS: 1
 NUM_SHARDS: 1
