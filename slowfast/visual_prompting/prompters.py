@@ -25,6 +25,7 @@ SOFTWARE.
 import torch
 import torch.nn as nn
 import numpy as np
+from fvcore.common.config import CfgNode
 
 
 class PadPrompter(nn.Module):
@@ -56,8 +57,8 @@ class PadPrompter(nn.Module):
 class FixedPatchPrompter(nn.Module):
     def __init__(self, args):
         super(FixedPatchPrompter, self).__init__()
-        self.isize = args if isinstance(args, int) else args.image_size
-        self.psize = self.isize if isinstance(args, int) else args.prompt_size
+        self.isize = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
+        self.psize = self.isize if isinstance(args, CfgNode) else args.prompt_size
         self.patch = nn.Parameter(torch.randn([1, 3, 1, self.psize, self.psize]))
 
     def forward(self, x):

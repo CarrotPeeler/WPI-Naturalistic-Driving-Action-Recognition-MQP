@@ -28,6 +28,7 @@ from slowfast.utils.meters import AVAMeter, EpochTimer, TrainMeter, ValMeter
 from slowfast.utils.multigrid import MultigridSchedule
 from visual_prompting.utils import cosine_lr, save_checkpoint
 from visual_prompting import prompters
+from torchvision.utils import save_image
 
 logger = logging.get_logger(__name__)
 
@@ -41,6 +42,7 @@ def train_epoch(
     cur_epoch,
     cfg,
     writer=None,
+    prompt_tuple=None
 ):
     """
     Perform the video training for one epoch.
@@ -111,6 +113,17 @@ def train_epoch(
         lr = optim.get_epoch_lr(epoch_exact, cfg)
         optim.set_lr(optimizer, lr)
 
+        if cfg.PROMPT.ENABLE and prompt_tuple is not None:
+
+            (prompter, prompt_optimizer, prompt_scheduler) = prompt_tuple
+
+            prompter.train()
+            
+            num_batches_per_epoch = len(train_loader)
+
+            step = num_batches_per_epoch * cur_epoch + cur_iter
+            prompt_scheduler(step)
+
         train_meter.data_toc()
         if cfg.MIXUP.ENABLE:
             samples, labels = mixup_fn(inputs[0], labels)
@@ -136,8 +149,32 @@ def train_epoch(
                 preds = model(inputs, meta["boxes"])
             elif cfg.MASK.ENABLE:
                 preds, labels = model(inputs)
+
+            elif cfg.PROMPT.ENABLE:
+                prompt_optimizer.zero_grad()
+
+                prompted_inputs = prompter(inputs[0])
+                preds = model(prompted_inputs)
+
+                # save prompted_images for visualization
+                if((cur_epoch == 1 or cur_epoch % cfg.PROMPT.PROMPT_SAVE_FREQ == 0)):
+                    for idx in range(len(prompted_inputs[0])): 
+                        if(index[idx] <= 5):
+
+                            # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
+                            prompted_clip = prompted_inputs[0][idx].permute(1, 0, 2, 3) # prompted clip
+                            # prompt = prompted_images[1][0].permute(1, 0, 2, 3) # prompted clip
+
+                            for jdx in range(prompted_clip.shape[0]):
+                                if(jdx == 0):
+                                    # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
+                                    save_image(prompted_clip[jdx], f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch}_batch_{cur_iter}_prompted_clip_{idx}.png")
+                                    # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
+                                else: 
+                                    break
             else:
                 preds = model(inputs)
+
             if cfg.TASK == "ssl" and cfg.MODEL.MODEL_NAME == "ContrastiveModel":
                 labels = torch.zeros(
                     preds.size(0), dtype=labels.dtype, device=labels.device
@@ -159,6 +196,19 @@ def train_epoch(
             scaler.scale(loss).backward()
         # Unscales the gradients of optimizer's assigned params in-place
         scaler.unscale_(optimizer)
+
+        if(cfg.PROMPT.ENABLE):
+            # print gradients for each named param
+            if(cfg.PROMPT.PRINT_GRADS):
+                for idx, (name, param) in enumerate(prompter.named_parameters()):
+
+                    grad_val = optimizer.param_groups[0]['params'][idx].grad
+
+                    if param.requires_grad and '.' not in name:
+                        print(f"{name}: {grad_val}")
+
+            prompt_optimizer.step()
+
         # Clip gradients if necessary
         if cfg.SOLVER.CLIP_GRAD_VAL:
             grad_norm = torch.nn.utils.clip_grad_value_(
@@ -295,7 +345,7 @@ def train_epoch(
 
 @torch.no_grad()
 def eval_epoch(
-    val_loader, model, val_meter, cur_epoch, cfg, train_loader, writer
+    val_loader, model, val_meter, cur_epoch, cfg, train_loader, writer, prompt_tuple=None
 ):
     """
     Evaluate the model on the val set.
@@ -382,6 +432,14 @@ def eval_epoch(
                     yd_transform.view(batch_size, -1, 1),
                 )
                 preds = torch.sum(probs, 1)
+
+            elif(cfg.PROMPT.ENABLE):
+                (prompter, prompt_optimizer, prompt_scheduler) = prompt_tuple
+
+                prompter.eval()
+
+                prompted_inputs = prompter(inputs[0])
+                preds = model(prompted_inputs)
             else:
                 preds = model(inputs)
 
@@ -631,41 +689,46 @@ def train(cfg):
 
     if(cfg.PROMPT.ENABLE):
         # create prompt
-        prompter = prompters.__dict__[args.method](args)
+        prompter = prompters.__dict__[cfg.PROMPT.METHOD](cfg)
+
         print(f"Prompt Params:")
         for name, param in prompter.named_parameters():
             if param.requires_grad and 'pad' in name:
                 print(name, param.data)
 
         # optionally resume from a checkpoint
-        if args.resume:
-            if os.path.isfile(args.resume):
-                print("=> loading checkpoint '{}'".format(args.resume))
-                if args.gpu is None:
-                    checkpoint = torch.load(args.resume)
+        if cfg.PROMPT.RESUME:
+            if os.path.isfile(cfg.PROMPT.RESUME):
+                print("=> loading checkpoint '{}'".format(cfg.PROMPT.RESUME))
+                if cfg.PROMPT.GPU is None:
+                    checkpoint = torch.load(cfg.PROMPT.RESUME)
                 else:
-                    # Map model to be loaded to specified single gpu.
-                    loc = 'cuda:{}'.format(args.gpu)
-                    checkpoint = torch.load(args.resume, map_location=loc)
-                args.start_epoch = checkpoint['epoch']
+                    # Map model to be loaded to specified single GPU.
+                    loc = 'cuda:{}'.format(cfg.PROMPT.GPU)
+                    checkpoint = torch.load(cfg.PROMPT.RESUME, map_location=loc)
+                cfg.PROMPT.START_EPOCH = checkpoint['epoch']
                 best_acc1 = checkpoint['best_acc1']
-                if args.gpu is not None:
+                if cfg.PROMPT.GPU is not None:
                     # best_acc1 may be from a checkpoint from a different GPU
-                    best_acc1 = best_acc1.to(args.gpu)
+                    best_acc1 = best_acc1.to(cfg.PROMPT.GPU)
                 prompter.load_state_dict(checkpoint['state_dict'])
                 print("=> loaded checkpoint '{}' (epoch {})"
-                        .format(args.resume, checkpoint['epoch']))
+                        .format(cfg.PROMPT.RESUME, checkpoint['epoch']))
             else:
-                print("=> no checkpoint found at '{}'".format(args.resume))
+                print("=> no checkpoint found at '{}'".format(cfg.PROMPT.RESUME))
 
         # define criterion and optimizer
         prompt_optimizer = torch.optim.SGD(prompter.parameters(),
-                                        lr=args.learning_rate,
-                                        momentum=args.momentum,
-                                        weight_decay=args.weight_decay)
+                                        lr=cfg.PROMPT.LEARNING_RATE,
+                                        momentum=cfg.PROMPT.MOMENTUM,
+                                        weight_decay=cfg.PROMPT.WEIGHT_DECAY)
         
-        total_steps = len(train_loader) * args.epochs
-        scheduler = cosine_lr(prompt_optimizer, args.learning_rate, args.warmup, total_steps)
+        total_steps = len(train_loader) * cfg.SOLVER.MAX_EPOCH
+        prompt_scheduler = cosine_lr(prompt_optimizer, cfg.PROMPT.LEARNING_RATE, cfg.PROMPT.WARMUP, total_steps)
+
+        prompt_tuple = (prompter, prompt_optimizer, prompt_scheduler)
+    else:
+        prompt_tuple = None
 
     # Create meters.
     if cfg.DETECTION.ENABLE:
@@ -743,6 +806,7 @@ def train(cfg):
             cur_epoch,
             cfg,
             writer,
+            prompt_tuple
         )
         epoch_timer.epoch_toc()
         logger.info(
@@ -799,6 +863,14 @@ def train(cfg):
                 cfg,
                 scaler if cfg.TRAIN.MIXED_PRECISION else None,
             )
+
+            save_checkpoint({
+                'epoch': cur_epoch,
+                'state_dict': prompter.state_dict(),
+                'best_acc1': best_acc1,
+                'optimizer': prompt_optimizer.state_dict(),
+            }, args, is_best=False)
+
         # Evaluate the model on validation set.
         if is_eval_epoch:
             eval_epoch(
@@ -809,9 +881,11 @@ def train(cfg):
                 cfg,
                 train_loader,
                 writer,
+                prompt_tuple
             )
+
     if start_epoch == cfg.SOLVER.MAX_EPOCH and not cfg.MASK.ENABLE: # final checkpoint load
-        eval_epoch(val_loader, model, val_meter, start_epoch, cfg, train_loader, writer)
+        eval_epoch(val_loader, model, val_meter, start_epoch, cfg, train_loader, writer, prompt_tuple)
     if writer is not None:
         writer.close()
     result_string = (

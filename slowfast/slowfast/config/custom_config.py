@@ -4,6 +4,9 @@
 """Add custom configs and default values"""
 
 
+from fvcore.common.config import CfgNode
+
+
 def add_custom_config(_C):
     # Add your own customized configs.
 
@@ -15,13 +18,15 @@ def add_custom_config(_C):
 
     _C.DATA.CAM_VIEWS_METHODS = ['crop', 'noise_crop']
 
+    _C.PROMPT = CfgNode()
+
     _C.PROMPT.ENABLE = False
 
-    _C.PROMPT.METHOD = ['padding', 'random_patch', 'fixed_patch']
+    _C.PROMPT.METHOD = 'fixed_patch'
 
     _C.PROMPT.PROMPT_SIZE = 224
 
-    _C.PROMPT.RESUME = "./visual_prompting/save/models"
+    _C.PROMPT.RESUME = None # "./visual_prompting/save/models/..."
 
     _C.PROMPT.GPU = None
 
@@ -33,4 +38,14 @@ def add_custom_config(_C):
 
     _C.PROMPT.WEIGHT_DECAY = 1e-3
 
-    _C.PROMPT.WARM_UP = 30
+    _C.PROMPT.WARMUP = 30
+
+    _C.PROMPT.PROMPT_SAVE_FREQ = 5
+
+    _C.PROMPT.IMAGE_FOLDER = './visual_prompting/save/images/mvitv2-b_fixed_patch'
+
+    _C.PROMPT.PRINT_GRADS = False
+
+    _C.PROMPT.CHECKPOINT_SAVE_FREQ = 20
+
+    _C.PROMPT.MODEL_FOLDER = './visual_prompting/save/models/mvitv2-b_fixed_patch'
