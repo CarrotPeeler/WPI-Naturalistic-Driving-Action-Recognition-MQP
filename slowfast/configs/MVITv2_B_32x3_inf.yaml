@@ -88,7 +88,7 @@ PROMPT:
   PROMPT_SIZE: 224
   RESUME: None # "./visual_prompting/save/models/..."
   LEARNING_RATE: 0.2
-  WEIGHT_DECAY: 1e-3
+  WEIGHT_DECAY: 1e-4
   WARMUP: 30
 LOG_PERIOD: 500
 NUM_GPUS: 1

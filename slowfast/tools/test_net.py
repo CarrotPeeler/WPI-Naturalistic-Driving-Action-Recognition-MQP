@@ -17,12 +17,13 @@ from slowfast.datasets import loader
 from slowfast.models import build_model
 from slowfast.utils.env import pathmgr
 from slowfast.utils.meters import AVAMeter, TestMeter
+from visual_prompting import prompters
 
 logger = logging.get_logger(__name__)
 
 
 @torch.no_grad()
-def perform_test(test_loader, model, test_meter, cfg, writer=None):
+def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None):
     """
     For classification:
     Perform mutli-view testing that uniformly samples N clips from a video along
@@ -45,6 +46,9 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None):
     # Enable eval mode.
     model.eval()
     test_meter.iter_tic()
+
+    if cfg.PROMPT.ENABLE == True and prompter is not None:
+        prompter.eval()
 
     # delete existing predictions.txt if exists
     pred_output = os.getcwd() + "/post_process/predictions.txt"
@@ -121,6 +125,10 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None):
                 yd_transform.view(batchSize, -1, 1),
             )
             preds = torch.sum(probs, 1)
+
+        elif(cfg.PROMPT.ENABLE == True):
+            prompted_inputs = prompter(inputs[0])
+            preds = model(prompted_inputs)
         else:
             # Perform the forward pass.
             preds = model(inputs)
@@ -256,6 +264,39 @@ def test(cfg):
                 cfg.LOG_PERIOD,
             )
 
+        if(cfg.PROMPT.ENABLE == True):
+            # create prompt
+            prompter = prompters.__dict__[cfg.PROMPT.METHOD](cfg)
+
+            print(f"Using Prompting Method {cfg.PROMPT.METHOD} with Params:")
+            if(du.get_rank() == 0):
+                for name, param in prompter.named_parameters():
+                    if param.requires_grad and '.' not in name:
+                        print(name, param.data)
+
+            # optionally resume from a checkpoint
+            if cfg.PROMPT.RESUME:
+                if os.path.isfile(cfg.PROMPT.RESUME):
+                    print("=> loading checkpoint '{}'".format(cfg.PROMPT.RESUME))
+                    if cfg.PROMPT.GPU is None:
+                        checkpoint = torch.load(cfg.PROMPT.RESUME)
+                    else:
+                        # Map model to be loaded to specified single GPU.
+                        loc = 'cuda:{}'.format(cfg.PROMPT.GPU)
+                        checkpoint = torch.load(cfg.PROMPT.RESUME, map_location=loc)
+                    cfg.PROMPT.START_EPOCH = checkpoint['epoch']
+                    best_acc1 = checkpoint['best_acc1']
+                    if cfg.PROMPT.GPU is not None:
+                        # best_acc1 may be from a checkpoint from a different GPU
+                        best_acc1 = best_acc1.to(cfg.PROMPT.GPU)
+                    prompter.load_state_dict(checkpoint['state_dict'])
+                    print("=> loaded checkpoint '{}' (epoch {})"
+                            .format(cfg.PROMPT.RESUME, checkpoint['epoch']))
+                else:
+                    print("=> no checkpoint found at '{}'".format(cfg.PROMPT.RESUME))
+        else:
+            prompter = None
+
         # Set up writer for logging to Tensorboard format.
         if cfg.TENSORBOARD.ENABLE and du.is_master_proc(
             cfg.NUM_GPUS * cfg.NUM_SHARDS
@@ -265,7 +306,7 @@ def test(cfg):
             writer = None
 
         # # Perform multi-view test on the entire dataset.
-        test_meter = perform_test(test_loader, model, test_meter, cfg, writer)
+        test_meter = perform_test(test_loader, model, test_meter, cfg, writer, prompter)
         test_meters.append(test_meter)
         if writer is not None:
             writer.close()
