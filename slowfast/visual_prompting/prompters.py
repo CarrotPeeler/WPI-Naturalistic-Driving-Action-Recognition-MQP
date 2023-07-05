@@ -227,7 +227,7 @@ class NoiseCropPrompter(nn.Module):
 
 class MultiCamPadPrompter(nn.Module):
     def __init__(self, args):
-        super(PadPrompter, self).__init__()
+        super(MultiCamPadPrompter, self).__init__()
         pad_size = args.PROMPT.PROMPT_SIZE if isinstance(args, CfgNode) else args.prompt_size
         image_size = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
 
@@ -260,7 +260,7 @@ class MultiCamPadPrompter(nn.Module):
         
         clip_prompts = []
 
-        base = torch.zeros(3, 1, self.crop_size, self.crop_size).cuda()
+        base = torch.zeros(3, 1, self.base_size, self.base_size).cuda()
 
         for clip_idx in range(x.shape[0]):
             cam_view = cam_views[clip_idx]
@@ -295,5 +295,5 @@ def crop(args):
 def noise_crop(args):
     return NoiseCropPrompter(args)
 
-def mult_cam_padding(args):
+def multi_cam_padding(args):
     return MultiCamPadPrompter(args)

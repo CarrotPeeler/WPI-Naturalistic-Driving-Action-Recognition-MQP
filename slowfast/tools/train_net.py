@@ -153,7 +153,16 @@ def train_epoch(
             elif cfg.PROMPT.ENABLE == True:
                 prompt_optimizer.zero_grad()
 
-                prompted_inputs = prompter(inputs[0])
+                if("multi_cam" in cfg.PROMPT.METHOD):
+                    cam_views = []
+                    for clip_idx in range(len(inputs[0])):
+                        cam_view = train_loader.dataset._path_to_videos[index[clip_idx]].rpartition('/')[-1].partition('_user')[0]
+                        cam_views.append(cam_view)
+                    
+                    prompted_inputs = prompter(inputs[0], cam_views)
+                else:
+                    prompted_inputs = prompter(inputs[0])
+                
                 preds = model(prompted_inputs)
             else:
                 preds = model(inputs)
@@ -421,7 +430,16 @@ def eval_epoch(
 
                 prompter.eval()
 
-                prompted_inputs = prompter(inputs[0])
+                if("multi_cam" in cfg.PROMPT.METHOD):
+                    cam_views = []
+                    for clip_idx in range(len(inputs[0])):
+                        cam_view = train_loader.dataset._path_to_videos[index[clip_idx]].rpartition('/')[-1].partition('_user')[0]
+                        cam_views.append(cam_view)
+                    
+                    prompted_inputs = prompter(inputs[0], cam_views)
+                else:
+                    prompted_inputs = prompter(inputs[0])
+
                 preds = model(prompted_inputs)
 
                 # save prompted_images for visualization
