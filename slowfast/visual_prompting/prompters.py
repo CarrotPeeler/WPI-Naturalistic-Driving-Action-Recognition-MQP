@@ -133,66 +133,67 @@ class CropPrompter(nn.Module):
         return [prompt]
     
 
-class NoiseCropPrompter(nn.Module):
+class MultiCamNoiseCropPrompter(nn.Module):
     def __init__(self, args):
-        super(NoiseCropPrompter, self).__init__()
+        super(MultiCamNoiseCropPrompter, self).__init__()
 
         # Parameters below may need to be manually adjusted
-        image_size = args.image_size
-        self.crop_size = 189
+        self.image_size = args.image_size
 
-        temp = image_size - self.crop_size
-        
         pad_up_size = {
-            'Dashboard': temp,
-            'Right_side_window': temp,
-            'Rear_view': temp
+            'Dashboard': 60,
+            'Right_side_window': 20,
+            'Rear_view': 60
         }
 
         pad_left_size = {
-            'Dashboard': temp,
-            'Right_side_window': temp,
-            'Rear_view': temp
+            'Dashboard': 60,
+            'Right_side_window': 40,
+            'Rear_view': 60
         }
 
-        # Parameters below DO NOT need to be manually adjusted
-        self.target_resize = image_size
-        self.max_offset = image_size - self.crop_size
-
         pad_down_size = {
-            'Dashboard': self.max_offset - pad_up_size['Dashboard'],
-            'Right_side_window': self.max_offset - pad_up_size['Right_side_window'],
-            'Rear_view': self.max_offset - pad_up_size['Rear_view']
+            'Dashboard': 30,
+            'Right_side_window': 0,
+            'Rear_view': 30
         }
 
         pad_right_size = {
-            'Dashboard': self.max_offset - pad_left_size['Dashboard'],
-            'Right_side_window': self.max_offset - pad_left_size['Right_side_window'],
-            'Rear_view': self.max_offset - pad_left_size['Rear_view']
+            'Dashboard': 30,
+            'Right_side_window': 30,
+            'Rear_view': 30
         }
 
+        # Parameters below DO NOT need to be manually adjusted
+
         self.pad_up = nn.ParameterDict({
-            'Dashboard':  torch.randn([3, 1, pad_up_size['Dashboard'], image_size]),
-            'Right_side_window': torch.randn([3, 1, pad_up_size['Right_side_window'], image_size]),
-            'Rear_view': torch.randn([3, 1, pad_up_size['Rear_view'], image_size]),
+            'Dashboard':  torch.randn([3, 1, pad_up_size['Dashboard'], self.image_size]),
+            'Right_side_window': torch.randn([3, 1, pad_up_size['Right_side_window'], self.image_size]),
+            'Rear_view': torch.randn([3, 1, pad_up_size['Rear_view'], self.image_size]),
         })
 
         self.pad_down = nn.ParameterDict({
-            'Dashboard':  torch.randn([3, 1, pad_down_size['Dashboard'], image_size]),
-            'Right_side_window': torch.randn([3, 1, pad_down_size['Right_side_window'], image_size]),
-            'Rear_view': torch.randn([3, 1, pad_down_size['Rear_view'], image_size]),
+            'Dashboard':  torch.randn([3, 1, pad_down_size['Dashboard'], self.image_size]),
+            'Right_side_window': torch.randn([3, 1, pad_down_size['Right_side_window'], self.image_size]),
+            'Rear_view': torch.randn([3, 1, pad_down_size['Rear_view'], self.image_size]),
         })
 
+        pad_heights = {
+            'Dashboard': self.image_size - pad_up_size['Dashboard'] - pad_down_size['Dashboard'],
+            'Right_side_window': self.image_size - pad_up_size['Right_side_window'] - pad_down_size['Right_side_window'],
+            'Rear_view': self.image_size - pad_up_size['Rear_view'] - pad_down_size['Rear_view']
+        }
+
         self.pad_left = nn.ParameterDict({
-            'Dashboard': torch.randn([3, 1, self.crop_size, pad_left_size['Dashboard']]),
-            'Right_side_window': torch.randn([3, 1, self.crop_size, pad_left_size['Right_side_window']]),
-            'Rear_view': torch.randn([3, 1, self.crop_size, pad_left_size['Rear_view']]),
+            'Dashboard': torch.randn([3, 1, pad_heights['Dashboard'], pad_left_size['Dashboard']]),
+            'Right_side_window': torch.randn([3, 1, pad_heights['Right_side_window'], pad_left_size['Right_side_window']]),
+            'Rear_view': torch.randn([3, 1, pad_heights['Rear_view'], pad_left_size['Rear_view']]),
         })
 
         self.pad_right = nn.ParameterDict({
-            'Dashboard': torch.randn([3, 1, self.crop_size, pad_right_size['Dashboard']]),
-            'Right_side_window': torch.randn([3, 1, self.crop_size, pad_right_size['Right_side_window']]),
-            'Rear_view': torch.randn([3, 1, self.crop_size, pad_right_size['Rear_view']]),
+            'Dashboard': torch.randn([3, 1, pad_heights['Dashboard'], pad_right_size['Dashboard']]),
+            'Right_side_window': torch.randn([3, 1, pad_heights['Right_side_window'], pad_right_size['Right_side_window']]),
+            'Rear_view': torch.randn([3, 1, pad_heights['Rear_view'], pad_right_size['Rear_view']]),
         })
 
 
@@ -202,10 +203,13 @@ class NoiseCropPrompter(nn.Module):
         
         clip_prompts = []
 
-        base = torch.zeros(3, 1, self.crop_size, self.crop_size).cuda()
-
         for clip_idx in range(x.shape[0]):
             cam_view = cam_views[clip_idx]
+
+            base_height = self.image_size - self.pad_up[cam_view].shape[2] - self.pad_down[cam_view].shape[2]
+            base_width = self.image_size - self.pad_left[cam_view].shape[3] - self.pad_right[cam_view].shape[3]
+
+            base = torch.zeros(3, 1, base_height, base_width).cuda()
 
             clip_prompt = torch.cat([self.pad_left[cam_view], base, self.pad_right[cam_view]], dim=3)
             clip_prompt = torch.cat([self.pad_up[cam_view], clip_prompt, self.pad_down[cam_view]], dim=2)
@@ -214,13 +218,6 @@ class NoiseCropPrompter(nn.Module):
             clip_prompts.append(clip_prompt)
 
         prompt = torch.cat(clip_prompts, dim=0)
-
-        # y_offset = 0
-        # x_offset = 0
-
-        # if self.target_size > self.crop_size:
-        #     y_offset = torch.randint(0, self.max_offset, size=(1,), dtype=torch.int16)
-        #     x_offset = torch.randint(0, self.max_offset, size=(1,), dtype=torch.int16)
 
         return [x + prompt]
     
@@ -292,8 +289,8 @@ def crop(args):
     return CropPrompter(args)
 
 
-def noise_crop(args):
-    return NoiseCropPrompter(args)
+def multi_cam_noise_crop(args):
+    return MultiCamNoiseCropPrompter(args)
 
 def multi_cam_padding(args):
     return MultiCamPadPrompter(args)

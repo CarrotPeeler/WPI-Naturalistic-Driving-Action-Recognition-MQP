@@ -89,7 +89,7 @@ PROMPT:
   METHOD: multi_cam_padding 
   PROMPT_SIZE: 30
   RESUME: None # ./visual_prompting/save/models/mvitv2-b_fixed_patch/.. or None
-  LEARNING_RATE: 0.2
+  LEARNING_RATE: 0.002
   WEIGHT_DECAY: 1e-4
   WARMUP: 30
 NUM_GPUS: 2
