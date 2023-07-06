@@ -893,6 +893,8 @@ class ValMeter(object):
 
         logging.log_json_stats(stats, self.output_dir)
 
+        return stats
+
 
 def get_map(preds, labels):
     """

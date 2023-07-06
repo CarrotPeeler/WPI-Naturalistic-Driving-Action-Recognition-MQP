@@ -42,7 +42,8 @@ def train_epoch(
     cur_epoch,
     cfg,
     writer=None,
-    prompt_tuple=None
+    prompt_tuple=None,
+    update_params=True
 ):
     """
     Perform the video training for one epoch.
@@ -199,7 +200,8 @@ def train_epoch(
                     if param.requires_grad and '.' not in name:
                         print(f"{name}: {grad_val}")
 
-            prompt_optimizer.step()
+            if(update_params == True):
+                prompt_optimizer.step()
 
         # Clip gradients if necessary
         if cfg.SOLVER.CLIP_GRAD_VAL:
@@ -337,7 +339,7 @@ def train_epoch(
 
 @torch.no_grad()
 def eval_epoch(
-    val_loader, model, val_meter, cur_epoch, cfg, train_loader, writer, prompt_tuple=None
+    val_loader, model, val_meter, cur_epoch, cfg, train_loader, writer, prompt_tuple=None, val_top1_accs=[0]
 ):
     """
     Evaluate the model on the val set.
@@ -510,7 +512,18 @@ def eval_epoch(
         val_meter.iter_tic()
 
     # Log epoch stats.
-    val_meter.log_epoch_stats(cur_epoch)
+    stats = val_meter.log_epoch_stats(cur_epoch)
+
+    epoch_top1_acc = stats["top1_acc"]
+
+    # Selective updating for visual prompting
+    if(cfg.PROMPT.ENABLE == True and cfg.PROMPT.SELECTIVE_UPDATING == True and epoch_top1_acc > max(val_top1_accs)):
+        update_params = False
+        print("SKIPPING OPTIMIZATION STEP")
+    else:
+        update_params = True
+        print("PERFORMING OPTIMIZATION STEP")
+        
     # write to tensorboard format if available.
     if writer is not None:
         if cfg.DETECTION.ENABLE:
@@ -530,6 +543,8 @@ def eval_epoch(
             )
 
     val_meter.reset()
+
+    return (epoch_top1_acc, update_params)
 
 
 def calculate_and_update_precise_bn(loader, model, num_iters=200, use_gpu=True):
@@ -617,6 +632,9 @@ def train(cfg):
 
     # Setup logging format.
     logging.setup_logging(cfg.OUTPUT_DIR)
+
+    val_top1_accs = [0]
+    update_params = True
 
     # Init multigrid.
     multigrid = None
@@ -825,7 +843,8 @@ def train(cfg):
             cur_epoch,
             cfg,
             writer,
-            prompt_tuple
+            prompt_tuple,
+            update_params
         )
         epoch_timer.epoch_toc()
         logger.info(
@@ -892,7 +911,7 @@ def train(cfg):
 
         # Evaluate the model on validation set.
         if is_eval_epoch:
-            eval_epoch(
+            (top1_acc, update_flag) = eval_epoch(
                 val_loader,
                 model,
                 val_meter,
@@ -902,6 +921,11 @@ def train(cfg):
                 writer,
                 prompt_tuple
             )
+
+            val_top1_accs.append(top1_acc)
+            update_params = update_flag
+
+            
 
     if start_epoch == cfg.SOLVER.MAX_EPOCH and not cfg.MASK.ENABLE: # final checkpoint load
         eval_epoch(val_loader, model, val_meter, start_epoch, cfg, train_loader, writer, prompt_tuple)

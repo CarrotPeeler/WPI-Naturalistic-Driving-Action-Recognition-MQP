@@ -1,8 +1,3 @@
-config files: ['configs/MVITv2_B_32x3_prompted.yaml', 'DATA.PATH_TO_DATA_DIR', '.']
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
 [07/06 19:14:18][INFO] train_net.py:  647: Train with config:
 [07/06 19:14:18][INFO] train_net.py:  648: {'AUG': {'AA_TYPE': 'rand-m9-mstd0.5-inc1',
          'COLOR_JITTER': 0.4,
@@ -907,10 +902,6 @@ DistributedDataParallel(
 )
 [07/06 19:14:20][INFO] misc.py:  187: Params: 50,897,968
 [07/06 19:14:20][INFO] misc.py:  188: Mem: 0.38045549392700195 MB
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
 [07/06 19:14:24][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
 [07/06 19:14:24][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
 [07/06 19:14:24][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
@@ -935,35 +926,6 @@ module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_pat
 module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_path, module.blocks.12.drop_path, module.blocks.13.drop_path, module.blocks.14.drop_path, module.blocks.15.drop_path, module.blocks.16.drop_path, module.blocks.17.drop_path, module.blocks.18.drop_path, module.blocks.19.drop_path, module.blocks.2.drop_path, module.blocks.20.drop_path, module.blocks.21.drop_path, module.blocks.22.drop_path, module.blocks.23.drop_path, module.blocks.3.drop_path, module.blocks.4.drop_path, module.blocks.5.drop_path, module.blocks.6.drop_path, module.blocks.7.drop_path, module.blocks.8.drop_path, module.blocks.9.drop_path
 [07/06 19:14:27][INFO] misc.py:  191: Activations: 357.084096 M
 [07/06 19:14:27][INFO] misc.py:  196: nvidia-smi
-Thu Jul  6 19:14:28 2023       
-+-----------------------------------------------------------------------------+
-| NVIDIA-SMI 470.182.03   Driver Version: 470.182.03   CUDA Version: 11.4     |
-|-------------------------------+----------------------+----------------------+
-| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-|                               |                      |               MIG M. |
-|===============================+======================+======================|
-|   0  NVIDIA RTX A5000    Off  | 00000000:17:00.0 Off |                  Off |
-| 30%   39C    P2    60W / 230W |   4179MiB / 24256MiB |      0%      Default |
-|                               |                      |                  N/A |
-+-------------------------------+----------------------+----------------------+
-|   1  NVIDIA RTX A5000    Off  | 00000000:65:00.0 Off |                  Off |
-| 30%   41C    P2    66W / 230W |   1370MiB / 24247MiB |      0%      Default |
-|                               |                      |                  N/A |
-+-------------------------------+----------------------+----------------------+
-                                                                               
-+-----------------------------------------------------------------------------+
-| Processes:                                                                  |
-|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
-|        ID   ID                                                   Usage      |
-|=============================================================================|
-|    0   N/A  N/A      1550      G   /usr/lib/xorg/Xorg                  4MiB |
-|    0   N/A  N/A   2130131      C   /usr/bin/python3                 4171MiB |
-|    1   N/A  N/A      1550      G   /usr/lib/xorg/Xorg                 31MiB |
-|    1   N/A  N/A      2487      G   /usr/bin/gnome-shell                7MiB |
-|    1   N/A  N/A   2130132      C   /usr/bin/python3                 1327MiB |
-+-----------------------------------------------------------------------------+
-bn 0, non bn 246, zero 343, no grad 0
 [07/06 19:14:28][INFO] train_net.py:  689: Load from given checkpoint file.
 [07/06 19:14:28][INFO] checkpoint.py:  223: Loading network weights from checkpoints/MViTv2_B_32x3_k400_f304025456.pyth.
 [07/06 19:14:28][INFO] checkpoint.py:  487: blocks.0.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
@@ -994,18 +956,11 @@ bn 0, non bn 246, zero 343, no grad 0
 [07/06 19:14:28][INFO] checkpoint.py:  542: Network weights head.projection.bias not loaded.
 [07/06 19:14:28][INFO] checkpoint.py:  545: Network weights head.projection.weight not used.
 [07/06 19:14:28][INFO] checkpoint.py:  545: Network weights head.projection.bias not used.
-missing keys: ['head.projection.weight', 'head.projection.bias']
-unexpected keys: []
 [07/06 19:14:28][INFO] kinetics.py:   93: Constructing Kinetics train...
 [07/06 19:14:28][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 1927 skip_rows 0) from train.csv 
 [07/06 19:14:28][INFO] kinetics.py:   93: Constructing Kinetics val...
 [07/06 19:14:28][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 482 skip_rows 0) from val.csv 
-Using Prompting Method multi_cam_padding with Params:
 [07/06 19:14:28][INFO] train_net.py:  787: Start epoch: 1
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
 [07/06 19:14:40][INFO] distributed.py: 1027: Reducer buckets have been rebuilt in this iteration.
 [07/06 19:14:51][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.30902, "dt_data": 0.00068, "dt_net": 1.30833, "epoch": "1/200", "eta": "8:43:23", "gpu_mem": "17.92G", "grad_norm": 4.09353, "iter": "10/120", "loss": 2.81293, "lr": 0.0000209000, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 28.12500, "top5_err": 71.87500}
 [07/06 19:15:04][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.32894, "dt_data": 0.00042, "dt_net": 1.32852, "epoch": "1/200", "eta": "8:51:07", "gpu_mem": "17.92G", "grad_norm": 3.97315, "iter": "20/120", "loss": 2.76405, "lr": 0.0000219000, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 34.37500, "top5_err": 65.62500}
@@ -1019,38 +974,6 @@ Using Prompting Method multi_cam_padding with Params:
 [07/06 19:16:51][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.32867, "dt_data": 0.00046, "dt_net": 1.32821, "epoch": "1/200", "eta": "8:49:15", "gpu_mem": "17.92G", "grad_norm": 4.20090, "iter": "100/120", "loss": 2.67784, "lr": 0.0000299000, "top1_acc": 12.50000, "top1_err": 87.50000, "top5_acc": 56.25000, "top5_err": 43.75000}
 [07/06 19:17:04][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.34352, "dt_data": 0.00042, "dt_net": 1.34310, "epoch": "1/200", "eta": "8:54:56", "gpu_mem": "17.92G", "grad_norm": 4.02979, "iter": "110/120", "loss": 2.73866, "lr": 0.0000309000, "top1_acc": 9.37500, "top1_err": 90.62500, "top5_acc": 46.87500, "top5_err": 53.12500}
 [07/06 19:17:17][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35158, "dt_data": 0.00029, "dt_net": 1.35128, "epoch": "1/200", "eta": "8:57:55", "gpu_mem": "17.92G", "grad_norm": 4.66495, "iter": "120/120", "loss": 2.71574, "lr": 0.0000319000, "top1_acc": 12.50000, "top1_err": 87.50000, "top5_acc": 43.75000, "top5_err": 56.25000}
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
-  warnings.warn(
-/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
-  warnings.warn(
 [07/06 19:17:18][INFO] logging.py:  101: json_stats: {"RAM": "14.35/31.07G", "_type": "train_epoch", "dt": 0.83068, "dt_data": 0.83068, "dt_net": 1.35128, "epoch": "1/200", "eta": "5:30:35", "gpu_mem": "17.92G", "grad_norm": 4.66495, "loss": 2.75613, "lr": 0.0000319000, "top1_acc": 9.21875, "top1_err": 90.78125, "top5_acc": 37.44792, "top5_err": 62.55208}
 [07/06 19:17:18][INFO] train_net.py:  850: Epoch 0 takes 170.16s. Epochs from 0 to 0 take 170.16s in average and 170.16s in median.
 [07/06 19:17:18][INFO] train_net.py:  856: For epoch 0, each iteraction takes 1.42s in average. From epoch 0 to 0, each iteraction takes 1.42s in average.
