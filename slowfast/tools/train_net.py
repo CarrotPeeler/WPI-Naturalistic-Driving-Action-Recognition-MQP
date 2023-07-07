@@ -523,6 +523,8 @@ def eval_epoch(
     else:
         update_params = True
         print("PERFORMING OPTIMIZATION STEP")
+
+    print(f"Val Top1 Accuracy History: {val_top1_accs}")
         
     # write to tensorboard format if available.
     if writer is not None:
@@ -919,7 +921,8 @@ def train(cfg):
                 cfg,
                 train_loader,
                 writer,
-                prompt_tuple
+                prompt_tuple,
+                val_top1_accs
             )
 
             val_top1_accs.append(top1_acc)
