@@ -519,10 +519,10 @@ def eval_epoch(
     # Selective updating for visual prompting
     if(cfg.PROMPT.ENABLE == True and cfg.PROMPT.SELECTIVE_UPDATING == True and epoch_top1_acc > max(val_top1_accs)):
         update_params = False
-        print("SKIPPING OPTIMIZATION STEP")
+        print("SKIPPING PROMPT OPTIMIZATION STEP")
     else:
         update_params = True
-        print("PERFORMING OPTIMIZATION STEP")
+        print("PERFORMING PROMPT OPTIMIZATION STEP")
 
     print(f"Val Top1 Accuracy History: {val_top1_accs}")
         
