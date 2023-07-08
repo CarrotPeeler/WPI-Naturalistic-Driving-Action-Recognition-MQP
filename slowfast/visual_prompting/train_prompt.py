@@ -22,6 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+# RUN COMMAND
+
+# python3 visual_prompting/train_prompt.py --cfg configs/MVITv2_B_32x3.yaml < /dev/null > visual_prompting/prompt_train.log 2>&1 & 
+
 from __future__ import print_function
 
 import argparse

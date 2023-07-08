@@ -47,17 +47,9 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 ### Training
 - edit the config in slowfast/slowfast/configs
 - cd into outermost slowfast folder and run the following:
-to train MViTv2-B (1st round):
-```console
-python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_A1_train.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
-```
-- train MViTv2-B with prompts injected into input (2nd round):
+- train MViTv2-B with prompted input clips:
 ```console
 python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_prompted.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
-```
-- train prompts separately:
-```console
-python3 visual_prompting/train_prompt.py --cfg configs/MVITv2_B_32x3.yaml < /dev/null > visual_prompting/prompt_train.log 2>&1 & 
 ```
 
 ### Inference

@@ -1,4 +1,4 @@
-TRAIN:
+TRAIN: # python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_old_unprompted.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
   ENABLE: True
   DATASET: kinetics
   BATCH_SIZE: 16
