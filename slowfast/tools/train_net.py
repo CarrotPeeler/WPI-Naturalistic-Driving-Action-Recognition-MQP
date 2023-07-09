@@ -518,7 +518,7 @@ def eval_epoch(
     epoch_top1_acc = stats["top1_acc"]
 
     # Selective updating for visual prompting
-    if(cfg.PROMPT.ENABLE == True and cfg.PROMPT.SELECTIVE_UPDATING == True and epoch_top1_acc > max(val_top1_accs)):
+    if(cfg.PROMPT.ENABLE == True and cfg.PROMPT.SELECTIVE_UPDATING == True and epoch_top1_acc > max(val_top1_accs)//1 ):
         update_params = False
         print("SKIPPING PROMPT OPTIMIZATION STEP")
     else:
