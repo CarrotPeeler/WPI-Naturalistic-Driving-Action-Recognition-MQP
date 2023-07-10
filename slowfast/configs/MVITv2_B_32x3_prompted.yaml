@@ -2,7 +2,7 @@ TRAIN:
   ENABLE: True
   DATASET: kinetics
   BATCH_SIZE: 16
-  EVAL_PERIOD: 5 #2
+  EVAL_PERIOD: 2
   CHECKPOINT_PERIOD: 20
   AUTO_RESUME: True
   CHECKPOINT_FILE_PATH: checkpoints/MViTv2_B_32x3_k400_f304025456.pyth #mvitv2-b_no_rand_flip_best_epoch_00160.pyth # MViTv2_B_32x3_k400_f304025456.pyth
@@ -89,7 +89,7 @@ PROMPT:
   METHOD: multi_cam_padding 
   PROMPT_SIZE: 30
   RESUME: None # ./visual_prompting/save/models/mvitv2-b_fixed_patch/.. or None
-  LEARNING_RATE: 0.02
+  LEARNING_RATE: 0.002
   WEIGHT_DECAY: 1e-4
   WARMUP: 30
   SELECTIVE_UPDATING: True
