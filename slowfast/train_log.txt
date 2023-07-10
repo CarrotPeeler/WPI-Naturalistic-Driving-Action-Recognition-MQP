@@ -3,8 +3,8 @@ config files: ['configs/MVITv2_B_32x3_prompted.yaml', 'DATA.PATH_TO_DATA_DIR', '
   warnings.warn(
 /usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
   warnings.warn(
-[07/09 17:02:05][INFO] train_net.py:  650: Train with config:
-[07/09 17:02:05][INFO] train_net.py:  651: {'AUG': {'AA_TYPE': 'rand-m9-mstd0.5-inc1',
+[07/10 09:25:23][INFO] train_net.py:  650: Train with config:
+[07/10 09:25:23][INFO] train_net.py:  651: {'AUG': {'AA_TYPE': 'rand-m9-mstd0.5-inc1',
          'COLOR_JITTER': 0.4,
          'ENABLE': False,
          'GEN_MASK_LOADER': False,
@@ -391,7 +391,7 @@ config files: ['configs/MVITv2_B_32x3_prompted.yaml', 'DATA.PATH_TO_DATA_DIR', '
            'CHECKPOINT_TYPE': 'pytorch',
            'DATASET': 'kinetics',
            'ENABLE': True,
-           'EVAL_PERIOD': 2,
+           'EVAL_PERIOD': 5,
            'KILL_LOSS_EXPLOSION_FACTOR': 0.0,
            'MIXED_PRECISION': False},
  'VIS_MASK': CfgNode({'ENABLE': False}),
@@ -403,7 +403,7 @@ config files: ['configs/MVITv2_B_32x3_prompted.yaml', 'DATA.PATH_TO_DATA_DIR', '
          'DIM_C5': 2048,
          'SCALE_RES2': False,
          'WIDTH_FACTOR': 1.0}}
-[07/09 17:02:07][INFO] misc.py:  185: Model:
+[07/10 09:25:25][INFO] misc.py:  185: Model:
 DistributedDataParallel(
   (module): MViT(
     (patch_embed): PatchEmbed(
@@ -905,37 +905,37 @@ DistributedDataParallel(
     )
   )
 )
-[07/09 17:02:07][INFO] misc.py:  187: Params: 50,897,968
-[07/09 17:02:07][INFO] misc.py:  188: Mem: 0.38045549392700195 MB
+[07/10 09:25:25][INFO] misc.py:  187: Params: 50,897,968
+[07/10 09:25:25][INFO] misc.py:  188: Mem: 0.38045549392700195 MB
 /usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
   warnings.warn(
 /usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
   warnings.warn(
-[07/09 17:02:11][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[07/09 17:02:11][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[07/09 17:02:11][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[07/09 17:02:11][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
-[07/09 17:02:11][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
-[07/09 17:02:11][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[07/09 17:02:11][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[07/09 17:02:11][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[07/09 17:02:11][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+[07/10 09:25:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/10 09:25:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/10 09:25:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/10 09:25:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/10 09:25:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/10 09:25:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/10 09:25:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/10 09:25:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/10 09:25:29][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
 module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_path, module.blocks.12.drop_path, module.blocks.13.drop_path, module.blocks.14.drop_path, module.blocks.15.drop_path, module.blocks.16.drop_path, module.blocks.17.drop_path, module.blocks.18.drop_path, module.blocks.19.drop_path, module.blocks.2.drop_path, module.blocks.20.drop_path, module.blocks.21.drop_path, module.blocks.22.drop_path, module.blocks.23.drop_path, module.blocks.3.drop_path, module.blocks.4.drop_path, module.blocks.5.drop_path, module.blocks.6.drop_path, module.blocks.7.drop_path, module.blocks.8.drop_path, module.blocks.9.drop_path
-[07/09 17:02:11][INFO] misc.py:  190: Flops: 92.63208983999999 G
-[07/09 17:02:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
-[07/09 17:02:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[07/09 17:02:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[07/09 17:02:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[07/09 17:02:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
-[07/09 17:02:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
-[07/09 17:02:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[07/09 17:02:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[07/09 17:02:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[07/09 17:02:14][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+[07/10 09:25:29][INFO] misc.py:  190: Flops: 92.63208983999999 G
+[07/10 09:25:32][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[07/10 09:25:32][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/10 09:25:32][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/10 09:25:32][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/10 09:25:32][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/10 09:25:32][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/10 09:25:32][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/10 09:25:32][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/10 09:25:32][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/10 09:25:32][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
 module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_path, module.blocks.12.drop_path, module.blocks.13.drop_path, module.blocks.14.drop_path, module.blocks.15.drop_path, module.blocks.16.drop_path, module.blocks.17.drop_path, module.blocks.18.drop_path, module.blocks.19.drop_path, module.blocks.2.drop_path, module.blocks.20.drop_path, module.blocks.21.drop_path, module.blocks.22.drop_path, module.blocks.23.drop_path, module.blocks.3.drop_path, module.blocks.4.drop_path, module.blocks.5.drop_path, module.blocks.6.drop_path, module.blocks.7.drop_path, module.blocks.8.drop_path, module.blocks.9.drop_path
-[07/09 17:02:14][INFO] misc.py:  191: Activations: 357.084096 M
-[07/09 17:02:14][INFO] misc.py:  196: nvidia-smi
-Sun Jul  9 17:02:14 2023       
+[07/10 09:25:32][INFO] misc.py:  191: Activations: 357.084096 M
+[07/10 09:25:32][INFO] misc.py:  196: nvidia-smi
+Mon Jul 10 09:25:32 2023       
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 470.182.03   Driver Version: 470.182.03   CUDA Version: 11.4     |
 |-------------------------------+----------------------+----------------------+
@@ -944,11 +944,11 @@ Sun Jul  9 17:02:14 2023
 |                               |                      |               MIG M. |
 |===============================+======================+======================|
 |   0  NVIDIA RTX A5000    Off  | 00000000:17:00.0 Off |                  Off |
-| 30%   46C    P2    64W / 230W |   4179MiB / 24256MiB |      0%      Default |
+| 30%   38C    P2    60W / 230W |   4179MiB / 24256MiB |      0%      Default |
 |                               |                      |                  N/A |
 +-------------------------------+----------------------+----------------------+
 |   1  NVIDIA RTX A5000    Off  | 00000000:65:00.0 Off |                  Off |
-| 30%   50C    P2    67W / 230W |   1370MiB / 24247MiB |      0%      Default |
+| 30%   39C    P2    66W / 230W |   1370MiB / 24247MiB |      0%      Default |
 |                               |                      |                  N/A |
 +-------------------------------+----------------------+----------------------+
                                                                                
@@ -958,51 +958,52 @@ Sun Jul  9 17:02:14 2023
 |        ID   ID                                                   Usage      |
 |=============================================================================|
 |    0   N/A  N/A      1550      G   /usr/lib/xorg/Xorg                  4MiB |
-|    0   N/A  N/A   2995038      C   /usr/bin/python3                 4171MiB |
+|    0   N/A  N/A   3152323      C   /usr/bin/python3                 4171MiB |
 |    1   N/A  N/A      1550      G   /usr/lib/xorg/Xorg                 31MiB |
 |    1   N/A  N/A      2487      G   /usr/bin/gnome-shell                7MiB |
-|    1   N/A  N/A   2995039      C   /usr/bin/python3                 1327MiB |
+|    1   N/A  N/A   3152324      C   /usr/bin/python3                 1327MiB |
 +-----------------------------------------------------------------------------+
 bn 0, non bn 246, zero 343, no grad 0
-[07/09 17:02:15][INFO] train_net.py:  692: Load from given checkpoint file.
-[07/09 17:02:15][INFO] checkpoint.py:  223: Loading network weights from checkpoints/MViTv2_B_32x3_k400_f304025456.pyth.
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.0.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.1.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.2.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.3.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.4.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.5.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.6.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.7.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.8.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.9.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.10.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.11.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.12.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.13.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.14.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.15.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.16.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.17.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.18.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.19.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.20.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.21.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.22.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  487: blocks.23.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/09 17:02:15][INFO] checkpoint.py:  542: Network weights head.projection.weight not loaded.
-[07/09 17:02:15][INFO] checkpoint.py:  542: Network weights head.projection.bias not loaded.
-[07/09 17:02:15][INFO] checkpoint.py:  545: Network weights head.projection.weight not used.
-[07/09 17:02:15][INFO] checkpoint.py:  545: Network weights head.projection.bias not used.
+[07/10 09:25:32][INFO] train_net.py:  692: Load from given checkpoint file.
+[07/10 09:25:32][INFO] checkpoint.py:  223: Loading network weights from checkpoints/MViTv2_B_32x3_k400_f304025456.pyth.
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.0.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.1.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.2.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.3.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.4.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.5.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.6.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.7.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.8.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.9.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.10.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.11.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.12.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.13.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.14.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.15.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.16.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.17.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.18.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.19.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.20.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.21.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.22.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  487: blocks.23.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/10 09:25:33][INFO] checkpoint.py:  542: Network weights head.projection.weight not loaded.
+[07/10 09:25:33][INFO] checkpoint.py:  542: Network weights head.projection.bias not loaded.
+[07/10 09:25:33][INFO] checkpoint.py:  545: Network weights head.projection.weight not used.
+[07/10 09:25:33][INFO] checkpoint.py:  545: Network weights head.projection.bias not used.
 missing keys: ['head.projection.weight', 'head.projection.bias']
 unexpected keys: []
-[07/09 17:02:15][INFO] kinetics.py:   93: Constructing Kinetics train...
-[07/09 17:02:15][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 1927 skip_rows 0) from train.csv 
-[07/09 17:02:15][INFO] kinetics.py:   93: Constructing Kinetics val...
-[07/09 17:02:15][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 482 skip_rows 0) from val.csv 
+[07/10 09:25:33][INFO] kinetics.py:   93: Constructing Kinetics train...
+[07/10 09:25:33][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 1927 skip_rows 0) from train.csv 
+[07/10 09:25:33][INFO] kinetics.py:   93: Constructing Kinetics val...
+[07/10 09:25:33][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 482 skip_rows 0) from val.csv 
 Using Prompting Method multi_cam_padding with Params:
-[07/09 17:02:15][INFO] train_net.py:  790: Start epoch: 1
+[07/10 09:25:33][INFO] train_net.py:  790: Start epoch: 1
 /usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
   warnings.warn(
 /usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
   warnings.warn(
+[07/10 09:25:45][INFO] distributed.py: 1027: Reducer buckets have been rebuilt in this iteration.
