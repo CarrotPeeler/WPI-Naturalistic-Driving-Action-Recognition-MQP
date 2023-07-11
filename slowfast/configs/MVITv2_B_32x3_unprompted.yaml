@@ -1,4 +1,4 @@
-TRAIN: # python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_unprompted.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
+TRAIN:
   ENABLE: True
   DATASET: kinetics
   BATCH_SIZE: 16
@@ -58,11 +58,11 @@ SOLVER:
   ZERO_WD_1D_PARAM: True
   BASE_LR_SCALE_NUM_SHARDS: True
   CLIP_GRAD_L2NORM: 1.0
-  BASE_LR: 9e-5
+  BASE_LR: 0.0002
   COSINE_AFTER_WARMUP: True
-  COSINE_END_LR: 1e-6
-  WARMUP_START_LR: 1e-6
-  WARMUP_EPOCHS: 15.0
+  COSINE_END_LR: 2e-6
+  WARMUP_START_LR: 2e-6
+  WARMUP_EPOCHS: 30.0
   LR_POLICY: cosine
   MAX_EPOCH: 200
   MOMENTUM: 0.9
@@ -89,7 +89,7 @@ PROMPT:
   METHOD: multi_cam_padding 
   PROMPT_SIZE: 30
   RESUME: None # ./visual_prompting/save/models/mvitv2-b_fixed_patch/.. or None
-  LEARNING_RATE: 0.02
+  LEARNING_RATE: 0.1
   WEIGHT_DECAY: 1e-4
   WARMUP: 30
   SELECTIVE_UPDATING: False
