@@ -289,8 +289,9 @@ def crop(args):
     return CropPrompter(args)
 
 
-def multi_cam_noise_crop(args):
+def multi_cam_noisecrop(args):
     return MultiCamNoiseCropPrompter(args)
+
 
 def multi_cam_padding(args):
     return MultiCamPadPrompter(args)
