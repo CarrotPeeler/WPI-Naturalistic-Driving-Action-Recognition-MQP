@@ -138,7 +138,7 @@ class MultiCamNoiseCropPrompter(nn.Module):
         super(MultiCamNoiseCropPrompter, self).__init__()
 
         # Parameters below may need to be manually adjusted
-        self.image_size = args.image_size
+        self.image_size = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
 
         pad_up_size = {
             'Dashboard': 60,
