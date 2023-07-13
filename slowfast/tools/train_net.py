@@ -444,7 +444,7 @@ def eval_epoch(
 
                 preds = model(prompted_inputs)
 
-                if (cur_epoch + 1) % cfg.TRAIN.CHECKPOINT_PERIOD == 0 or cur_epoch + 1 == cfg.TRAIN.CHECKPOINT_PERIOD:
+                if (cur_epoch + 1) % cfg.TRAIN.CHECKPOINT_PERIOD == 0 or (cur_epoch + 1) == cfg.TRAIN.EVAL_PERIOD:
                     # save prompted_images for visualization
                     for idx in range(len(prompted_inputs[0])): 
                         if(index[idx] <= 10):
