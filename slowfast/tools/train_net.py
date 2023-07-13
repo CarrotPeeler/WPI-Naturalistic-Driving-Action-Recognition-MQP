@@ -444,10 +444,10 @@ def eval_epoch(
 
                 preds = model(prompted_inputs)
 
-                if (cur_epoch + 1) % cfg.TRAIN.CHECKPOINT_PERIOD == 0:
+                if (cur_epoch + 1) % cfg.TRAIN.CHECKPOINT_PERIOD == 0 or cur_epoch + 1 == cfg.TRAIN.CHECKPOINT_PERIOD:
                     # save prompted_images for visualization
                     for idx in range(len(prompted_inputs[0])): 
-                        if(index[idx] <= 5):
+                        if(index[idx] <= 10):
 
                             # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
                             prompted_clip = prompted_inputs[0][idx].permute(1, 0, 2, 3) # prompted clip

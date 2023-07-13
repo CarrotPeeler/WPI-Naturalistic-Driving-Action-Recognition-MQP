@@ -336,11 +336,11 @@ class MultiCamNoiseCropV2Prompter(nn.Module):
             cam_view = cam_views[clip_idx]
 
             # calc the pad size for left, right, up, down pads
-            offset_left = int(np.random.randint(1, self.max_pad_size))
-            offset_right = self.max_pad_size*2 - offset_left
+            offset_right = int(np.random.randint(1, self.max_pad_size+1))
+            offset_left = self.max_pad_size*2 - offset_right
 
-            offset_up = int(np.random.randint(1, self.max_pad_size))
-            offset_down = self.max_pad_size*2 - offset_up
+            offset_down = int(np.random.randint(1, self.max_pad_size+1))
+            offset_up = self.max_pad_size*2 - offset_down
 
             # calc number of each pad type (size 1 or 10) required to construct each side's pad
             num_size_10_pads_left = int(offset_left/10)
