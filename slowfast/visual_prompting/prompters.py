@@ -279,7 +279,7 @@ class MultiCamNoiseCropV2Prompter(nn.Module):
 
         self.image_size = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
         self.max_pad_size = args.PROMPT.PROMPT_SIZE if isinstance(args, CfgNode) else args.prompt_size
-        self.crop_size = self.image_size - self.max_pad_size
+        self.crop_size = self.image_size - self.max_pad_size*2
 
         self.pad_up_size_1 = nn.ParameterDict({
             'Dashboard': nn.Parameter(torch.randn([3, 1, 1, self.image_size])),
@@ -336,24 +336,24 @@ class MultiCamNoiseCropV2Prompter(nn.Module):
             cam_view = cam_views[clip_idx]
 
             # calc the pad size for left, right, up, down pads
-            offset_left = int(np.random.randint(0, self.crop_size))
+            offset_left = int(np.random.randint(1, self.max_pad_size))
             offset_right = self.max_pad_size*2 - offset_left
 
-            offset_up = int(np.random.randint(0, self.crop_size))
+            offset_up = int(np.random.randint(1, self.max_pad_size))
             offset_down = self.max_pad_size*2 - offset_up
 
             # calc number of each pad type (size 1 or 10) required to construct each side's pad
-            num_size_10_pads_left = int(offset_left/10)*10
-            num_size_1_pads_left = offset_left - num_size_10_pads_left
+            num_size_10_pads_left = int(offset_left/10)
+            num_size_1_pads_left = offset_left - num_size_10_pads_left*10
 
-            num_size_10_pads_right = int(offset_right/10)*10
-            num_size_1_pads_right = offset_right - num_size_10_pads_right
+            num_size_10_pads_right = int(offset_right/10)
+            num_size_1_pads_right = offset_right - num_size_10_pads_right*10
             
-            num_size_10_pads_up = int(offset_up/10)*10
-            num_size_1_pads_up = offset_up - num_size_10_pads_up
+            num_size_10_pads_up = int(offset_up/10)
+            num_size_1_pads_up = offset_up - num_size_10_pads_up*10
 
-            num_size_10_pads_down = int(offset_down/10)*10
-            num_size_1_pads_down = offset_down - num_size_10_pads_down
+            num_size_10_pads_down = int(offset_down/10)
+            num_size_1_pads_down = offset_down - num_size_10_pads_down*10
 
             # concat pad types (size 1 and 10) together to construct final pad for each side (left, right, up, down)
             pad_left = torch.cat(num_size_10_pads_left*[self.pad_left_size_10[cam_view]] + num_size_1_pads_left*[self.pad_left_size_1[cam_view]], dim=3)
