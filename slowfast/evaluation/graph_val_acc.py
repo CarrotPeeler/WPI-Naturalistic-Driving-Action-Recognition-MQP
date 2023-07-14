@@ -103,17 +103,24 @@ if __name__ == '__main__':
     dir_path = '/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/evaluation/mvitv2-b32x3/' 
     
     json_paths = [
-        dir_path + 'normal_data/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log',
-        dir_path + 'prompted_multicam_padding/selective_updating/best_results/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log',
-        dir_path + 'prompted_multicam_padding/selective_updating/best_results/json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.02_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log'
+        dir_path + 'prompted_multicam_padding/json_stats_mvitv2-b_round1_multicam_padding_30_lr_0.02_wd_1e-4_base-lr_9e-5_end-lr_1e-6_warmup-lr_1e-6.log',
+        dir_path + 'prompted_multicam_padding/selective_updating/json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.02_wd_1e-4_base-lr_9e-5_end-lr_1e-6_warmup-lr_1e-6.log'
+        # dir_path + 'normal_data/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log',
+        # dir_path + 'prompted_padding/Json_stats_mvitv2-b_round1_padding_30_lr_0.05_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log',
+        # dir_path + 'prompted_multicam_padding/selective_updating/best_results/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log',
+        # dir_path + 'prompted_multicam_padding/selective_updating/best_results/json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.02_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log'
     ]
 
     legend_labels = [
-        'unprompted training',
-        'selective updating, multicam padding\nprompt LR = 0.1',
+        'multicam padding\nprompt LR = 0.02',
         'selective updating, multicam padding\nprompt LR = 0.02'
+        # 'unprompted training',
+        # 'padding\nprompt LR = 0.05',
+        # 'selective updating, multicam padding\nprompt LR = 0.1',
+        # 'selective updating, multicam padding\nprompt LR = 0.02'
     ]
 
-    figtitle = "Top1 Validation Accuracy Over Time for MViTv2-B\n(Base LR = 2e-4, start and end LR = 2e-6, 30 epoch warmup)"
+    # figtitle = "Top1 Validation Accuracy Over Time for MViTv2-B\n(Base LR = 2e-4, start and end LR = 2e-6, 30 epoch warmup)"
+    figtitle = "Top1 Validation Accuracy Over Time for MViTv2-B\n(Base LR = 9e-5, start and end LR = 1e-6, 15 epoch warmup)"
 
     graph_top1_val_acc(json_paths, num_epochs, eval_freq, legend_labels, figtitle, min_epoch_window=100, sliding_window=5, tracked_accs=[81, 82, 82.5, 83])
