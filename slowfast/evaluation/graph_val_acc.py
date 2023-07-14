@@ -116,4 +116,4 @@ if __name__ == '__main__':
 
     figtitle = "Top1 Validation Accuracy Over Time for MViTv2-B\n(Base LR = 2e-4, start and end LR = 2e-6, 30 epoch warmup)"
 
-    graph_top1_val_acc(json_paths, num_epochs, eval_freq, legend_labels, figtitle, min_epoch_window=100, sliding_window=10, tracked_accs=[81, 82, 82.5, 83])
+    graph_top1_val_acc(json_paths, num_epochs, eval_freq, legend_labels, figtitle, min_epoch_window=100, sliding_window=5, tracked_accs=[81, 82, 82.5, 83])
