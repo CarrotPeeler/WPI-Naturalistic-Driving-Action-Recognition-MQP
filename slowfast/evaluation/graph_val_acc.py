@@ -3,6 +3,7 @@ import math
 import numpy as np
 from itertools import cycle
 import matplotlib.pyplot as plt
+from sklearn.metrics import r2_score
 
 # run command
 # cd slowfast
@@ -17,49 +18,71 @@ params:
     epochs: num epochs for graphing over x-axis
     legend_labels: list of legend labels for each line (order should match json_stats list)
 """
-def graph_top1_val_acc(json_stat_paths:list, epochs:int, eval_freq:int, legend_labels:list, figtitle:str):
-    x = list(range(1, epochs+1, eval_freq))
-    y = []
+def graph_top1_val_acc(json_stat_paths:list, epochs:int, eval_freq:int, legend_labels:list, figtitle:str, min_epoch_window=1):
+    x_validation = list(range(min_epoch_window, epochs, eval_freq))
+    x_train = list(range(1, epochs+1))
+    y_validation = []
+    y_train = []
 
     for json_stat_path in json_stat_paths:
         y_vals = []
+        y_trains = []
         with open(json_stat_path) as f:
             for line in f:
                 if "val_epoch" in line:
                     y_vals.append(float(line.rpartition('top1_acc":')[-1].partition(',')[0]))
-        y.append(y_vals)
+                elif "train_epoch" in line:
+                    y_trains.append(float(line.rpartition('top1_acc":')[-1].partition(',')[0]))
+        y_validation.append(y_vals)
+        y_train.append(y_trains)
 
-    y_lim_min = math.floor(min([y[i][0] for i in range(len(y))]))
-    y_lim_max = math.ceil(max([max(y[i]) for i in range(len(y))]))
+    y_lim_min = math.floor(min([min(y_validation[i]) for i in range(len(y_validation))]))
+    y_lim_max = math.ceil(max([max(y_validation[i]) for i in range(len(y_validation))]))\
+    
+    y_validation_moving_avg = []
+
+    # sliding_window = 10
+    # for i in range(min_epoch_window, epochs+1):
+    #     avg = sum(y_validation[i - sliding_window: i])/sliding_window
+    #     y_validation_moving_avg.append(avg)
 
     fig = plt.figure(figsize=(17, 6))
 
     color_cycle = cycle('bgrcmk')
 
-    for idx, y_val in enumerate(y):
-        ax = fig.add_subplot(1, len(y), idx+1)
-        ax.plot(x, y_val, next(color_cycle))
-        # ax.scatter(x, y_val, s=5)
+    min_epoch_window_idx = int(len(y_validation)*min_epoch_window/epochs)
 
-        # # create trend line
-        # z = np.polyfit(x, y_val, 50)
-        # p = np.poly1d(z)
+    # for idx in range(len(y_validation)):
+    #     ax = fig.add_subplot(1, len(y_validation), idx+1)
+    #     # ax.plot(x_validation, y_validation[idx], next(color_cycle))
+    #     # ax.plot(x_train, y_train[idx], next(color_cycle))
+    #     c = next(color_cycle)
 
-        # #add trendline to plot
-        # plt.plot(x, p(x), next(color_cycle))
+    #     # ax.scatter(x_validation, y_validation[idx], s=5, c=c)
+    #     ax.plot(x_validation, y_validation[idx][min_epoch_window_idx-1:], c, alpha=0.2, linestyle="dashdot")
 
-        ax.set_title(legend_labels[idx])
-        ax.xaxis.set_ticks(np.arange(0, epochs+1, 50))
-        ax.set_ylim(y_lim_min, y_lim_max)
+    #     # # create trend line
+    #     # z = np.polyfit(x_validation, y_validation[idx], 2)
+    #     # p = np.poly1d(z)
 
-        plt.xlabel('Time (epochs)')
-        plt.ylabel('Accuracy (%)')
+    #     # coeff_of_determination = r2_score(y_validation[idx], p(x_validation))
 
-    fig.suptitle(figtitle)
+    #     # #add trendline to plot
+    #     # ax.text(0.7, 0.3, f'R$^2$: {coeff_of_determination:.3}', fontsize = 15, transform=ax.transAxes)
+    #     # ax.plot(x_validation, p(x_validation), c)
 
-    fig.subplots_adjust(top=0.85)
+    #     ax.set_title(legend_labels[idx])
+    #     # ax.xaxis.set_ticks(np.arange(0, epochs+1, 50))
+    #     ax.set_ylim(y_lim_min, y_lim_max)
 
-    plt.savefig(os.getcwd() + "/evaluation/graphs/val_acc_graphs/val_acc_compare.png") # save the figure to file
+    #     plt.xlabel('Time (epochs)')
+    #     plt.ylabel('Accuracy (%)')
+
+    # fig.suptitle(figtitle)
+
+    # fig.subplots_adjust(top=0.80)
+
+    # plt.savefig(os.getcwd() + "/evaluation/graphs/val_acc_graphs/val_acc_compare.png") # save the figure to file
     
     print("Figure saved.")
 
@@ -82,6 +105,6 @@ if __name__ == '__main__':
         'selective updating, multicam padding\nprompt LR = 0.02'
     ]
 
-    figtitle = "Top1 Validation Accuracy Over Time for MViTv2-B (Base LR = 2e-4, start and end LR = 2e-6, 30 epoch warmup)"
+    figtitle = "Top1 Validation Accuracy Over Time for MViTv2-B\n(Base LR = 2e-4, start and end LR = 2e-6, 30 epoch warmup)"
 
-    graph_top1_val_acc(json_paths, num_epochs, eval_freq, legend_labels, figtitle)
+    graph_top1_val_acc(json_paths, num_epochs, eval_freq, legend_labels, figtitle, min_epoch_window=100)
