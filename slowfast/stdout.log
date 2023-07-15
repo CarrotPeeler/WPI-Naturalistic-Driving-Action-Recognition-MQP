@@ -1,5 +1,5 @@
-[07/15 08:34:11][INFO] train_net.py:  650: Train with config:
-[07/15 08:34:11][INFO] train_net.py:  651: {'AUG': {'AA_TYPE': 'rand-m9-mstd0.5-inc1',
+[07/15 08:55:34][INFO] train_net.py:  650: Train with config:
+[07/15 08:55:34][INFO] train_net.py:  651: {'AUG': {'AA_TYPE': 'rand-m9-mstd0.5-inc1',
          'COLOR_JITTER': 0.4,
          'ENABLE': False,
          'GEN_MASK_LOADER': False,
@@ -398,7 +398,7 @@
          'DIM_C5': 2048,
          'SCALE_RES2': False,
          'WIDTH_FACTOR': 1.0}}
-[07/15 08:34:13][INFO] misc.py:  185: Model:
+[07/15 08:55:36][INFO] misc.py:  185: Model:
 DistributedDataParallel(
   (module): MViT(
     (patch_embed): PatchEmbed(
@@ -900,68 +900,16 @@ DistributedDataParallel(
     )
   )
 )
-[07/15 08:34:13][INFO] misc.py:  187: Params: 50,897,968
-[07/15 08:34:13][INFO] misc.py:  188: Mem: 0.38045549392700195 MB
-[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
-[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
-[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[07/15 08:34:18][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+[07/15 08:55:36][INFO] misc.py:  187: Params: 50,897,968
+[07/15 08:55:36][INFO] misc.py:  188: Mem: 0.38045549392700195 MB
+[07/15 08:55:40][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/15 08:55:40][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/15 08:55:40][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/15 08:55:40][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/15 08:55:40][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/15 08:55:40][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/15 08:55:40][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/15 08:55:40][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/15 08:55:40][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
 module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_path, module.blocks.12.drop_path, module.blocks.13.drop_path, module.blocks.14.drop_path, module.blocks.15.drop_path, module.blocks.16.drop_path, module.blocks.17.drop_path, module.blocks.18.drop_path, module.blocks.19.drop_path, module.blocks.2.drop_path, module.blocks.20.drop_path, module.blocks.21.drop_path, module.blocks.22.drop_path, module.blocks.23.drop_path, module.blocks.3.drop_path, module.blocks.4.drop_path, module.blocks.5.drop_path, module.blocks.6.drop_path, module.blocks.7.drop_path, module.blocks.8.drop_path, module.blocks.9.drop_path
-[07/15 08:34:18][INFO] misc.py:  190: Flops: 92.63208983999999 G
-[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
-[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
-[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
-[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[07/15 08:34:20][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
-module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_path, module.blocks.12.drop_path, module.blocks.13.drop_path, module.blocks.14.drop_path, module.blocks.15.drop_path, module.blocks.16.drop_path, module.blocks.17.drop_path, module.blocks.18.drop_path, module.blocks.19.drop_path, module.blocks.2.drop_path, module.blocks.20.drop_path, module.blocks.21.drop_path, module.blocks.22.drop_path, module.blocks.23.drop_path, module.blocks.3.drop_path, module.blocks.4.drop_path, module.blocks.5.drop_path, module.blocks.6.drop_path, module.blocks.7.drop_path, module.blocks.8.drop_path, module.blocks.9.drop_path
-[07/15 08:34:20][INFO] misc.py:  191: Activations: 357.084096 M
-[07/15 08:34:20][INFO] misc.py:  196: nvidia-smi
-[07/15 08:34:21][INFO] train_net.py:  692: Load from given checkpoint file.
-[07/15 08:34:21][INFO] checkpoint.py:  223: Loading network weights from checkpoints/MViTv2_B_32x3_k400_f304025456.pyth.
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.0.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.1.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.2.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.3.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.4.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.5.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.6.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.7.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.8.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.9.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.10.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.11.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.12.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.13.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.14.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.15.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.16.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.17.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.18.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.19.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.20.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.21.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.22.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.23.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/15 08:34:21][INFO] checkpoint.py:  542: Network weights head.projection.weight not loaded.
-[07/15 08:34:21][INFO] checkpoint.py:  542: Network weights head.projection.bias not loaded.
-[07/15 08:34:21][INFO] checkpoint.py:  545: Network weights head.projection.weight not used.
-[07/15 08:34:21][INFO] checkpoint.py:  545: Network weights head.projection.bias not used.
-[07/15 08:34:21][INFO] kinetics.py:   93: Constructing Kinetics train...
-[07/15 08:34:21][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 1927 skip_rows 0) from train.csv 
-[07/15 08:34:21][INFO] kinetics.py:   93: Constructing Kinetics val...
-[07/15 08:34:21][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 482 skip_rows 0) from val.csv 
-[07/15 08:34:21][INFO] train_net.py:  790: Start epoch: 1
-[07/15 08:34:33][INFO] distributed.py: 1027: Reducer buckets have been rebuilt in this iteration.
-[07/15 08:34:45][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.26788, "dt_data": 0.00040, "dt_net": 1.26747, "epoch": "1/200", "eta": "8:26:56", "gpu_mem": "17.92G", "grad_norm": 4.08631, "iter": "10/120", "loss": 2.80754, "lr": 0.0000024950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 31.25000, "top5_err": 68.75000}
-[07/15 08:34:58][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.32085, "dt_data": 0.00041, "dt_net": 1.32044, "epoch": "1/200", "eta": "8:47:53", "gpu_mem": "17.92G", "grad_norm": 4.03564, "iter": "20/120", "loss": 2.81033, "lr": 0.0000030450, "top1_acc": 0.00000, "top1_err": 100.00000, "top5_acc": 34.37500, "top5_err": 65.62500}
-[07/15 08:35:11][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.30322, "dt_data": 0.00055, "dt_net": 1.30266, "epoch": "1/200", "eta": "8:40:38", "gpu_mem": "17.92G", "grad_norm": 4.39752, "iter": "30/120", "loss": 2.82625, "lr": 0.0000035950, "top1_acc": 0.00000, "top1_err": 100.00000, "top5_acc": 28.12500, "top5_err": 71.87500}
+[07/15 08:55:40][INFO] misc.py:  190: Flops: 92.63208983999999 G
