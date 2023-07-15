@@ -447,14 +447,14 @@ def eval_epoch(
                 if (cur_epoch + 1) % cfg.TRAIN.CHECKPOINT_PERIOD == 0 or (cur_epoch + 1) == cfg.TRAIN.EVAL_PERIOD:
                     # save prompted_images for visualization
                     for idx in range(len(prompted_inputs[0])): 
-                        if(index[idx] <= 10):
+                        if(index[idx] <= 5):
 
                             # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
                             prompted_clip = prompted_inputs[0][idx].permute(1, 0, 2, 3) # prompted clip
                             # prompt = prompted_images[1][0].permute(1, 0, 2, 3) # prompted clip
 
                             for jdx in range(prompted_clip.shape[0]):
-                                if(jdx == 0):
+                                if(jdx < cfg.DATA.NUM_FRAMES):
                                     # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
                                     save_image(prompted_clip[jdx], f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch + 1}_batch_{cur_iter}_prompted_clip_{idx}.png")
                                     # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")

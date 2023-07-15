@@ -1,5 +1,5 @@
-[07/14 21:09:11][INFO] train_net.py:  650: Train with config:
-[07/14 21:09:11][INFO] train_net.py:  651: {'AUG': {'AA_TYPE': 'rand-m9-mstd0.5-inc1',
+[07/15 08:34:11][INFO] train_net.py:  650: Train with config:
+[07/15 08:34:11][INFO] train_net.py:  651: {'AUG': {'AA_TYPE': 'rand-m9-mstd0.5-inc1',
          'COLOR_JITTER': 0.4,
          'ENABLE': False,
          'GEN_MASK_LOADER': False,
@@ -288,7 +288,7 @@
             'GPU': None,
             'IMAGE_FOLDER': './visual_prompting/save/images/mvitv2-b_fixed_patch',
             'LEARNING_RATE': 0.1,
-            'METHOD': 'multi_cam_noisecropv3',
+            'METHOD': 'multi_cam_padding_v2',
             'MODEL_FOLDER': './visual_prompting/save/models/mvitv2-b_fixed_patch',
             'MOMENTUM': 0.9,
             'PRINT_GRADS': False,
@@ -398,7 +398,7 @@
          'DIM_C5': 2048,
          'SCALE_RES2': False,
          'WIDTH_FACTOR': 1.0}}
-[07/14 21:09:13][INFO] misc.py:  185: Model:
+[07/15 08:34:13][INFO] misc.py:  185: Model:
 DistributedDataParallel(
   (module): MViT(
     (patch_embed): PatchEmbed(
@@ -900,103 +900,68 @@ DistributedDataParallel(
     )
   )
 )
-[07/14 21:09:13][INFO] misc.py:  187: Params: 50,897,968
-[07/14 21:09:13][INFO] misc.py:  188: Mem: 0.38045549392700195 MB
-[07/14 21:09:17][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[07/14 21:09:17][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[07/14 21:09:17][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[07/14 21:09:17][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
-[07/14 21:09:17][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
-[07/14 21:09:17][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[07/14 21:09:17][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[07/14 21:09:17][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[07/14 21:09:17][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+[07/15 08:34:13][INFO] misc.py:  187: Params: 50,897,968
+[07/15 08:34:13][INFO] misc.py:  188: Mem: 0.38045549392700195 MB
+[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/15 08:34:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/15 08:34:18][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
 module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_path, module.blocks.12.drop_path, module.blocks.13.drop_path, module.blocks.14.drop_path, module.blocks.15.drop_path, module.blocks.16.drop_path, module.blocks.17.drop_path, module.blocks.18.drop_path, module.blocks.19.drop_path, module.blocks.2.drop_path, module.blocks.20.drop_path, module.blocks.21.drop_path, module.blocks.22.drop_path, module.blocks.23.drop_path, module.blocks.3.drop_path, module.blocks.4.drop_path, module.blocks.5.drop_path, module.blocks.6.drop_path, module.blocks.7.drop_path, module.blocks.8.drop_path, module.blocks.9.drop_path
-[07/14 21:09:18][INFO] misc.py:  190: Flops: 92.63208983999999 G
-[07/14 21:09:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
-[07/14 21:09:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[07/14 21:09:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[07/14 21:09:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[07/14 21:09:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
-[07/14 21:09:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
-[07/14 21:09:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[07/14 21:09:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[07/14 21:09:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[07/14 21:09:20][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+[07/15 08:34:18][INFO] misc.py:  190: Flops: 92.63208983999999 G
+[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/15 08:34:20][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/15 08:34:20][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
 module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_path, module.blocks.12.drop_path, module.blocks.13.drop_path, module.blocks.14.drop_path, module.blocks.15.drop_path, module.blocks.16.drop_path, module.blocks.17.drop_path, module.blocks.18.drop_path, module.blocks.19.drop_path, module.blocks.2.drop_path, module.blocks.20.drop_path, module.blocks.21.drop_path, module.blocks.22.drop_path, module.blocks.23.drop_path, module.blocks.3.drop_path, module.blocks.4.drop_path, module.blocks.5.drop_path, module.blocks.6.drop_path, module.blocks.7.drop_path, module.blocks.8.drop_path, module.blocks.9.drop_path
-[07/14 21:09:20][INFO] misc.py:  191: Activations: 357.084096 M
-[07/14 21:09:20][INFO] misc.py:  196: nvidia-smi
-[07/14 21:09:21][INFO] train_net.py:  692: Load from given checkpoint file.
-[07/14 21:09:21][INFO] checkpoint.py:  223: Loading network weights from checkpoints/MViTv2_B_32x3_k400_f304025456.pyth.
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.0.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.1.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.2.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.3.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.4.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.5.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.6.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.7.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.8.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.9.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.10.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.11.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.12.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.13.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.14.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.15.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.16.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.17.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.18.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.19.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.20.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.21.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.22.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  487: blocks.23.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
-[07/14 21:09:21][INFO] checkpoint.py:  542: Network weights head.projection.weight not loaded.
-[07/14 21:09:21][INFO] checkpoint.py:  542: Network weights head.projection.bias not loaded.
-[07/14 21:09:21][INFO] checkpoint.py:  545: Network weights head.projection.weight not used.
-[07/14 21:09:21][INFO] checkpoint.py:  545: Network weights head.projection.bias not used.
-[07/14 21:09:21][INFO] kinetics.py:   93: Constructing Kinetics train...
-[07/14 21:09:21][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 1927 skip_rows 0) from train.csv 
-[07/14 21:09:21][INFO] kinetics.py:   93: Constructing Kinetics val...
-[07/14 21:09:21][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 482 skip_rows 0) from val.csv 
-[07/14 21:09:21][INFO] train_net.py:  790: Start epoch: 1
-[07/14 21:09:33][INFO] distributed.py: 1027: Reducer buckets have been rebuilt in this iteration.
-[07/14 21:09:45][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.33475, "dt_data": 0.00041, "dt_net": 1.33434, "epoch": "1/200", "eta": "8:53:40", "gpu_mem": "17.92G", "grad_norm": 4.11331, "iter": "10/120", "loss": 2.80653, "lr": 0.0000024950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 37.50000, "top5_err": 62.50000}
-[07/14 21:09:58][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.34386, "dt_data": 0.00046, "dt_net": 1.34340, "epoch": "1/200", "eta": "8:57:05", "gpu_mem": "17.92G", "grad_norm": 3.88694, "iter": "20/120", "loss": 2.79826, "lr": 0.0000030450, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 31.25000, "top5_err": 68.75000}
-[07/14 21:10:11][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.30995, "dt_data": 0.00050, "dt_net": 1.30945, "epoch": "1/200", "eta": "8:43:19", "gpu_mem": "17.92G", "grad_norm": 4.19453, "iter": "30/120", "loss": 2.79166, "lr": 0.0000035950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 31.25000, "top5_err": 68.75000}
-[07/14 21:10:24][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.30102, "dt_data": 0.00043, "dt_net": 1.30059, "epoch": "1/200", "eta": "8:39:32", "gpu_mem": "17.92G", "grad_norm": 3.92690, "iter": "40/120", "loss": 2.81219, "lr": 0.0000041450, "top1_acc": 3.12500, "top1_err": 96.87500, "top5_acc": 25.00000, "top5_err": 75.00000}
-[07/14 21:10:37][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.32825, "dt_data": 0.00042, "dt_net": 1.32784, "epoch": "1/200", "eta": "8:50:11", "gpu_mem": "17.92G", "grad_norm": 4.57364, "iter": "50/120", "loss": 2.79771, "lr": 0.0000046950, "top1_acc": 3.12500, "top1_err": 96.87500, "top5_acc": 28.12500, "top5_err": 71.87500}
-[07/14 21:10:50][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35001, "dt_data": 0.00043, "dt_net": 1.34958, "epoch": "1/200", "eta": "8:58:39", "gpu_mem": "17.92G", "grad_norm": 3.88075, "iter": "60/120", "loss": 2.78173, "lr": 0.0000052450, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 37.50000, "top5_err": 62.50000}
-[07/14 21:11:04][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.32951, "dt_data": 0.00044, "dt_net": 1.32907, "epoch": "1/200", "eta": "8:50:15", "gpu_mem": "17.92G", "grad_norm": 4.48649, "iter": "70/120", "loss": 2.79989, "lr": 0.0000057950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 31.25000, "top5_err": 68.75000}
-[07/14 21:11:17][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.33668, "dt_data": 0.00045, "dt_net": 1.33623, "epoch": "1/200", "eta": "8:52:53", "gpu_mem": "17.92G", "grad_norm": 4.10567, "iter": "80/120", "loss": 2.79817, "lr": 0.0000063450, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 25.00000, "top5_err": 75.00000}
-[07/14 21:11:31][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.34699, "dt_data": 0.00045, "dt_net": 1.34654, "epoch": "1/200", "eta": "8:56:46", "gpu_mem": "17.92G", "grad_norm": 4.57535, "iter": "90/120", "loss": 2.76899, "lr": 0.0000068950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 31.25000, "top5_err": 68.75000}
-[07/14 21:11:44][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.31148, "dt_data": 0.00044, "dt_net": 1.31103, "epoch": "1/200", "eta": "8:42:24", "gpu_mem": "17.92G", "grad_norm": 4.49586, "iter": "100/120", "loss": 2.77869, "lr": 0.0000074450, "top1_acc": 0.00000, "top1_err": 100.00000, "top5_acc": 34.37500, "top5_err": 65.62500}
-[07/14 21:11:57][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.32842, "dt_data": 0.00048, "dt_net": 1.32793, "epoch": "1/200", "eta": "8:48:55", "gpu_mem": "17.92G", "grad_norm": 4.28480, "iter": "110/120", "loss": 2.79745, "lr": 0.0000079950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 25.00000, "top5_err": 75.00000}
-[07/14 21:12:11][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.33231, "dt_data": 0.00027, "dt_net": 1.33205, "epoch": "1/200", "eta": "8:50:15", "gpu_mem": "17.92G", "grad_norm": 4.29091, "iter": "120/120", "loss": 2.80517, "lr": 0.0000085450, "top1_acc": 0.00000, "top1_err": 100.00000, "top5_acc": 25.00000, "top5_err": 75.00000}
-[07/14 21:12:12][INFO] logging.py:  101: json_stats: {"RAM": "14.46/31.07G", "_type": "train_epoch", "dt": 0.80682, "dt_data": 0.80682, "dt_net": 1.33205, "epoch": "1/200", "eta": "5:21:06", "gpu_mem": "17.92G", "grad_norm": 4.29091, "loss": 2.79208, "lr": 0.0000085450, "top1_acc": 6.04167, "top1_err": 93.95833, "top5_acc": 31.40625, "top5_err": 68.59375}
-[07/14 21:12:12][INFO] train_net.py:  853: Epoch 0 takes 170.54s. Epochs from 0 to 0 take 170.54s in average and 170.54s in median.
-[07/14 21:12:12][INFO] train_net.py:  859: For epoch 0, each iteraction takes 1.42s in average. From epoch 0 to 0, each iteraction takes 1.42s in average.
-[07/14 21:12:35][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35729, "dt_data": 0.00045, "dt_net": 1.35684, "epoch": "2/200", "eta": "8:59:58", "gpu_mem": "17.92G", "grad_norm": 4.39725, "iter": "10/120", "loss": 2.76094, "lr": 0.0000090950, "top1_acc": 9.37500, "top1_err": 90.62500, "top5_acc": 31.25000, "top5_err": 68.75000}
-[07/14 21:12:49][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35711, "dt_data": 0.00042, "dt_net": 1.35669, "epoch": "2/200", "eta": "8:59:40", "gpu_mem": "17.92G", "grad_norm": 4.00836, "iter": "20/120", "loss": 2.75553, "lr": 0.0000096450, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 34.37500, "top5_err": 65.62500}
-[07/14 21:13:02][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.32341, "dt_data": 0.00301, "dt_net": 1.32040, "epoch": "2/200", "eta": "8:46:03", "gpu_mem": "17.92G", "grad_norm": 4.48467, "iter": "30/120", "loss": 2.76429, "lr": 0.0000101950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 37.50000, "top5_err": 62.50000}
-[07/14 21:13:16][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35167, "dt_data": 0.00042, "dt_net": 1.35126, "epoch": "2/200", "eta": "8:57:03", "gpu_mem": "17.92G", "grad_norm": 3.77793, "iter": "40/120", "loss": 2.78121, "lr": 0.0000107450, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 31.25000, "top5_err": 68.75000}
-[07/14 21:13:29][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.32923, "dt_data": 0.00043, "dt_net": 1.32879, "epoch": "2/200", "eta": "8:47:55", "gpu_mem": "17.92G", "grad_norm": 3.61123, "iter": "50/120", "loss": 2.75411, "lr": 0.0000112950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 43.75000, "top5_err": 56.25000}
-[07/14 21:13:43][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.34351, "dt_data": 0.00040, "dt_net": 1.34311, "epoch": "2/200", "eta": "8:53:22", "gpu_mem": "17.92G", "grad_norm": 3.50328, "iter": "60/120", "loss": 2.74317, "lr": 0.0000118450, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 37.50000, "top5_err": 62.50000}
-[07/14 21:13:56][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35263, "dt_data": 0.00041, "dt_net": 1.35222, "epoch": "2/200", "eta": "8:56:46", "gpu_mem": "17.92G", "grad_norm": 3.77626, "iter": "70/120", "loss": 2.72975, "lr": 0.0000123950, "top1_acc": 12.50000, "top1_err": 87.50000, "top5_acc": 37.50000, "top5_err": 62.50000}
-[07/14 21:14:10][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35198, "dt_data": 0.00068, "dt_net": 1.35130, "epoch": "2/200", "eta": "8:56:17", "gpu_mem": "17.92G", "grad_norm": 3.86030, "iter": "80/120", "loss": 2.74280, "lr": 0.0000129450, "top1_acc": 9.37500, "top1_err": 90.62500, "top5_acc": 37.50000, "top5_err": 62.50000}
-[07/14 21:14:23][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35431, "dt_data": 0.00045, "dt_net": 1.35387, "epoch": "2/200", "eta": "8:56:59", "gpu_mem": "17.92G", "grad_norm": 4.07323, "iter": "90/120", "loss": 2.74841, "lr": 0.0000134950, "top1_acc": 9.37500, "top1_err": 90.62500, "top5_acc": 43.75000, "top5_err": 56.25000}
-[07/14 21:14:37][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.37352, "dt_data": 0.00042, "dt_net": 1.37311, "epoch": "2/200", "eta": "9:04:22", "gpu_mem": "17.92G", "grad_norm": 4.17150, "iter": "100/120", "loss": 2.69998, "lr": 0.0000140450, "top1_acc": 12.50000, "top1_err": 87.50000, "top5_acc": 50.00000, "top5_err": 50.00000}
-[07/14 21:14:50][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.34413, "dt_data": 0.00042, "dt_net": 1.34371, "epoch": "2/200", "eta": "8:52:30", "gpu_mem": "17.92G", "grad_norm": 3.82397, "iter": "110/120", "loss": 2.72418, "lr": 0.0000145950, "top1_acc": 12.50000, "top1_err": 87.50000, "top5_acc": 46.87500, "top5_err": 53.12500}
-[07/14 21:15:04][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.34432, "dt_data": 0.00033, "dt_net": 1.34400, "epoch": "2/200", "eta": "8:52:21", "gpu_mem": "17.92G", "grad_norm": 3.75035, "iter": "120/120", "loss": 2.73069, "lr": 0.0000151450, "top1_acc": 18.75000, "top1_err": 81.25000, "top5_acc": 43.75000, "top5_err": 56.25000}
-[07/14 21:15:04][INFO] logging.py:  101: json_stats: {"RAM": "14.44/31.07G", "_type": "train_epoch", "dt": 0.78599, "dt_data": 0.78599, "dt_net": 1.34400, "epoch": "2/200", "eta": "5:11:14", "gpu_mem": "17.92G", "grad_norm": 3.75035, "loss": 2.74555, "lr": 0.0000151450, "top1_acc": 9.16667, "top1_err": 90.83333, "top5_acc": 39.11458, "top5_err": 60.88542}
-[07/14 21:15:04][INFO] train_net.py:  853: Epoch 1 takes 172.76s. Epochs from 0 to 1 take 171.65s in average and 171.65s in median.
-[07/14 21:15:04][INFO] train_net.py:  859: For epoch 1, each iteraction takes 1.44s in average. From epoch 0 to 1, each iteraction takes 1.43s in average.
-[07/14 21:15:18][INFO] logging.py:  101: json_stats: {"_type": "val_iter", "epoch": "2/200", "eta": "0:00:07", "gpu_mem": "17.92G", "iter": "10/31", "time_diff": 0.34749, "top1_acc": 18.75000, "top1_err": 81.25000, "top5_acc": 62.50000, "top5_err": 37.50000}
-[07/14 21:15:22][INFO] logging.py:  101: json_stats: {"_type": "val_iter", "epoch": "2/200", "eta": "0:00:03", "gpu_mem": "17.92G", "iter": "20/31", "time_diff": 0.33117, "top1_acc": 18.75000, "top1_err": 81.25000, "top5_acc": 50.00000, "top5_err": 50.00000}
-[07/14 21:15:25][INFO] logging.py:  101: json_stats: {"_type": "val_iter", "epoch": "2/200", "eta": "0:00:00", "gpu_mem": "17.92G", "iter": "30/31", "time_diff": 0.31393, "top1_acc": 12.50000, "top1_err": 87.50000, "top5_acc": 56.25000, "top5_err": 43.75000}
-[07/14 21:15:26][INFO] logging.py:  101: json_stats: {"RAM": "14.44/31.07G", "_type": "val_epoch", "epoch": "2/200", "gpu_mem": "17.92G", "min_top1_err": 80.08299, "min_top5_err": 44.39834, "time_diff": 0.59817, "top1_acc": 19.91701, "top1_err": 80.08299, "top5_acc": 55.60166, "top5_err": 44.39834}
-[07/14 21:15:49][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.33633, "dt_data": 0.00042, "dt_net": 1.33590, "epoch": "3/200", "eta": "8:48:57", "gpu_mem": "17.92G", "grad_norm": 4.29092, "iter": "10/120", "loss": 2.70117, "lr": 0.0000156950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 53.12500, "top5_err": 46.87500}
-[07/14 21:16:02][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35906, "dt_data": 0.00042, "dt_net": 1.35864, "epoch": "3/200", "eta": "8:57:44", "gpu_mem": "17.92G", "grad_norm": 4.28858, "iter": "20/120", "loss": 2.72876, "lr": 0.0000162450, "top1_acc": 12.50000, "top1_err": 87.50000, "top5_acc": 40.62500, "top5_err": 59.37500}
-[07/14 21:16:16][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.35112, "dt_data": 0.00046, "dt_net": 1.35066, "epoch": "3/200", "eta": "8:54:22", "gpu_mem": "17.92G", "grad_norm": 4.34394, "iter": "30/120", "loss": 2.69288, "lr": 0.0000167950, "top1_acc": 12.50000, "top1_err": 87.50000, "top5_acc": 46.87500, "top5_err": 53.12500}
-[07/14 21:16:30][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.38596, "dt_data": 0.00041, "dt_net": 1.38555, "epoch": "3/200", "eta": "9:07:54", "gpu_mem": "17.92G", "grad_norm": 4.21439, "iter": "40/120", "loss": 2.68687, "lr": 0.0000173450, "top1_acc": 18.75000, "top1_err": 81.25000, "top5_acc": 46.87500, "top5_err": 53.12500}
+[07/15 08:34:20][INFO] misc.py:  191: Activations: 357.084096 M
+[07/15 08:34:20][INFO] misc.py:  196: nvidia-smi
+[07/15 08:34:21][INFO] train_net.py:  692: Load from given checkpoint file.
+[07/15 08:34:21][INFO] checkpoint.py:  223: Loading network weights from checkpoints/MViTv2_B_32x3_k400_f304025456.pyth.
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.0.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.1.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.2.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.3.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.4.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.5.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.6.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.7.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.8.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.9.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.10.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.11.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.12.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.13.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.14.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.15.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.16.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.17.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.18.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.19.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.20.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.21.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.22.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  487: blocks.23.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
+[07/15 08:34:21][INFO] checkpoint.py:  542: Network weights head.projection.weight not loaded.
+[07/15 08:34:21][INFO] checkpoint.py:  542: Network weights head.projection.bias not loaded.
+[07/15 08:34:21][INFO] checkpoint.py:  545: Network weights head.projection.weight not used.
+[07/15 08:34:21][INFO] checkpoint.py:  545: Network weights head.projection.bias not used.
+[07/15 08:34:21][INFO] kinetics.py:   93: Constructing Kinetics train...
+[07/15 08:34:21][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 1927 skip_rows 0) from train.csv 
+[07/15 08:34:21][INFO] kinetics.py:   93: Constructing Kinetics val...
+[07/15 08:34:21][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 482 skip_rows 0) from val.csv 
+[07/15 08:34:21][INFO] train_net.py:  790: Start epoch: 1
+[07/15 08:34:33][INFO] distributed.py: 1027: Reducer buckets have been rebuilt in this iteration.
+[07/15 08:34:45][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.26788, "dt_data": 0.00040, "dt_net": 1.26747, "epoch": "1/200", "eta": "8:26:56", "gpu_mem": "17.92G", "grad_norm": 4.08631, "iter": "10/120", "loss": 2.80754, "lr": 0.0000024950, "top1_acc": 6.25000, "top1_err": 93.75000, "top5_acc": 31.25000, "top5_err": 68.75000}
+[07/15 08:34:58][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.32085, "dt_data": 0.00041, "dt_net": 1.32044, "epoch": "1/200", "eta": "8:47:53", "gpu_mem": "17.92G", "grad_norm": 4.03564, "iter": "20/120", "loss": 2.81033, "lr": 0.0000030450, "top1_acc": 0.00000, "top1_err": 100.00000, "top5_acc": 34.37500, "top5_err": 65.62500}
+[07/15 08:35:11][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.30322, "dt_data": 0.00055, "dt_net": 1.30266, "epoch": "1/200", "eta": "8:40:38", "gpu_mem": "17.92G", "grad_norm": 4.39752, "iter": "30/120", "loss": 2.82625, "lr": 0.0000035950, "top1_acc": 0.00000, "top1_err": 100.00000, "top5_acc": 28.12500, "top5_err": 71.87500}

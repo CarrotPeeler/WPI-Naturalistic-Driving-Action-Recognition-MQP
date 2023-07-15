@@ -471,6 +471,83 @@ class MultiCamNoiseCropV3Prompter(nn.Module):
         prompt = torch.cat(clip_prompts, dim=0)
         
         return [x + prompt] # pyslowfast models expect list of tensors as input
+    
+
+class MultiCamPadV2Prompter(nn.Module):
+    def __init__(self, args):
+        super(MultiCamPadV2Prompter, self).__init__()
+        pad_size = args.PROMPT.PROMPT_SIZE if isinstance(args, CfgNode) else args.prompt_size
+        image_size = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
+        num_frames = args.DATA.NUM_FRAMES if isinstance(args, CfgNode) else 16
+
+        self.base_size = image_size - pad_size*2
+
+        self.pad_up = nn.ParameterList([
+            nn.ParameterDict({
+                'Dashboard': nn.Parameter(torch.randn([3, 1, pad_size, image_size])),
+                'Right_side_window': nn.Parameter(torch.randn([3, 1, pad_size, image_size])),
+                'Rear_view': nn.Parameter(torch.randn([3, 1, pad_size, image_size]))  
+            }) 
+            for i in range(num_frames)
+        ])
+
+        self.pad_down = nn.ParameterList([
+            nn.ParameterDict({
+                'Dashboard': nn.Parameter(torch.randn([3, 1, pad_size, image_size])),
+                'Right_side_window': nn.Parameter(torch.randn([3, 1, pad_size, image_size])),
+                'Rear_view': nn.Parameter(torch.randn([3, 1, pad_size, image_size]))  
+            })
+            for i in range(num_frames)
+        ])
+
+        self.pad_left = nn.ParameterList([
+            nn.ParameterDict({
+                'Dashboard': nn.Parameter(torch.randn([3, 1, image_size - pad_size*2, pad_size])),
+                'Right_side_window': nn.Parameter(torch.randn([3, 1, image_size - pad_size*2, pad_size])),
+                'Rear_view': nn.Parameter(torch.randn([3, 1, image_size - pad_size*2, pad_size]))  
+            })
+            for i in range(num_frames)
+        ])
+
+        self.pad_right = nn.ParameterList([
+            nn.ParameterDict({
+                'Dashboard': nn.Parameter(torch.randn([3, 1, image_size - pad_size*2, pad_size])),
+                'Right_side_window': nn.Parameter(torch.randn([3, 1, image_size - pad_size*2, pad_size])),
+                'Rear_view': nn.Parameter(torch.randn([3, 1, image_size - pad_size*2, pad_size]))  
+            })
+            for i in range(num_frames)
+        ])
+
+    def forward(self, x, cam_views):
+        assert x.shape[0] == len(cam_views), \
+            f"len of cam_views does not match batch size of x; expected {x.shape[0]}, got {len(cam_views)} instead"
+        
+        clip_prompts = []
+
+        base = torch.zeros(3, 1, self.base_size, self.base_size).cuda()
+
+        for clip_idx in range(x.shape[0]):
+            cam_view = cam_views[clip_idx]
+
+            frame_prompts = []
+
+            # insert different prompt into each frame
+            for frame_idx in range(x.shape[2]):
+                frame_prompt = torch.cat([self.pad_left[frame_idx][cam_view], base, self.pad_right[frame_idx][cam_view]], dim=3)
+                frame_prompt = torch.cat([self.pad_up[frame_idx][cam_view], clip_prompt, self.pad_down[frame_idx][cam_view]], dim=2)
+
+                frame_prompts.append(frame_prompt)
+
+            # concat all prompted frames for a single clip
+            clip_prompt = torch.cat([frame_prompts], dim=1).unsqueeze(dim=0)
+
+            clip_prompts.append(clip_prompt)
+
+        # concat all prompted clips to compile the batch
+        prompt = torch.cat(clip_prompts, dim=0)
+        
+        return [x + prompt] # pyslowfast models expect list of tensors as input
+    
 
 def padding(args):
     return PadPrompter(args)
@@ -492,13 +569,17 @@ def multi_cam_noisecrop(args):
     return MultiCamNoiseCropPrompter(args)
 
 
-def multi_cam_noisecropv2(args):
+def multi_cam_noisecrop_v2(args):
     return MultiCamNoiseCropV2Prompter(args)
 
 
-def multi_cam_noisecropv3(args):
+def multi_cam_noisecrop_v3(args):
     return MultiCamNoiseCropV3Prompter(args)
 
 
 def multi_cam_padding(args):
+    return MultiCamPadPrompter(args)
+
+
+def multi_cam_padding_v2(args):
     return MultiCamPadPrompter(args)
