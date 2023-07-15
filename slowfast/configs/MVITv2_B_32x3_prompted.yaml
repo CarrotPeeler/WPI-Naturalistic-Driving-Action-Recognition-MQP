@@ -86,13 +86,13 @@ DATA_LOADER:
   PIN_MEMORY: True
 PROMPT:
   ENABLE: True
-  METHOD: multi_cam_padding 
+  METHOD: multi_cam_noisecropv3 #multi_cam_padding 
   PROMPT_SIZE: 30
   RESUME: None # ./visual_prompting/save/models/mvitv2-b_fixed_patch/.. or None
   LEARNING_RATE: 0.1
   WEIGHT_DECAY: 1e-4
   WARMUP: 30
-  SELECTIVE_UPDATING: False #True
+  SELECTIVE_UPDATING: True
 NUM_GPUS: 2
 NUM_SHARDS: 1
 RNG_SEED: 0

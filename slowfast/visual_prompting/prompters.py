@@ -379,6 +379,99 @@ class MultiCamNoiseCropV2Prompter(nn.Module):
         return [x + prompt] # pyslowfast models expect list of tensors as input
 
 
+class MultiCamNoiseCropV3Prompter(nn.Module):
+    def __init__(self, args):
+        super(MultiCamNoiseCropV3Prompter, self).__init__()
+
+        self.image_size = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
+        self.max_pad_size = args.PROMPT.PROMPT_SIZE if isinstance(args, CfgNode) else args.prompt_size
+        self.crop_size = self.image_size - self.max_pad_size*2
+
+        self.pad_up = nn.ParameterDict({
+            'Dashboard': nn.Parameter(torch.randn([3, 1, self.max_pad_size*2, self.image_size])),
+            'Right_side_window': nn.Parameter(torch.randn([3, 1, self.max_pad_size*2, self.image_size])),
+            'Rear_view': nn.Parameter(torch.randn([3, 1, self.max_pad_size*2, self.image_size]))  
+        })
+    
+        self.pad_down = nn.ParameterDict({
+            'Dashboard': nn.Parameter(torch.randn([3, 1, self.max_pad_size, self.image_size])),
+            'Right_side_window': nn.Parameter(torch.randn([3, 1, self.max_pad_size, self.image_size])),
+            'Rear_view': nn.Parameter(torch.randn([3, 1, self.max_pad_size, self.image_size]))  
+        })
+        
+        self.pad_left = nn.ParameterDict({
+            'Dashboard': nn.Parameter(torch.randn([3, 1, self.crop_size, self.max_pad_size*2])),
+            'Right_side_window': nn.Parameter(torch.randn([3, 1, self.crop_size, self.max_pad_size*2])),
+            'Rear_view': nn.Parameter(torch.randn([3, 1, self.crop_size, self.max_pad_size*2]))  
+        })
+
+        self.pad_right = nn.ParameterDict({
+            'Dashboard': nn.Parameter(torch.randn([3, 1, self.crop_size, self.max_pad_size])),
+            'Right_side_window': nn.Parameter(torch.randn([3, 1, self.crop_size, self.max_pad_size])),
+            'Rear_view': nn.Parameter(torch.randn([3, 1, self.crop_size, self.max_pad_size]))  
+        })
+
+    def forward(self, x, cam_views):
+        assert x.shape[0] == len(cam_views), \
+            f"len of cam_views does not match batch size of x; expected {x.shape[0]}, got {len(cam_views)} instead"
+        
+        clip_prompts = []
+
+        for clip_idx in range(x.shape[0]):
+            cam_view = cam_views[clip_idx]
+
+            # calc the pad size for left, right, up, down pads
+            offset_right = int(np.random.randint(1, self.max_pad_size+1))
+            offset_left = self.max_pad_size*2 - offset_right
+
+            offset_down = int(np.random.randint(1, self.max_pad_size+1))
+            offset_up = self.max_pad_size*2 - offset_down
+
+            # perform interpolation 
+            pad_left = torch.nn.functional.interpolate(
+                self.pad_left[cam_view],
+                size=(self.pad_left[cam_view].shape[2], offset_left),
+                mode="bilinear",
+                align_corners=False,
+            )
+
+            pad_right = torch.nn.functional.interpolate(
+                self.pad_right[cam_view],
+                size=(self.pad_right[cam_view].shape[2], offset_right),
+                mode="bilinear",
+                align_corners=False,
+            )
+
+            pad_up = torch.nn.functional.interpolate(
+                self.pad_up[cam_view],
+                size=(offset_up, self.pad_up[cam_view].shape[3]),
+                mode="bilinear",
+                align_corners=False,
+            )
+
+            pad_down = torch.nn.functional.interpolate(
+                self.pad_down[cam_view],
+                size=(offset_down, self.pad_down[cam_view].shape[3]),
+                mode="bilinear",
+                align_corners=False,
+            )
+
+            # create base tensor of crop size which will connect the four sides' pads together
+            base = torch.zeros(3, 1, self.crop_size, self.crop_size).cuda()
+
+            # concat pads onto base tensor
+            clip_prompt = torch.cat([pad_left, base, pad_right], dim=3)
+            clip_prompt = torch.cat([pad_up, clip_prompt, pad_down], dim=2)
+            clip_prompt = torch.cat(x.size(2) * [clip_prompt], dim=1).unsqueeze(dim=0)
+
+            # append finalized prompt for single clip to list
+            clip_prompts.append(clip_prompt)
+
+        # concat prompts for all clips together into one tensor
+        prompt = torch.cat(clip_prompts, dim=0)
+        
+        return [x + prompt] # pyslowfast models expect list of tensors as input
+
 def padding(args):
     return PadPrompter(args)
 
@@ -401,6 +494,10 @@ def multi_cam_noisecrop(args):
 
 def multi_cam_noisecropv2(args):
     return MultiCamNoiseCropV2Prompter(args)
+
+
+def multi_cam_noisecropv3(args):
+    return MultiCamNoiseCropV3Prompter(args)
 
 
 def multi_cam_padding(args):
