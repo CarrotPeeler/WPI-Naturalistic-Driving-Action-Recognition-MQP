@@ -104,9 +104,9 @@ def parse_option():
     # optimization
     parser.add_argument('--optim', type=str, default='sgd',
                         help='optimizer to use')
-    parser.add_argument('--learning_rate', type=float, default=0.2,
+    parser.add_argument('--learning_rate', type=float, default=40.0,
                         help='learning rate')
-    parser.add_argument("--weight_decay", type=float, default=1e-3,
+    parser.add_argument("--weight_decay", type=float, default=1e-4,
                         help="weight decay")
     parser.add_argument("--warmup", type=int, default=30,
                         help="number of steps to warmup for")
@@ -453,7 +453,7 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
                                 save_image(prompted_clip[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompted_{cam_views[idx]}_{idx}.png")
                                 # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
                                 prompt = prompted_clip[jdx] - clip[jdx]
-                                save_image(prompt, f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{epoch}_batch_{batch_iter}_prompted_clip_{idx}_frame_{jdx}_prompt.png")
+                                save_image(prompt, f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompted_clip_{idx}_frame_{jdx}_prompt.png")
                             else: 
                                 break
 
