@@ -86,7 +86,7 @@ DATA_LOADER:
   PIN_MEMORY: True
 PROMPT:
   ENABLE: True
-  METHOD: multi_cam_padding_v2 #multi_cam_padding 
+  METHOD: multi_cam_padding #multi_cam_padding 
   PROMPT_SIZE: 30
   RESUME: None # ./visual_prompting/save/models/mvitv2-b_fixed_patch/.. or None
   LEARNING_RATE: 40.0 #0.1

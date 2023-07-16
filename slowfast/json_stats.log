@@ -1,0 +1,1 @@
+json_stats: {"RAM": "14.43/31.07G", "_type": "train_epoch", "dt": 0.81567, "dt_data": 0.81567, "dt_net": 1.34311, "epoch": "1/200", "eta": "5:24:37", "gpu_mem": "17.92G", "grad_norm": 4.65968, "loss": 2.79538, "lr": 0.0000085450, "top1_acc": 5.41667, "top1_err": 94.58333, "top5_acc": 30.20833, "top5_err": 69.79167}
