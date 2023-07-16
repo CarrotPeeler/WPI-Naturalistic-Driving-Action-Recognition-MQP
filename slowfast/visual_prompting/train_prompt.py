@@ -24,7 +24,7 @@ SOFTWARE.
 
 # RUN COMMAND
 
-# python3 visual_prompting/train_prompt.py --cfg configs/MVITv2_B_32x3.yaml < /dev/null > visual_prompting/prompt_train.log 2>&1 & 
+# python3 visual_prompting/train_prompt.py --cfg configs/MVITv2_B_32x3_unprompted.yaml < /dev/null > visual_prompting/prompt_train.log 2>&1 & 
 
 from __future__ import print_function
 
@@ -97,7 +97,7 @@ def parse_option():
                         help='save frequency')
     parser.add_argument('--epochs', type=int, default=1000,
                         help='number of training epochs')
-    parser.add_argument('--prompt_save_freq', type=int, default=5,
+    parser.add_argument('--prompt_save_freq', type=int, default=50,
                         help='save frequency for prompt images')
     
 
@@ -443,15 +443,17 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
                 for idx in range(len(prompted_images[0])): 
                     if(index[idx] <= 5):
 
-                        # clip = images[idx].permute(1, 0, 2, 3) # non-prompted clip
+                        clip = inputs[0][idx].permute(1, 0, 2, 3) # non-prompted clip
                         prompted_clip = prompted_images[0][idx].permute(1, 0, 2, 3) # prompted clip
                         # prompt = prompted_images[1][0].permute(1, 0, 2, 3) # prompted clip
 
                         for jdx in range(prompted_clip.shape[0]):
-                            if(jdx == 0):
+                            if(jdx < 3):
                                 # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
                                 save_image(prompted_clip[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompted_{cam_views[idx]}_{idx}.png")
                                 # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
+                                prompt = prompted_clip[jdx] - clip[jdx]
+                                save_image(prompt, f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{epoch}_batch_{batch_iter}_prompted_clip_{idx}_frame_{jdx}_prompt.png")
                             else: 
                                 break
 
@@ -492,11 +494,11 @@ if __name__ == '__main__':
         cfg = load_config(args, path_to_config)
         cfg = assert_and_infer_cfg(cfg)
 
-    if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
-        cfg.DATA.CROP_PROMPT = True
-        cfg.DATA.RETURN_CROPPING_PARAMS = True
+    # if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
+    #     cfg.DATA.CROP_PROMPT = True
+    #     cfg.DATA.RETURN_CROPPING_PARAMS = True
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
-    cfg.TRAIN.BATCH_SIZE = 2
+    # cfg.TRAIN.BATCH_SIZE = 2
 
     launch_job(cfg=cfg, args=args, init_method=args.init_method, func=main)

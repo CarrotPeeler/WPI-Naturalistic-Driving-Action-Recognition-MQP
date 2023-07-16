@@ -118,8 +118,8 @@ if __name__ == '__main__':
         # 'multicam padding\nprompt LR = 0.02',
         # 'selective updating, multicam padding\nprompt LR = 0.02'
         'unprompted training',
-        'multicam padding v2\nprompt LR = 40',
-        'multicam padding v2\nprompt LR = 0.1',
+        'selective updating, multicam padding v2\nprompt LR = 40',
+        'selective updating, multicam padding v2\nprompt LR = 0.1',
         # 'padding\nprompt LR = 0.05',
         # 'multicam padding\nprompt LR = 0.1',
         # 'selective updating, multicam padding\nprompt LR = 0.1',
