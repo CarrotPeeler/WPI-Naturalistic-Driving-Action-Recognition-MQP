@@ -116,7 +116,7 @@ def parse_option():
 
     # model
     parser.add_argument('--method', type=str, default='fixed_patch',
-                        choices=['padding', 'random_patch', 'fixed_patch', 'crop', 'noise_crop', 'attn'],
+                        choices=['padding', 'random_patch', 'fixed_patch', 'multi_cam_noisecrop_v3', 'multi_cam_padding', 'multi_cam_padding_v2'],
                         help='choose visual prompting method')
     parser.add_argument('--prompt_size', type=int, default=224,
                         help='size for visual prompts')
@@ -311,7 +311,7 @@ def train(train_loader, model, prompter, optimizer, scheduler, criterion, epoch,
         images = images.to(device)
         target = target.to(device)
 
-        if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
+        if("multi_cam" in args.method):
             prompted_images = prompter(images, cam_views)
         else:
             prompted_images = prompter(images)
@@ -404,7 +404,7 @@ def validate(val_loader, model, prompter, criterion, args, cfg, epoch=0):
             images = images.to(device)
             target = target.to(device)
             
-            if(args.method in cfg.DATA.CAM_VIEWS_METHODS):
+            if("multi_cam" in args.method):
                 prompted_images = prompter(images, cam_views)
             else:
                 prompted_images = prompter(images)
