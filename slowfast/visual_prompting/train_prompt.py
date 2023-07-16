@@ -115,10 +115,10 @@ def parse_option():
     parser.add_argument('--patience', type=int, default=1000)
 
     # model
-    parser.add_argument('--method', type=str, default='fixed_patch',
+    parser.add_argument('--method', type=str, default='multi_cam_padding_v2',
                         choices=['padding', 'random_patch', 'fixed_patch', 'multi_cam_noisecrop_v3', 'multi_cam_padding', 'multi_cam_padding_v2'],
                         help='choose visual prompting method')
-    parser.add_argument('--prompt_size', type=int, default=224,
+    parser.add_argument('--prompt_size', type=int, default=30,
                         help='size for visual prompts')
 
     # other
@@ -175,7 +175,7 @@ def main(args, cfg):
 
     # create prompt
     prompter = prompters.__dict__[args.method](args).to(device)
-    print(f"Prompt Params:")
+    print(f"Prompt Params for method {args.method}:")
     for name, param in prompter.named_parameters():
         if param.requires_grad and 'pad' in name:
             print(name, param.data)
