@@ -88,7 +88,7 @@ PROMPT:
   ENABLE: True
   METHOD: multi_cam_padding_v2 #multi_cam_padding 
   PROMPT_SIZE: 30
-  RESUME: ./visual_prompting/save/models/mvitv2-b_fixed_patch/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6/checkpoint_199_epochs.pth.tar # ./visual_prompting/save/models/mvitv2-b_fixed_patch/.. or None 
+  RESUME: None #./visual_prompting/save/models/mvitv2-b_fixed_patch/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_200epochs/checkpoint_400_epochs.pth.tar # ./visual_prompting/save/models/mvitv2-b_fixed_patch/.. or None 
   LEARNING_RATE: 40.0 #0.1
   WEIGHT_DECAY: 1e-4
   WARMUP: 30
