@@ -113,6 +113,7 @@ if __name__ == '__main__':
         # dir_path + 'prompted_multicam_padding/Json_stats_mvitv2-b_round1_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log',
         dir_path + 'prompted_multicam_padding/selective_updating/best_results/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log',
         dir_path + 'prompted_multicam_padding/selective_updating/best_results/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_200epochs.log',
+        dir_path + 'prompted_multicam_padding/selective_updating/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_400epochs.log',
         # dir_path + 'prompted_multicam_padding/selective_updating/best_results/json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.02_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6.log'
     ]
 
@@ -126,7 +127,8 @@ if __name__ == '__main__':
         # 'padding\nprompt LR = 0.05',
         # 'multicam padding\nprompt LR = 0.1',
         'selective updating, multicam padding\nprompt LR = 0.1',
-        'selective updating, multicam padding\nprompt LR = 0.1, pre-trained prompt (200 epochs)'
+        'selective updating, multicam padding\npre-trained prompt (200 epochs)',
+        'selective updating, multicam padding\npre-trained prompt (400 epochs)',
         # 'selective updating, multicam padding\nprompt LR = 0.02'
     ]
 

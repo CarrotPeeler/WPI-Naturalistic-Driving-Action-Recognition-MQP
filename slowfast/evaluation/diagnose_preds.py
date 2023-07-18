@@ -62,6 +62,7 @@ from mlxtend.plotting import plot_confusion_matrix
 from textwrap import wrap
 
 from visual_prompting.utils import launch_job
+from pathlib import Path
 
 
 def parse_option():
@@ -264,6 +265,8 @@ if __name__ == '__main__':
 
     classes_to_match = [11, 12]
 
+    save_dir = '/evaluation/graphs/mvitv2-b_unprompted'
+
     # parse config and params
     args = parse_option()
     for path_to_config in args.cfg_files:
@@ -273,14 +276,20 @@ if __name__ == '__main__':
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
     cfg.TRAIN.BATCH_SIZE = 4
 
+    checkpoint = int(cfg.TRAIN.CHECKPOINT_FILE_PATH.rpartition('_')[-1].partition('.')[0])
+
     # delete existing post_processed_data.txt if exists
-    filepath = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/incorrect_preds/" + "val_incorrect_pred_probs_mvitv2-b_100_epochs.txt"
+    filepath = os.getcwd() + f"{save_dir}/incorrect_preds/" + f"val_incorrect_pred_probs_mvitv2-b_{checkpoint}_epochs.txt"
     if os.path.exists(filepath):
         os.remove(filepath)
+    else:
+        Path(filepath.rpartition('/')[0]).mkdir(parents=True, exist_ok=True)
 
-    filepath_2 = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/correct_preds/" + "val_correct_pred_probs_mvitv2-b_100_epochs.txt"
+    filepath_2 = os.getcwd() + f"{save_dir}/correct_preds/" + f"val_correct_pred_probs_mvitv2-b_{checkpoint}_epochs.txt"
     if os.path.exists(filepath_2):
         os.remove(filepath_2)
+    else:
+        Path(filepath_2.rpartition('/')[0]).mkdir(parents=True, exist_ok=True)
 
     # retrieve class names dict
     class_dict = getClassNamesDict(os.getcwd().rpartition('/')[0] + "/rq_class_names.txt")
@@ -313,7 +322,7 @@ if __name__ == '__main__':
     
     # save figure
     if(save_conf_mat == True):
-        fig.savefig(os.getcwd() + "/evaluation/graphs/mvitv2-b_normal_data_16x4_no_rand_flip/val_confusion_matrix_mvitv2-b_normal_data_100_epochs.png") # save the figure to file
+        fig.savefig(os.getcwd() + f"{save_dir}/val_confusion_matrix_mvitv2-b_unprompted_{checkpoint}_epochs.png") # save the figure to file
     
     print("Done diagnosing predictions")
 

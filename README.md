@@ -53,13 +53,13 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_prompted.yaml DATA.PATH_TO_
 ```
 
 ### Inference
-- edit the config in slowfast/slowfast/configs (SLOWFAST_8x8_R50_inf.yaml)
+- edit the config in slowfast/slowfast/configs (MVITv2_B_32x3_inf.yaml)
     - i.e., DATA.NUM_FRAMES and DATA.SAMPLING_RATE
 - cd into outermost slowfast folder (make sure you cd from within the python interpreter, not from bash)
 - in inference folder > prepare_loc_data.py, adjust A2_data_path and other params as necessary
 - run the following to segment test data videos and create proposals
 ```console
-python3 inference/prepare_loc_data.py --cfg configs/SLOWFAST_8x8_R50_inf.yaml < /dev/null > inference/ffmpeg_loc_log.txt 2>&1 &
+python3 inference/prepare_loc_data.py --cfg configs/MVITv2_B_32x3_inf.yaml < /dev/null > inference/ffmpeg_loc_log.txt 2>&1 &
 ```
 - make sure correct model checkpoint .pyth file is in slowfast/checkpoints folder
 - then run inferencing:

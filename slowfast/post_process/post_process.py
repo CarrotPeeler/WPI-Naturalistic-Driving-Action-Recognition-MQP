@@ -203,12 +203,6 @@ def process_data(raw_output_filepath:str, train_data_path:str, prob_threshold:fl
         # aggregate segments with same prob
         merged_idxs = get_merged_segment_idxs(agg_df)
 
-        # column values for this video's merged preds
-        temp_video_id_col = [video_id] * len(merged_idxs)
-        temp_activity_id_col = []
-        temp_start_time_col = []
-        temp_end_time_col = []
-
         for merged_idx_tuple in merged_idxs:
             merge_start_row = agg_df.loc[[merged_idx_tuple[0]]]
             merge_end_row = agg_df.loc[[merged_idx_tuple[1]]]
