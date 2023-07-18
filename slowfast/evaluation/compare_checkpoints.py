@@ -71,16 +71,19 @@ def print_incorrect_pred_stats(csv_filepath_arr, model_name, trained_epochs_list
 
 if __name__ == '__main__':  
 
-    inc_dir = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/incorrect_preds/"
-    cor_dir = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/correct_preds/"
-    save_dir = os.getcwd() + "/evaluation/val_preds/mvitv2-b_normal_data_no_rand_flip/checkpoint_stats"
+    inc_dir = os.getcwd() + "/evaluation/val_preds/mvitv2-b_sel_up_multicam_padding_lr_0.1/incorrect_preds/"
+    cor_dir = os.getcwd() + "/evaluation/val_preds/mvitv2-b_sel_up_multicam_padding_lr_0.1/correct_preds/"
+    save_dir = os.getcwd() + "/evaluation/val_preds/mvitv2-b_sel_up_multicam_padding_lr_0.1/checkpoint_stats"
 
-    csv_filepaths = [["val_incorrect_pred_probs_mvitv2-b_100_epochs.txt", "val_correct_pred_probs_mvitv2-b_100_epochs.txt"],
-                     ["val_incorrect_pred_probs_mvitv2-b_120_epochs.txt", "val_correct_pred_probs_mvitv2-b_120_epochs.txt"],
-                     ["val_incorrect_pred_probs_mvitv2-b_140_epochs.txt", "val_correct_pred_probs_mvitv2-b_140_epochs.txt"],
-                     ["val_incorrect_pred_probs_mvitv2-b_160_epochs.txt", "val_correct_pred_probs_mvitv2-b_160_epochs.txt"],
-                     ["val_incorrect_pred_probs_mvitv2-b_180_epochs.txt", "val_correct_pred_probs_mvitv2-b_180_epochs.txt"],
-                     ["val_incorrect_pred_probs_mvitv2-b_240_epochs.txt", "val_correct_pred_probs_mvitv2-b_240_epochs.txt"]]
+    if not os.path.exists(save_dir):
+        os.mkdir(save_dir)
+
+    csv_filepaths = [["val_incorrect_pred_probs_mvitv2-b_200_epochs.txt", "val_correct_pred_probs_mvitv2-b_200_epochs.txt"]]
+        # ["val_incorrect_pred_probs_mvitv2-b_120_epochs.txt", "val_correct_pred_probs_mvitv2-b_120_epochs.txt"],
+        #              ["val_incorrect_pred_probs_mvitv2-b_140_epochs.txt", "val_correct_pred_probs_mvitv2-b_140_epochs.txt"],
+        #              ["val_incorrect_pred_probs_mvitv2-b_160_epochs.txt", "val_correct_pred_probs_mvitv2-b_160_epochs.txt"],
+        #              ["val_incorrect_pred_probs_mvitv2-b_180_epochs.txt", "val_correct_pred_probs_mvitv2-b_180_epochs.txt"],
+        #              ["val_incorrect_pred_probs_mvitv2-b_200_epochs.txt", "val_correct_pred_probs_mvitv2-b_200_epochs.txt"]]
     
     for k in range(len(csv_filepaths)):
         csv_filepaths[k][0] = inc_dir + csv_filepaths[k][0]
@@ -88,6 +91,6 @@ if __name__ == '__main__':
 
     print_incorrect_pred_stats(csv_filepath_arr=csv_filepaths,
                                model_name="MViTv2-B",
-                               trained_epochs_list=[100, 120, 140, 160, 180, 240],
+                               trained_epochs_list=[200],
                                save_dir=save_dir)
     

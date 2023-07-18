@@ -1,0 +1,41 @@
+
+120 epochs:            
+
+Incorrect Prediction Stats:		Correct Prediction Stats:                        
+total incorrect preds = 100		total correct preds = 382                        
+
+mean prob = 0.772			mean prob = 0.967                        
+median prob = 0.843			median prob = 0.999                        
+max prob = 1.000			max prob = 1.000                        
+min prob = 0.222			min prob = 0.337                        
+
+total preds with prob >= 0.9 = 43	total preds with prob >= 0.9 = 344                        
+                       < 0.9 = 57	                       < 0.9 = 38                        
+                       < 0.8 = 47	                       < 0.8 = 23                        
+
+mean prob by camera angle:            
+
+Dashboard = 0.767			Dashboard = 0.959                        
+Rearview = 0.807			Rearview = 0.971                        
+Right Side Window = 0.747		Right Side Window = 0.970                        
+
+incorrect pred confidence ranking:            
+
+                              pred   prob             
+                                     mean median count
+1                         Drinking  1.000  1.000     2
+5                 Phone Call(left)  0.998  0.998     3
+6                Phone Call(right)  0.847  0.955     3
+14                    Text (Right)  0.844  0.924     6
+13                     Text (Left)  0.844  0.871     4
+2                           Eating  0.829  0.900     7
+11   Talk to passenger at backseat  0.786  0.911     7
+4           Normal Forward Driving  0.781  0.919    12
+15                         Yawning  0.766  0.766     2
+8   Pick up from floor (Passenger)  0.756  0.766     8
+7      Pick up from floor (Driver)  0.755  0.710     6
+12  Talk to passenger at the right  0.748  0.788    18
+10   Singing or dancing with music  0.748  0.750     5
+3                     Hand on head  0.740  0.768     6
+0             Adjust control panel  0.636  0.536     9
+9                  Reaching behind  0.518  0.518     2            

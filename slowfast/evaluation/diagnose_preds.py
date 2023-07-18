@@ -64,6 +64,8 @@ from textwrap import wrap
 from visual_prompting.utils import launch_job
 from pathlib import Path
 
+from visual_prompting import prompters
+
 
 def parse_option():
 
@@ -166,11 +168,39 @@ def parse_option():
 
     return args
 
-best_acc1 = 0
-device = "cuda" if torch.cuda.is_available() else "cpu"
-
 def main(args, cfg):
-    global best_acc1, device
+    best_acc1 = 0
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    if(cfg.PROMPT.ENABLE == True):
+        # create prompt
+        prompter = prompters.__dict__[cfg.PROMPT.METHOD](cfg).to(device)
+
+        print(f"Using Prompting Method {cfg.PROMPT.METHOD} with Params:")
+        if(du.get_rank() == 0):
+            for name, param in prompter.named_parameters():
+                if param.requires_grad and '.' not in name:
+                    print(name, param.data)
+
+        # optionally resume from a checkpoint
+        if cfg.PROMPT.RESUME:
+            if os.path.isfile(cfg.PROMPT.RESUME):
+                print("=> loading checkpoint '{}'".format(cfg.PROMPT.RESUME))
+                if cfg.PROMPT.GPU is None:
+                    checkpoint = torch.load(cfg.PROMPT.RESUME)
+                else:
+                    # Map model to be loaded to specified single GPU.
+                    loc = 'cuda:{}'.format(cfg.PROMPT.GPU)
+                    checkpoint = torch.load(cfg.PROMPT.RESUME, map_location=loc)
+                cfg.PROMPT.START_EPOCH = checkpoint['epoch']
+                
+                prompter.load_state_dict(checkpoint['state_dict'])
+                print("=> loaded checkpoint '{}' (epoch {})"
+                        .format(cfg.PROMPT.RESUME, checkpoint['epoch']))
+            else:
+                print("=> no checkpoint found at '{}'".format(cfg.PROMPT.RESUME))
+
+        prompter.eval()
 
     if args.seed is not None:
         random.seed(args.seed)
@@ -219,7 +249,24 @@ def main(args, cfg):
                 images = inputs[0]
                 images = images.to(device)
 
-                output = model([images])
+                if(cfg.PROMPT.ENABLE == True):
+
+                    if("multi_cam" in cfg.PROMPT.METHOD):
+                        cam_views = []
+                        for clip_idx in range(len(inputs[0])):
+                            cam_view = test_loader.dataset._path_to_videos[index[clip_idx]].rpartition('/')[-1].partition('_user')[0]
+                            cam_views.append(cam_view)
+                        
+                        prompted_inputs = prompter(images, cam_views)
+                    else:
+                        prompted_inputs = prompter(images)
+                    
+                    output = model(prompted_inputs)
+
+                else:
+                    # Perform the forward pass.
+                    output = model([images])
+                
                 max_tup = output.max(dim=1)
                 batch_preds = max_tup[1]
 
@@ -265,7 +312,11 @@ if __name__ == '__main__':
 
     classes_to_match = [11, 12]
 
-    save_dir = '/evaluation/graphs/mvitv2-b_unprompted'
+    save_dir_preds = '/evaluation/val_preds/mvitv2-b_sel_up_multicam_padding_lr_0.1'
+    save_dir_graph = '/evaluation/graphs/mvitv2-b_sel_up_multicam_padding_lr_0.1'
+
+    if not os.path.exists(os.getcwd() + save_dir_graph):
+        os.mkdir(os.getcwd() + save_dir_graph)
 
     # parse config and params
     args = parse_option()
@@ -279,13 +330,13 @@ if __name__ == '__main__':
     checkpoint = int(cfg.TRAIN.CHECKPOINT_FILE_PATH.rpartition('_')[-1].partition('.')[0])
 
     # delete existing post_processed_data.txt if exists
-    filepath = os.getcwd() + f"{save_dir}/incorrect_preds/" + f"val_incorrect_pred_probs_mvitv2-b_{checkpoint}_epochs.txt"
+    filepath = os.getcwd() + f"{save_dir_preds}/incorrect_preds/" + f"val_incorrect_pred_probs_mvitv2-b_{checkpoint}_epochs.txt"
     if os.path.exists(filepath):
         os.remove(filepath)
     else:
         Path(filepath.rpartition('/')[0]).mkdir(parents=True, exist_ok=True)
 
-    filepath_2 = os.getcwd() + f"{save_dir}/correct_preds/" + f"val_correct_pred_probs_mvitv2-b_{checkpoint}_epochs.txt"
+    filepath_2 = os.getcwd() + f"{save_dir_preds}/correct_preds/" + f"val_correct_pred_probs_mvitv2-b_{checkpoint}_epochs.txt"
     if os.path.exists(filepath_2):
         os.remove(filepath_2)
     else:
@@ -322,7 +373,7 @@ if __name__ == '__main__':
     
     # save figure
     if(save_conf_mat == True):
-        fig.savefig(os.getcwd() + f"{save_dir}/val_confusion_matrix_mvitv2-b_unprompted_{checkpoint}_epochs.png") # save the figure to file
+        fig.savefig(os.getcwd() + f"{save_dir_graph}/val_confusion_matrix_mvitv2-b_unprompted_{checkpoint}_epochs.png") # save the figure to file
     
     print("Done diagnosing predictions")
 

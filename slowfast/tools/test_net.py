@@ -296,10 +296,7 @@ def test(cfg):
                         loc = 'cuda:{}'.format(cfg.PROMPT.GPU)
                         checkpoint = torch.load(cfg.PROMPT.RESUME, map_location=loc)
                     cfg.PROMPT.START_EPOCH = checkpoint['epoch']
-                    best_acc1 = checkpoint['best_acc1']
-                    if cfg.PROMPT.GPU is not None:
-                        # best_acc1 may be from a checkpoint from a different GPU
-                        best_acc1 = best_acc1.to(cfg.PROMPT.GPU)
+                    
                     prompter.load_state_dict(checkpoint['state_dict'])
                     print("=> loaded checkpoint '{}' (epoch {})"
                             .format(cfg.PROMPT.RESUME, checkpoint['epoch']))
