@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
+import math
 from glob import glob
 from scipy import stats
 from tqdm.auto import tqdm
@@ -106,6 +107,7 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
     # aggregate pred and max_prob results for each row (each proposal) across all 3 camera angles
     agg_preds = []
     agg_probs = []
+    # cnt = 0
     for row_idx in range(len(video_dfs[0])):
         preds = []
         probs = []
@@ -120,6 +122,7 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
 
         # check if there is a common pred among candidates
         if(stats.mode(preds, keepdims=False)[1] > 1):
+            # cnt += 1
             # validate the probs of each pred are high enough to not be coincidence
             mode_pred = stats.mode(preds, keepdims=False)[0]
 
@@ -146,6 +149,8 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
             best_prob_idx = probs.argmax()
             agg_preds.append(preds[best_prob_idx])
             agg_probs.append(probs.max())
+
+    # print(f"NUM OF COMMON PRED ROWS: {cnt}")
 
     # since video_id, start, and end time columns should be same length, copy those cols from first video_df
     video_ids = [video_id_df['video_id'][0]] * len(video_dfs[0])
@@ -186,13 +191,16 @@ def process_data(raw_output_filepath:str, train_data_path:str, prob_threshold:fl
 
     # threshold for usable preds
     if prob_threshold is None: prob_threshold = round(df["max_prob"].mean(), 1)
-
+ 
     # perform post-processing for each video_id (each id should have three videos, one for each camera angle)
     for idx, video_id in tqdm(enumerate(sorted(df["video_id"].unique())), total=len(df["video_id"].unique())):
         # get all video dfs with the same id
         video_id_df = df[df["video_id"] == video_id].reset_index()
 
         agg_df = aggregate_video_data(video_id_df, prob_threshold)
+
+        if(idx == 0):
+            agg_df.to_csv(submission_filepath)
 
         # print(video_id_df.pivot_table(index = ["end_time"], aggfunc = "size"))
 
@@ -208,20 +216,19 @@ def process_data(raw_output_filepath:str, train_data_path:str, prob_threshold:fl
             merge_end_row = agg_df.loc[[merged_idx_tuple[1]]]
 
             activity_id = merge_start_row["pred"].to_list()[0]
-            start_time = round(merge_start_row["start_time"].to_list()[0])
-            end_time = round(merge_end_row["end_time"].to_list()[0])
+            start_time = math.floor(merge_start_row["start_time"].to_list()[0])
+            end_time = math.ceil(merge_end_row["end_time"].to_list()[0])
 
             with open(submission_filepath, "a+") as f:
                 f.writelines(f"{video_id} {activity_id} {start_time} {end_time}\n")
             
             
-
 if __name__ == '__main__':  
 
     A1_data_path = "/home/vislab-001/Jared/SET-A1"
-    raw_output_filepath = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/post_process/mvitv2-b32x3/unprompted/predictions_overlap_32.txt"
+    raw_output_filepath = '/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/post_process/mvitv2-b32x3/unprompted/predictions_unprompted_no_overlap.txt'
 
-    process_data(raw_output_filepath, A1_data_path, prob_threshold=0.85)
+    process_data(raw_output_filepath, A1_data_path, prob_threshold=0.8)
     
 
 

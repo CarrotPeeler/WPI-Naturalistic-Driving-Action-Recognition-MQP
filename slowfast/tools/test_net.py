@@ -277,7 +277,7 @@ def test(cfg):
 
         if(cfg.PROMPT.ENABLE == True):
             # create prompt
-            prompter = prompters.__dict__[cfg.PROMPT.METHOD](cfg)
+            prompter = prompters.__dict__[cfg.PROMPT.METHOD](cfg).to("cuda")
 
             print(f"Using Prompting Method {cfg.PROMPT.METHOD} with Params:")
             if(du.get_rank() == 0):
@@ -296,7 +296,7 @@ def test(cfg):
                         loc = 'cuda:{}'.format(cfg.PROMPT.GPU)
                         checkpoint = torch.load(cfg.PROMPT.RESUME, map_location=loc)
                     cfg.PROMPT.START_EPOCH = checkpoint['epoch']
-                    
+
                     prompter.load_state_dict(checkpoint['state_dict'])
                     print("=> loaded checkpoint '{}' (epoch {})"
                             .format(cfg.PROMPT.RESUME, checkpoint['epoch']))
