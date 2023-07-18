@@ -5,7 +5,8 @@ TRAIN:
   EVAL_PERIOD: 2
   CHECKPOINT_PERIOD: 20
   AUTO_RESUME: True
-  CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_200epochs/checkpoint_epoch_00200.pyth
+  CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6/checkpoint_epoch_00200.pyth
+  #checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_200epochs/checkpoint_epoch_00200.pyth
   #checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6/checkpoint_epoch_00200.pyth
   CHECKPOINT_TYPE: pytorch
 DATA:
@@ -85,7 +86,7 @@ DATA_LOADER:
   NUM_WORKERS: 8
   PIN_MEMORY: True
 PROMPT:
-  ENABLE: True
+  ENABLE: False
   METHOD: multi_cam_padding #multi_cam_padding 
   PROMPT_SIZE: 30
   RESUME: ./visual_prompting/save/models/mvitv2-b_fixed_patch/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_200epochs/checkpoint_400_epochs.pth.tar # ./visual_prompting/save/models/mvitv2-b_fixed_patch/.. or None 

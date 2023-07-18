@@ -219,9 +219,9 @@ def process_data(raw_output_filepath:str, train_data_path:str, prob_threshold:fl
 if __name__ == '__main__':  
 
     A1_data_path = "/home/vislab-001/Jared/SET-A1"
-    raw_output_filepath = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/post_process/mvitv2-b32x3/normal_data/predictions_mvitv2-b_240_epochs_overlap_32.txt"
+    raw_output_filepath = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/post_process/mvitv2-b32x3/unprompted/predictions_overlap_32.txt"
 
-    process_data(raw_output_filepath, A1_data_path, prob_threshold=0.8)
+    process_data(raw_output_filepath, A1_data_path, prob_threshold=0.85)
     
 
 
