@@ -190,8 +190,9 @@ def process_data(raw_output_filepath:str, train_data_path:str, prob_threshold:fl
     min_action_length = get_shortest_segment_length(train_data_path) # we will not use this since the shortest action label is 1 second...
 
     # threshold for usable preds
-    if prob_threshold is None: prob_threshold = round(df["max_prob"].mean(), 1)
- 
+    if prob_threshold is None: 
+        prob_threshold = round(df["max_prob"].mean(), 2)
+        print(f"USING MEAN PRED PROB OF {prob_threshold} AS FILTERING THRESHOLD")
     # perform post-processing for each video_id (each id should have three videos, one for each camera angle)
     for idx, video_id in tqdm(enumerate(sorted(df["video_id"].unique())), total=len(df["video_id"].unique())):
         # get all video dfs with the same id
@@ -228,7 +229,7 @@ if __name__ == '__main__':
     A1_data_path = "/home/vislab-001/Jared/SET-A1"
     raw_output_filepath = '/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/post_process/mvitv2-b32x3/unprompted/predictions_unprompted_no_overlap.txt'
 
-    process_data(raw_output_filepath, A1_data_path, prob_threshold=0.8)
+    process_data(raw_output_filepath, A1_data_path, prob_threshold=None)
     
 
 

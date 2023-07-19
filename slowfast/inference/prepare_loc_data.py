@@ -105,11 +105,11 @@ if __name__ == '__main__':
 
     ############### CONFIGURATION PARAMS ################
     A2_data_path = "/home/vislab-001/Jared/SET-A2"
-    clip_save_dir = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_inf_16x4_overlap_32"
-    # "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_inf_16x4_no_overlap"
+    clip_save_dir = "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_inf_16x4_no_overlap"
+    # "/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/data/data_inf_16x4_overlap_32"
 
     clip_resolution = (512, 512) # resolution that clips will be resized to; this should match the resolution used in prepare_data.py
-    proposal_stride = 32 # 64 => (no overlap)
+    proposal_stride = 64 # => (no overlap)
     encode_speed = "ultrafast"
     clip_resolution="512:512"
     #####################################################
@@ -138,6 +138,11 @@ if __name__ == '__main__':
                           clip_resolution=clip_resolution, 
                           encode_speed=encode_speed,
                           re_encode=True)
+    
+    # sort and re-save annotation file by video-id as well as start time
+    sorted_df = pd.read_csv(os.getcwd() + "/test.csv", names=['clip_path', 'class', 'video_id', 'start_time', 'end_time'], sep=" ")
+    sorted_df.sort_values(by=['video_id', 'start_time'], ascending=[True,True], inplace=True)
+    sorted_df.to_csv(os.getcwd() + "/test.csv", header=False, index=False, sep=" ")
     
     print("Video segmentation complete.")
 

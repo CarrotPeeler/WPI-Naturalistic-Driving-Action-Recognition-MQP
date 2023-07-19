@@ -10,6 +10,9 @@ from fvcore.common.config import CfgNode
 def add_custom_config(_C):
     # Add your own customized configs.
 
+    _C.TAL = CfgNode()
+    _C.TAL.ENABLE = False
+
     # enable crop prompting for data loaders
     _C.DATA.CROP_PROMPT = False
 

@@ -8,6 +8,8 @@ import os
 import pickle
 import torch
 
+from scipy import stats
+
 import slowfast.utils.checkpoint as cu
 import slowfast.utils.distributed as du
 import slowfast.utils.logging as logging
@@ -17,6 +19,7 @@ from slowfast.datasets import loader
 from slowfast.models import build_model
 from slowfast.utils.env import pathmgr
 from slowfast.utils.meters import AVAMeter, TestMeter
+from slowfast.datasets.decoder import temporal_sampling
 from visual_prompting import prompters
 
 logger = logging.get_logger(__name__)
@@ -55,6 +58,10 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
     if os.path.exists(pred_output):
         print("DELETING predictions.txt")
         os.remove(pred_output)
+
+    activity_ids = []
+    localization_tuples = []
+    next_iter = 0
 
     for cur_iter, (inputs, labels, video_idx, time, meta, proposal) in enumerate(
         test_loader
@@ -140,59 +147,165 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
             
             preds = model(prompted_inputs)
 
+        ######################## T A L ########################
+
+        elif cfg.TAL.ENABLE == True and cfg.TEST.BATCH_SIZE == 3:
+            cam_views = set()
+
+            # stores aggregated clips (batches) for each cam view type
+            cam_view_clips = {}
+                    
+            # check that there's no duplicate cam views and video ids + start/end times are matching
+            # also intialize cam view clips for storing aggregated clips 
+            for i in range(cfg.TEST.BATCH_SIZE):
+                cam_view = test_loader.dataset._path_to_videos[video_idx[i]].rpartition('/')[-1].partition('_user')[0] 
+                cam_views.add(cam_view)
+                
+                cam_view_clips[cam_view] = inputs[0][i].permute(1,0,2,3)
+
+            assert len(cam_views) == 3, f"Cam view mismatch for batch {cur_iter}"
+            assert len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for batch {cur_iter}"
+
+            while cur_iter == next_iter:
+                
+                all_cam_view_preds = []
+                all_cam_view_probs = []
+
+                for cam_view_type in cam_view_clips.keys():
+
+                    if cam_view_clips[cam_view_type].shape[0] == cfg.DATA.NUM_FRAMES:
+                        input = [cam_view_clips[cam_view_type].permute(0,1,2,3).unsqueeze(dim=0)]
+                    
+                    else:
+                        start_idx = 0
+                        end_idx = start_idx + cfg.DATA.NUM_FRAMES - 1
+                        sampled = temporal_sampling(cam_view_clips[cam_view_type], start_idx, end_idx, cfg.DATA.NUM_FRAMES)
+                        input = [sampled.permute(0,1,2,3).unsqueeze(dim=0)]
+
+                    cam_view_preds = model(input).cpu()
+                    
+                    labels = labels.cpu()
+                    video_idx = video_idx.cpu()
+
+                    cam_view_pred = cam_view_preds.argmax().item()
+                    cam_view_prob = cam_view_preds.max().item()
+
+                    logger.info(f"pred: {cam_view_pred}, prob: {cam_view_prob:.3f}")
+
+                    all_cam_view_preds.append(cam_view_pred)
+                    all_cam_view_probs.append(cam_view_prob)
+
+                preds = np.array(all_cam_view_preds)
+                probs = np.array(all_cam_view_probs)
+
+                # check if there is a common pred among candidates
+                if(stats.mode(preds, keepdims=False)[1] > 1):
+                    # cnt += 1
+                    # validate the probs of each pred are high enough to not be coincidence
+                    mode_pred = stats.mode(preds, keepdims=False)[0]
+
+                    mode_pred_idxs = np.where(preds == mode_pred)[0]
+                    minority_pred_idxs = np.where(preds != mode_pred)[0]
+
+                    mode_probs = np.array([probs[z] for z in mode_pred_idxs])
+                    minority_probs = np.array([probs[j] for j in minority_pred_idxs])
+
+                    # # check if minority pred exists and its prob is higher than mode probs
+                    # if(len(minority_pred_idxs) > 0 and minority_probs.max() > mode_probs.max() and mode_probs.max() < prob_threshold):
+                    #     # print(f"{preds} ==> {probs}")
+                    #     minority_pred = np.array([preds[m] for m in minority_pred_idxs]).max()
+                    #     agg_preds.append(minority_pred)
+                    #     agg_probs.append(minority_probs.max())
+                    
+                    # # select common pred if mean of common pred probs >= threshold
+                    # else:
+                    activity_ids.append(mode_pred)
+                    # agg_.append(mode_probs.mean())
+
+                # no common pred => select highest prob pred among all three camera angles
+                else:
+                    best_prob_idx = probs.argmax()
+                    activity_ids.append(preds[best_prob_idx])
+                    # agg_probs.append(probs.max())
+
+                localization_tuples.append((proposal[1][0], proposal[2][0]))
+
+                (inputs, labels, video_idx, time, meta, proposal) = next(iter(test_loader))
+                next_iter += 1
+                cam_views = set()
+                        
+                # check that there's no duplicate cam views and video ids + start/end times are matching
+                # Concat clips to their respective batch (based on cam view type) 
+                for i in range(cfg.TEST.BATCH_SIZE):
+                    cam_view = test_loader.dataset._path_to_videos[video_idx[i]].rpartition('/')[-1].partition('_user')[0]
+                    cam_views.add(cam_view)
+
+                    cam_view_clips[cam_view] = torch.cat([cam_view_clips[cam_view], inputs[0][i].permute(1,0,2,3)], dim=0)
+                    assert cam_view_clips[cam_view].shape[1] == 3 \
+                        and cam_view_clips[cam_view].shape[2] == cfg.DATA.TEST_CROP_SIZE \
+                        and cam_view_clips[cam_view].shape[3] == cfg.DATA.TEST_CROP_SIZE, f"Shape mismatch, got {cam_view_clips[cam_view].shape}"
+
+                assert len(cam_views) == 3, f"Cam view mismatch for next batch {next_iter}"
+                assert len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for next batch {next_iter}"
+
+                if next_iter == 30:
+                    break
+
         else:
             # Perform the forward pass.
             preds = model(inputs)
 
         # Gather all the predictions across all the devices to perform ensemble.
-        if cfg.NUM_GPUS > 1:
+        if cfg.NUM_GPUS > 1 and cfg.TAL.ENABLE == False:
             preds, labels, video_idx = du.all_gather([preds, labels, video_idx])
-        if cfg.NUM_GPUS:
+        if cfg.NUM_GPUS and cfg.TAL.ENABLE == False:
             preds = preds.cpu()
             labels = labels.cpu()
             video_idx = video_idx.cpu()
 
-        pred = preds.argmax().item()
-        max_prob = preds.max().item()
-
-        if proposal is not None:    
-            # write video_id, pred, max_prob, start_time, end_time to file for post-processing
-            with open(os.getcwd() + "/post_process/predictions.txt", "a+") as f:
-                f.writelines(f"{proposal[0][0]} {pred} {max_prob} {proposal[1][0]} {proposal[2][0]}\n")
+        # if proposal is not None:    
+        #     # write video_id, pred, max_prob, start_time, end_time to file for post-processing
+        #     with open(os.getcwd() + "/post_process/predictions.txt", "a+") as f:
+        #         f.writelines(f"{proposal[0][0]} {pred} {max_prob} {proposal[1][0]} {proposal[2][0]}\n")
 
         test_meter.iter_toc()
 
-        if not cfg.VIS_MASK.ENABLE:
+        if not cfg.VIS_MASK.ENABLE and cfg.TAL.ENABLE == False:
             # Update and log stats.
             test_meter.update_stats(
                 preds.detach(), labels.detach(), video_idx.detach()
             )
+
         test_meter.log_iter_stats(cur_iter)
 
         test_meter.iter_tic()
 
-    # Log epoch stats and print the final testing results.
-    if not cfg.DETECTION.ENABLE:
-        all_preds = test_meter.video_preds.clone().detach()
-        all_labels = test_meter.video_labels
-        if cfg.NUM_GPUS:
-            all_preds = all_preds.cpu()
-            all_labels = all_labels.cpu()
-        if writer is not None:
-            writer.plot_eval(preds=all_preds, labels=all_labels)
+    if(cfg.TAL.ENABLE == False):
+        # Log epoch stats and print the final testing results.
+        if not cfg.DETECTION.ENABLE:
+            all_preds = test_meter.video_preds.clone().detach()
+            all_labels = test_meter.video_labels
+            if cfg.NUM_GPUS:
+                all_preds = all_preds.cpu()
+                all_labels = all_labels.cpu()
+            if writer is not None:
+                writer.plot_eval(preds=all_preds, labels=all_labels)
 
-        if cfg.TEST.SAVE_RESULTS_PATH != "":
-            save_path = os.path.join(cfg.OUTPUT_DIR, cfg.TEST.SAVE_RESULTS_PATH)
+            if cfg.TEST.SAVE_RESULTS_PATH != "":
+                save_path = os.path.join(cfg.OUTPUT_DIR, cfg.TEST.SAVE_RESULTS_PATH)
 
-            if du.is_root_proc():
-                with pathmgr.open(save_path, "wb") as f:
-                    pickle.dump([all_preds, all_labels], f)
+                if du.is_root_proc():
+                    with pathmgr.open(save_path, "wb") as f:
+                        pickle.dump([all_preds, all_labels], f)
 
-            logger.info(
-                "Successfully saved prediction results to {}".format(save_path)
-            )
+                logger.info(
+                    "Successfully saved prediction results to {}".format(save_path)
+                )
 
-    test_meter.finalize_metrics()
+        test_meter.finalize_metrics()
+    
+    logger.info("Inferencing complete.")
+
     return test_meter
 
 

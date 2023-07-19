@@ -22,6 +22,9 @@ def main():
         cfg = load_config(args, path_to_config)
         cfg = assert_and_infer_cfg(cfg)
 
+        if cfg.TAL.ENABLE == True:
+            cfg.TEST.BATCH_SIZE = 3
+
         # Perform training.
         if cfg.TRAIN.ENABLE:
             launch_job(cfg=cfg, init_method=args.init_method, func=train)
