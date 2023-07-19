@@ -40049,3 +40049,3244 @@ blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_pat
 [07/19 15:06:07][INFO] kinetics.py:   93: Constructing Kinetics test...
 [07/19 15:06:07][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 7095 skip_rows 0) from test.csv 
 [07/19 15:06:07][INFO] test_net.py:  366: Testing model for 2365 iterations
+[07/19 15:07:22][INFO] test_net.py:  337: Test with config:
+[07/19 15:07:22][INFO] test_net.py:  338: AUG:
+  AA_TYPE: rand-m9-mstd0.5-inc1
+  COLOR_JITTER: 0.4
+  ENABLE: False
+  GEN_MASK_LOADER: False
+  INTERPOLATION: bicubic
+  MASK_FRAMES: False
+  MASK_RATIO: 0.0
+  MASK_TUBE: False
+  MASK_WINDOW_SIZE: [8, 7, 7]
+  MAX_MASK_PATCHES_PER_BLOCK: None
+  NUM_SAMPLE: 1
+  RE_COUNT: 1
+  RE_MODE: pixel
+  RE_PROB: 0.25
+  RE_SPLIT: False
+AVA:
+  ANNOTATION_DIR: /mnt/vol/gfsai-flash3-east/ai-group/users/haoqifan/ava/frame_list/
+  BGR: False
+  DETECTION_SCORE_THRESH: 0.9
+  EXCLUSION_FILE: ava_val_excluded_timestamps_v2.2.csv
+  FRAME_DIR: /mnt/fair-flash3-east/ava_trainval_frames.img/
+  FRAME_LIST_DIR: /mnt/vol/gfsai-flash3-east/ai-group/users/haoqifan/ava/frame_list/
+  FULL_TEST_ON_VAL: False
+  GROUNDTRUTH_FILE: ava_val_v2.2.csv
+  IMG_PROC_BACKEND: cv2
+  LABEL_MAP_FILE: ava_action_list_v2.2_for_activitynet_2019.pbtxt
+  TEST_FORCE_FLIP: False
+  TEST_LISTS: ['val.csv']
+  TEST_PREDICT_BOX_LISTS: ['ava_val_predicted_boxes.csv']
+  TRAIN_GT_BOX_LISTS: ['ava_train_v2.2.csv']
+  TRAIN_LISTS: ['train.csv']
+  TRAIN_PCA_JITTER_ONLY: True
+  TRAIN_PREDICT_BOX_LISTS: []
+  TRAIN_USE_COLOR_AUGMENTATION: False
+BENCHMARK:
+  LOG_PERIOD: 100
+  NUM_EPOCHS: 5
+  SHUFFLE: True
+BN:
+  GLOBAL_SYNC: False
+  NORM_TYPE: batchnorm
+  NUM_BATCHES_PRECISE: 200
+  NUM_SPLITS: 1
+  NUM_SYNC_DEVICES: 1
+  USE_PRECISE_STATS: False
+  WEIGHT_DECAY: 0.0
+CONTRASTIVE:
+  BN_MLP: False
+  BN_SYNC_MLP: False
+  DELTA_CLIPS_MAX: inf
+  DELTA_CLIPS_MIN: -inf
+  DIM: 128
+  INTERP_MEMORY: False
+  KNN_ON: True
+  LENGTH: 239975
+  LOCAL_SHUFFLE_BN: True
+  MEM_TYPE: 1d
+  MLP_DIM: 2048
+  MOCO_MULTI_VIEW_QUEUE: False
+  MOMENTUM: 0.5
+  MOMENTUM_ANNEALING: False
+  NUM_CLASSES_DOWNSTREAM: 400
+  NUM_MLP_LAYERS: 1
+  PREDICTOR_DEPTHS: []
+  QUEUE_LEN: 65536
+  SEQUENTIAL: False
+  SIMCLR_DIST_ON: True
+  SWAV_QEUE_LEN: 0
+  T: 0.07
+  TYPE: mem
+DATA:
+  CAM_VIEWS_METHODS: ['crop', 'noise_crop']
+  COLOR_RND_GRAYSCALE: 0.0
+  CROP_PROMPT: False
+  DECODING_BACKEND: torchvision
+  DECODING_SHORT_SIZE: 256
+  DUMMY_LOAD: False
+  ENSEMBLE_METHOD: sum
+  IN22K_TRAINVAL: False
+  IN22k_VAL_IN1K: 
+  INPUT_CHANNEL_NUM: [3]
+  INV_UNIFORM_SAMPLE: False
+  IN_VAL_CROP_RATIO: 0.875
+  LOADER_CHUNK_OVERALL_SIZE: 0
+  LOADER_CHUNK_SIZE: 0
+  MEAN: [0.45, 0.45, 0.45]
+  MULTI_LABEL: False
+  NUM_FRAMES: 16
+  PATH_LABEL_SEPARATOR:  
+  PATH_PREFIX: 
+  PATH_TO_DATA_DIR: 
+  PATH_TO_PRELOAD_IMDB: 
+  RANDOM_FLIP: False
+  RETURN_CROPPING_PARAMS: False
+  REVERSE_INPUT_CHANNEL: False
+  SAMPLING_RATE: 4
+  SKIP_ROWS: 0
+  SSL_BLUR_SIGMA_MAX: [0.0, 2.0]
+  SSL_BLUR_SIGMA_MIN: [0.0, 0.1]
+  SSL_COLOR_BRI_CON_SAT: [0.4, 0.4, 0.4]
+  SSL_COLOR_HUE: 0.1
+  SSL_COLOR_JITTER: False
+  SSL_MOCOV2_AUG: False
+  STD: [0.225, 0.225, 0.225]
+  TARGET_FPS: 30
+  TEST_CROP_SIZE: 224
+  TIME_DIFF_PROB: 0.0
+  TRAIN_CROP_NUM_SPATIAL: 1
+  TRAIN_CROP_NUM_TEMPORAL: 1
+  TRAIN_CROP_SIZE: 224
+  TRAIN_JITTER_ASPECT_RELATIVE: [0.75, 1.3333]
+  TRAIN_JITTER_FPS: 0.0
+  TRAIN_JITTER_MOTION_SHIFT: False
+  TRAIN_JITTER_SCALES: [256, 320]
+  TRAIN_JITTER_SCALES_RELATIVE: [0.08, 1.0]
+  TRAIN_PCA_EIGVAL: [0.225, 0.224, 0.229]
+  TRAIN_PCA_EIGVEC: [[-0.5675, 0.7192, 0.4009], [-0.5808, -0.0045, -0.814], [-0.5836, -0.6948, 0.4203]]
+  USE_OFFSET_SAMPLING: False
+DATA_LOADER:
+  ENABLE_MULTI_THREAD_DECODE: False
+  NUM_WORKERS: 8
+  PIN_MEMORY: True
+DEMO:
+  BUFFER_SIZE: 0
+  CLIP_VIS_SIZE: 10
+  COMMON_CLASS_NAMES: ['watch (a person)', 'talk to (e.g., self, a person, a group)', 'listen to (a person)', 'touch (an object)', 'carry/hold (an object)', 'walk', 'sit', 'lie/sleep', 'bend/bow (at the waist)']
+  COMMON_CLASS_THRES: 0.7
+  DETECTRON2_CFG: COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml
+  DETECTRON2_THRESH: 0.9
+  DETECTRON2_WEIGHTS: detectron2://COCO-Detection/faster_rcnn_R_50_FPN_3x/137849458/model_final_280758.pkl
+  DISPLAY_HEIGHT: 0
+  DISPLAY_WIDTH: 0
+  ENABLE: False
+  FPS: 30
+  GT_BOXES: 
+  INPUT_FORMAT: BGR
+  INPUT_VIDEO: 
+  LABEL_FILE_PATH: 
+  NUM_CLIPS_SKIP: 0
+  NUM_VIS_INSTANCES: 2
+  OUTPUT_FILE: 
+  OUTPUT_FPS: -1
+  PREDS_BOXES: 
+  SLOWMO: 1
+  STARTING_SECOND: 900
+  THREAD_ENABLE: False
+  UNCOMMON_CLASS_THRES: 0.3
+  VIS_MODE: thres
+  WEBCAM: -1
+DETECTION:
+  ALIGNED: True
+  ENABLE: False
+  ROI_XFORM_RESOLUTION: 7
+  SPATIAL_SCALE_FACTOR: 16
+DIST_BACKEND: nccl
+LOG_MODEL_INFO: True
+LOG_PERIOD: 500
+MASK:
+  DECODER_DEPTH: 0
+  DECODER_EMBED_DIM: 512
+  DECODER_SEP_POS_EMBED: False
+  DEC_KV_KERNEL: []
+  DEC_KV_STRIDE: []
+  ENABLE: False
+  HEAD_TYPE: separate
+  MAE_ON: False
+  MAE_RND_MASK: False
+  NORM_PRED_PIXEL: True
+  PER_FRAME_MASKING: False
+  PRED_HOG: False
+  PRETRAIN_DEPTH: [15]
+  SCALE_INIT_BY_DEPTH: False
+  TIME_STRIDE_LOSS: True
+MIXUP:
+  ALPHA: 0.8
+  CUTMIX_ALPHA: 1.0
+  ENABLE: False
+  LABEL_SMOOTH_VALUE: 0.1
+  PROB: 1.0
+  SWITCH_PROB: 0.5
+MODEL:
+  ACT_CHECKPOINT: False
+  ARCH: mvit
+  DETACH_FINAL_FC: False
+  DROPCONNECT_RATE: 0.0
+  DROPOUT_RATE: 0.5
+  FC_INIT_STD: 0.01
+  FP16_ALLREDUCE: False
+  FROZEN_BN: False
+  HEAD_ACT: softmax
+  LOSS_FUNC: soft_cross_entropy
+  MODEL_NAME: MViT
+  MULTI_PATHWAY_ARCH: ['slowfast']
+  NUM_CLASSES: 16
+  SINGLE_PATHWAY_ARCH: ['2d', 'c2d', 'i3d', 'slow', 'x3d', 'mvit', 'maskmvit']
+MULTIGRID:
+  BN_BASE_SIZE: 8
+  DEFAULT_B: 0
+  DEFAULT_S: 0
+  DEFAULT_T: 0
+  EPOCH_FACTOR: 1.5
+  EVAL_FREQ: 3
+  LONG_CYCLE: False
+  LONG_CYCLE_FACTORS: [(0.25, 0.7071067811865476), (0.5, 0.7071067811865476), (0.5, 1), (1, 1)]
+  LONG_CYCLE_SAMPLING_RATE: 0
+  SHORT_CYCLE: False
+  SHORT_CYCLE_FACTORS: [0.5, 0.7071067811865476]
+MVIT:
+  CLS_EMBED_ON: True
+  DEPTH: 24
+  DIM_MUL: [[2, 2.0], [5, 2.0], [21, 2.0]]
+  DIM_MUL_IN_ATT: True
+  DROPOUT_RATE: 0.0
+  DROPPATH_RATE: 0.3
+  EMBED_DIM: 96
+  HEAD_INIT_SCALE: 1.0
+  HEAD_MUL: [[2, 2.0], [5, 2.0], [21, 2.0]]
+  LAYER_SCALE_INIT_VALUE: 0.0
+  MLP_RATIO: 4.0
+  MODE: conv
+  NORM: layernorm
+  NORM_STEM: False
+  NUM_HEADS: 1
+  PATCH_2D: False
+  PATCH_KERNEL: [3, 7, 7]
+  PATCH_PADDING: [1, 3, 3]
+  PATCH_STRIDE: [2, 4, 4]
+  POOL_FIRST: False
+  POOL_KVQ_KERNEL: [3, 3, 3]
+  POOL_KV_STRIDE: []
+  POOL_KV_STRIDE_ADAPTIVE: [1, 8, 8]
+  POOL_Q_STRIDE: [[0, 1, 1, 1], [1, 1, 1, 1], [2, 1, 2, 2], [3, 1, 1, 1], [4, 1, 1, 1], [5, 1, 2, 2], [6, 1, 1, 1], [7, 1, 1, 1], [8, 1, 1, 1], [9, 1, 1, 1], [10, 1, 1, 1], [11, 1, 1, 1], [12, 1, 1, 1], [13, 1, 1, 1], [14, 1, 1, 1], [15, 1, 1, 1], [16, 1, 1, 1], [17, 1, 1, 1], [18, 1, 1, 1], [19, 1, 1, 1], [20, 1, 1, 1], [21, 1, 2, 2], [22, 1, 1, 1], [23, 1, 1, 1]]
+  QKV_BIAS: True
+  REL_POS_SPATIAL: True
+  REL_POS_TEMPORAL: True
+  REL_POS_ZERO_INIT: False
+  RESIDUAL_POOLING: True
+  REV:
+    BUFFER_LAYERS: []
+    ENABLE: False
+    PRE_Q_FUSION: avg
+    RESPATH_FUSE: concat
+    RES_PATH: conv
+  SEPARATE_QKV: False
+  SEP_POS_EMBED: False
+  USE_ABS_POS: False
+  USE_FIXED_SINCOS_POS: False
+  USE_MEAN_POOLING: False
+  ZERO_DECAY_POS_CLS: False
+NONLOCAL:
+  GROUP: [[1], [1], [1], [1]]
+  INSTANTIATION: dot_product
+  LOCATION: [[[]], [[]], [[]], [[]]]
+  POOL: [[[1, 2, 2], [1, 2, 2]], [[1, 2, 2], [1, 2, 2]], [[1, 2, 2], [1, 2, 2]], [[1, 2, 2], [1, 2, 2]]]
+NUM_GPUS: 1
+NUM_SHARDS: 1
+OUTPUT_DIR: .
+PROMPT:
+  ENABLE: False
+  GPU: None
+  IMAGE_FOLDER: ./visual_prompting/save/images/mvitv2-b_fixed_patch
+  LEARNING_RATE: 0.1
+  METHOD: multi_cam_padding
+  MODEL_FOLDER: ./visual_prompting/save/models/mvitv2-b_fixed_patch
+  MOMENTUM: 0.9
+  PRINT_GRADS: False
+  PROMPT_SIZE: 30
+  RESUME: ./visual_prompting/save/models/mvitv2-b_fixed_patch/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_200epochs/checkpoint_400_epochs.pth.tar
+  SELECTIVE_UPDATING: True
+  START_EPOCH: 1
+  WARMUP: 30
+  WEIGHT_DECAY: 0.0001
+RESNET:
+  DEPTH: 50
+  INPLACE_RELU: True
+  NUM_BLOCK_TEMP_KERNEL: [[3], [4], [6], [3]]
+  NUM_GROUPS: 1
+  SPATIAL_DILATIONS: [[1], [1], [1], [1]]
+  SPATIAL_STRIDES: [[1], [2], [2], [2]]
+  STRIDE_1X1: False
+  TRANS_FUNC: bottleneck_transform
+  WIDTH_PER_GROUP: 64
+  ZERO_INIT_FINAL_BN: False
+  ZERO_INIT_FINAL_CONV: False
+RNG_SEED: 0
+SHARD_ID: 0
+SLOWFAST:
+  ALPHA: 8
+  BETA_INV: 8
+  FUSION_CONV_CHANNEL_RATIO: 2
+  FUSION_KERNEL_SZ: 5
+SOLVER:
+  BASE_LR: 0.0002
+  BASE_LR_SCALE_NUM_SHARDS: True
+  BETAS: (0.9, 0.999)
+  CLIP_GRAD_L2NORM: 1.0
+  CLIP_GRAD_VAL: None
+  COSINE_AFTER_WARMUP: True
+  COSINE_END_LR: 2e-06
+  DAMPENING: 0.0
+  GAMMA: 0.1
+  LARS_ON: False
+  LAYER_DECAY: 1.0
+  LRS: []
+  LR_POLICY: cosine
+  MAX_EPOCH: 200
+  MOMENTUM: 0.9
+  NESTEROV: True
+  OPTIMIZING_METHOD: adamw
+  STEPS: []
+  STEP_SIZE: 1
+  WARMUP_EPOCHS: 30.0
+  WARMUP_FACTOR: 0.1
+  WARMUP_START_LR: 2e-06
+  WEIGHT_DECAY: 0.0001
+  ZERO_WD_1D_PARAM: True
+TAL:
+  ENABLE: True
+TASK: 
+TENSORBOARD:
+  CATEGORIES_PATH: 
+  CLASS_NAMES_PATH: 
+  CONFUSION_MATRIX:
+    ENABLE: False
+    FIGSIZE: [8, 8]
+    SUBSET_PATH: 
+  ENABLE: False
+  HISTOGRAM:
+    ENABLE: False
+    FIGSIZE: [8, 8]
+    SUBSET_PATH: 
+    TOPK: 10
+  LOG_DIR: 
+  MODEL_VIS:
+    ACTIVATIONS: False
+    COLORMAP: Pastel2
+    ENABLE: False
+    GRAD_CAM:
+      COLORMAP: viridis
+      ENABLE: True
+      LAYER_LIST: []
+      USE_TRUE_LABEL: False
+    INPUT_VIDEO: False
+    LAYER_LIST: []
+    MODEL_WEIGHTS: False
+    TOPK_PREDS: 1
+  PREDICTIONS_PATH: 
+  WRONG_PRED_VIS:
+    ENABLE: False
+    SUBSET_PATH: 
+    TAG: Incorrectly classified videos.
+TEST:
+  BATCH_SIZE: 3
+  CHECKPOINT_FILE_PATH: 
+  CHECKPOINT_TYPE: pytorch
+  DATASET: kinetics
+  ENABLE: True
+  NUM_ENSEMBLE_VIEWS: 1
+  NUM_SPATIAL_CROPS: 1
+  NUM_TEMPORAL_CLIPS: [1]
+  SAVE_RESULTS_PATH: 
+TRAIN:
+  AUTO_RESUME: True
+  BATCH_SIZE: 16
+  CHECKPOINT_CLEAR_NAME_PATTERN: ()
+  CHECKPOINT_EPOCH_RESET: False
+  CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6/checkpoint_epoch_00200.pyth
+  CHECKPOINT_INFLATE: False
+  CHECKPOINT_IN_INIT: False
+  CHECKPOINT_PERIOD: 20
+  CHECKPOINT_TYPE: pytorch
+  DATASET: kinetics
+  ENABLE: False
+  EVAL_PERIOD: 2
+  KILL_LOSS_EXPLOSION_FACTOR: 0.0
+  MIXED_PRECISION: False
+VIS_MASK:
+  ENABLE: False
+X3D:
+  BN_LIN5: False
+  BOTTLENECK_FACTOR: 1.0
+  CHANNELWISE_3x3x3: True
+  DEPTH_FACTOR: 1.0
+  DIM_C1: 12
+  DIM_C5: 2048
+  SCALE_RES2: False
+  WIDTH_FACTOR: 1.0
+[07/19 15:07:24][INFO] misc.py:  185: Model:
+MViT(
+  (patch_embed): PatchEmbed(
+    (proj): Conv3d(3, 96, kernel_size=(3, 7, 7), stride=(2, 4, 4), padding=(1, 3, 3))
+  )
+  (blocks): ModuleList(
+    (0): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (1): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (2): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+      (proj): Linear(in_features=96, out_features=192, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (3): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (4): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (5): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+      (proj): Linear(in_features=192, out_features=384, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (6): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (7): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (8): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (9): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (10): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (11): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (12): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (13): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (14): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (15): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (16): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (17): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (18): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (19): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (20): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (21): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+      (proj): Linear(in_features=384, out_features=768, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (22): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+    (23): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  (head): TransformerBasicHead(
+    (dropout): Dropout(p=0.5, inplace=False)
+    (projection): Linear(in_features=768, out_features=16, bias=True)
+    (act): Softmax(dim=1)
+  )
+)
+[07/19 15:07:24][INFO] misc.py:  187: Params: 50,897,968
+[07/19 15:07:24][INFO] misc.py:  188: Mem: 0.19084548950195312 MB
+[07/19 15:07:27][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/19 15:07:27][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/19 15:07:27][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/19 15:07:27][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/19 15:07:27][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/19 15:07:27][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/19 15:07:27][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/19 15:07:27][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/19 15:07:27][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/19 15:07:27][INFO] misc.py:  190: Flops: 92.63208983999999 G
+[07/19 15:07:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[07/19 15:07:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/19 15:07:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/19 15:07:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/19 15:07:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/19 15:07:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/19 15:07:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/19 15:07:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/19 15:07:29][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/19 15:07:29][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/19 15:07:29][INFO] misc.py:  191: Activations: 357.084096 M
+[07/19 15:07:29][INFO] misc.py:  196: nvidia-smi
+[07/19 15:07:29][INFO] misc.py:  185: Model:
+MViT(
+  (patch_embed): PatchEmbed(
+    (proj): Conv3d(3, 96, kernel_size=(3, 7, 7), stride=(2, 4, 4), padding=(1, 3, 3))
+  )
+  (blocks): ModuleList(
+    (0): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (1): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (2): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+      (proj): Linear(in_features=96, out_features=192, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (3): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (4): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (5): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+      (proj): Linear(in_features=192, out_features=384, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (6): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (7): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (8): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (9): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (10): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (11): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (12): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (13): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (14): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (15): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (16): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (17): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (18): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (19): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (20): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (21): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+      (proj): Linear(in_features=384, out_features=768, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (22): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+    (23): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  (head): TransformerBasicHead(
+    (dropout): Dropout(p=0.5, inplace=False)
+    (projection): Linear(in_features=768, out_features=16, bias=True)
+    (act): Softmax(dim=1)
+  )
+)
+[07/19 15:07:29][INFO] misc.py:  187: Params: 50,897,968
+[07/19 15:07:29][INFO] misc.py:  188: Mem: 2.495626449584961 MB
+[07/19 15:07:31][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/19 15:07:31][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/19 15:07:31][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/19 15:07:31][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/19 15:07:31][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/19 15:07:31][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/19 15:07:31][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/19 15:07:31][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/19 15:07:31][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/19 15:07:31][INFO] misc.py:  190: Flops: 92.63208983999999 G
+[07/19 15:07:33][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[07/19 15:07:33][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/19 15:07:33][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/19 15:07:33][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/19 15:07:33][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/19 15:07:33][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/19 15:07:33][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/19 15:07:33][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/19 15:07:33][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/19 15:07:33][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/19 15:07:34][INFO] misc.py:  191: Activations: 357.084096 M
+[07/19 15:07:34][INFO] misc.py:  196: nvidia-smi
+[07/19 15:07:34][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6/checkpoint_epoch_00200.pyth.
+[07/19 15:07:34][INFO] kinetics.py:   93: Constructing Kinetics test...
+[07/19 15:07:34][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 7095 skip_rows 0) from test.csv 
+[07/19 15:07:34][INFO] test_net.py:  366: Testing model for 2365 iterations
+[07/19 15:07:35][INFO] test_net.py:  193: pred: 11, prob: 0.723
+[07/19 15:07:35][INFO] test_net.py:  193: pred: 15, prob: 0.402
+[07/19 15:07:35][INFO] test_net.py:  193: pred: 0, prob: 0.890
+[07/19 15:13:11][INFO] test_net.py:  350: Test with config:
+[07/19 15:13:11][INFO] test_net.py:  351: AUG:
+  AA_TYPE: rand-m9-mstd0.5-inc1
+  COLOR_JITTER: 0.4
+  ENABLE: False
+  GEN_MASK_LOADER: False
+  INTERPOLATION: bicubic
+  MASK_FRAMES: False
+  MASK_RATIO: 0.0
+  MASK_TUBE: False
+  MASK_WINDOW_SIZE: [8, 7, 7]
+  MAX_MASK_PATCHES_PER_BLOCK: None
+  NUM_SAMPLE: 1
+  RE_COUNT: 1
+  RE_MODE: pixel
+  RE_PROB: 0.25
+  RE_SPLIT: False
+AVA:
+  ANNOTATION_DIR: /mnt/vol/gfsai-flash3-east/ai-group/users/haoqifan/ava/frame_list/
+  BGR: False
+  DETECTION_SCORE_THRESH: 0.9
+  EXCLUSION_FILE: ava_val_excluded_timestamps_v2.2.csv
+  FRAME_DIR: /mnt/fair-flash3-east/ava_trainval_frames.img/
+  FRAME_LIST_DIR: /mnt/vol/gfsai-flash3-east/ai-group/users/haoqifan/ava/frame_list/
+  FULL_TEST_ON_VAL: False
+  GROUNDTRUTH_FILE: ava_val_v2.2.csv
+  IMG_PROC_BACKEND: cv2
+  LABEL_MAP_FILE: ava_action_list_v2.2_for_activitynet_2019.pbtxt
+  TEST_FORCE_FLIP: False
+  TEST_LISTS: ['val.csv']
+  TEST_PREDICT_BOX_LISTS: ['ava_val_predicted_boxes.csv']
+  TRAIN_GT_BOX_LISTS: ['ava_train_v2.2.csv']
+  TRAIN_LISTS: ['train.csv']
+  TRAIN_PCA_JITTER_ONLY: True
+  TRAIN_PREDICT_BOX_LISTS: []
+  TRAIN_USE_COLOR_AUGMENTATION: False
+BENCHMARK:
+  LOG_PERIOD: 100
+  NUM_EPOCHS: 5
+  SHUFFLE: True
+BN:
+  GLOBAL_SYNC: False
+  NORM_TYPE: batchnorm
+  NUM_BATCHES_PRECISE: 200
+  NUM_SPLITS: 1
+  NUM_SYNC_DEVICES: 1
+  USE_PRECISE_STATS: False
+  WEIGHT_DECAY: 0.0
+CONTRASTIVE:
+  BN_MLP: False
+  BN_SYNC_MLP: False
+  DELTA_CLIPS_MAX: inf
+  DELTA_CLIPS_MIN: -inf
+  DIM: 128
+  INTERP_MEMORY: False
+  KNN_ON: True
+  LENGTH: 239975
+  LOCAL_SHUFFLE_BN: True
+  MEM_TYPE: 1d
+  MLP_DIM: 2048
+  MOCO_MULTI_VIEW_QUEUE: False
+  MOMENTUM: 0.5
+  MOMENTUM_ANNEALING: False
+  NUM_CLASSES_DOWNSTREAM: 400
+  NUM_MLP_LAYERS: 1
+  PREDICTOR_DEPTHS: []
+  QUEUE_LEN: 65536
+  SEQUENTIAL: False
+  SIMCLR_DIST_ON: True
+  SWAV_QEUE_LEN: 0
+  T: 0.07
+  TYPE: mem
+DATA:
+  CAM_VIEWS_METHODS: ['crop', 'noise_crop']
+  COLOR_RND_GRAYSCALE: 0.0
+  CROP_PROMPT: False
+  DECODING_BACKEND: torchvision
+  DECODING_SHORT_SIZE: 256
+  DUMMY_LOAD: False
+  ENSEMBLE_METHOD: sum
+  IN22K_TRAINVAL: False
+  IN22k_VAL_IN1K: 
+  INPUT_CHANNEL_NUM: [3]
+  INV_UNIFORM_SAMPLE: False
+  IN_VAL_CROP_RATIO: 0.875
+  LOADER_CHUNK_OVERALL_SIZE: 0
+  LOADER_CHUNK_SIZE: 0
+  MEAN: [0.45, 0.45, 0.45]
+  MULTI_LABEL: False
+  NUM_FRAMES: 16
+  PATH_LABEL_SEPARATOR:  
+  PATH_PREFIX: 
+  PATH_TO_DATA_DIR: 
+  PATH_TO_PRELOAD_IMDB: 
+  RANDOM_FLIP: False
+  RETURN_CROPPING_PARAMS: False
+  REVERSE_INPUT_CHANNEL: False
+  SAMPLING_RATE: 4
+  SKIP_ROWS: 0
+  SSL_BLUR_SIGMA_MAX: [0.0, 2.0]
+  SSL_BLUR_SIGMA_MIN: [0.0, 0.1]
+  SSL_COLOR_BRI_CON_SAT: [0.4, 0.4, 0.4]
+  SSL_COLOR_HUE: 0.1
+  SSL_COLOR_JITTER: False
+  SSL_MOCOV2_AUG: False
+  STD: [0.225, 0.225, 0.225]
+  TARGET_FPS: 30
+  TEST_CROP_SIZE: 224
+  TIME_DIFF_PROB: 0.0
+  TRAIN_CROP_NUM_SPATIAL: 1
+  TRAIN_CROP_NUM_TEMPORAL: 1
+  TRAIN_CROP_SIZE: 224
+  TRAIN_JITTER_ASPECT_RELATIVE: [0.75, 1.3333]
+  TRAIN_JITTER_FPS: 0.0
+  TRAIN_JITTER_MOTION_SHIFT: False
+  TRAIN_JITTER_SCALES: [256, 320]
+  TRAIN_JITTER_SCALES_RELATIVE: [0.08, 1.0]
+  TRAIN_PCA_EIGVAL: [0.225, 0.224, 0.229]
+  TRAIN_PCA_EIGVEC: [[-0.5675, 0.7192, 0.4009], [-0.5808, -0.0045, -0.814], [-0.5836, -0.6948, 0.4203]]
+  USE_OFFSET_SAMPLING: False
+DATA_LOADER:
+  ENABLE_MULTI_THREAD_DECODE: False
+  NUM_WORKERS: 8
+  PIN_MEMORY: True
+DEMO:
+  BUFFER_SIZE: 0
+  CLIP_VIS_SIZE: 10
+  COMMON_CLASS_NAMES: ['watch (a person)', 'talk to (e.g., self, a person, a group)', 'listen to (a person)', 'touch (an object)', 'carry/hold (an object)', 'walk', 'sit', 'lie/sleep', 'bend/bow (at the waist)']
+  COMMON_CLASS_THRES: 0.7
+  DETECTRON2_CFG: COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml
+  DETECTRON2_THRESH: 0.9
+  DETECTRON2_WEIGHTS: detectron2://COCO-Detection/faster_rcnn_R_50_FPN_3x/137849458/model_final_280758.pkl
+  DISPLAY_HEIGHT: 0
+  DISPLAY_WIDTH: 0
+  ENABLE: False
+  FPS: 30
+  GT_BOXES: 
+  INPUT_FORMAT: BGR
+  INPUT_VIDEO: 
+  LABEL_FILE_PATH: 
+  NUM_CLIPS_SKIP: 0
+  NUM_VIS_INSTANCES: 2
+  OUTPUT_FILE: 
+  OUTPUT_FPS: -1
+  PREDS_BOXES: 
+  SLOWMO: 1
+  STARTING_SECOND: 900
+  THREAD_ENABLE: False
+  UNCOMMON_CLASS_THRES: 0.3
+  VIS_MODE: thres
+  WEBCAM: -1
+DETECTION:
+  ALIGNED: True
+  ENABLE: False
+  ROI_XFORM_RESOLUTION: 7
+  SPATIAL_SCALE_FACTOR: 16
+DIST_BACKEND: nccl
+LOG_MODEL_INFO: True
+LOG_PERIOD: 500
+MASK:
+  DECODER_DEPTH: 0
+  DECODER_EMBED_DIM: 512
+  DECODER_SEP_POS_EMBED: False
+  DEC_KV_KERNEL: []
+  DEC_KV_STRIDE: []
+  ENABLE: False
+  HEAD_TYPE: separate
+  MAE_ON: False
+  MAE_RND_MASK: False
+  NORM_PRED_PIXEL: True
+  PER_FRAME_MASKING: False
+  PRED_HOG: False
+  PRETRAIN_DEPTH: [15]
+  SCALE_INIT_BY_DEPTH: False
+  TIME_STRIDE_LOSS: True
+MIXUP:
+  ALPHA: 0.8
+  CUTMIX_ALPHA: 1.0
+  ENABLE: False
+  LABEL_SMOOTH_VALUE: 0.1
+  PROB: 1.0
+  SWITCH_PROB: 0.5
+MODEL:
+  ACT_CHECKPOINT: False
+  ARCH: mvit
+  DETACH_FINAL_FC: False
+  DROPCONNECT_RATE: 0.0
+  DROPOUT_RATE: 0.5
+  FC_INIT_STD: 0.01
+  FP16_ALLREDUCE: False
+  FROZEN_BN: False
+  HEAD_ACT: softmax
+  LOSS_FUNC: soft_cross_entropy
+  MODEL_NAME: MViT
+  MULTI_PATHWAY_ARCH: ['slowfast']
+  NUM_CLASSES: 16
+  SINGLE_PATHWAY_ARCH: ['2d', 'c2d', 'i3d', 'slow', 'x3d', 'mvit', 'maskmvit']
+MULTIGRID:
+  BN_BASE_SIZE: 8
+  DEFAULT_B: 0
+  DEFAULT_S: 0
+  DEFAULT_T: 0
+  EPOCH_FACTOR: 1.5
+  EVAL_FREQ: 3
+  LONG_CYCLE: False
+  LONG_CYCLE_FACTORS: [(0.25, 0.7071067811865476), (0.5, 0.7071067811865476), (0.5, 1), (1, 1)]
+  LONG_CYCLE_SAMPLING_RATE: 0
+  SHORT_CYCLE: False
+  SHORT_CYCLE_FACTORS: [0.5, 0.7071067811865476]
+MVIT:
+  CLS_EMBED_ON: True
+  DEPTH: 24
+  DIM_MUL: [[2, 2.0], [5, 2.0], [21, 2.0]]
+  DIM_MUL_IN_ATT: True
+  DROPOUT_RATE: 0.0
+  DROPPATH_RATE: 0.3
+  EMBED_DIM: 96
+  HEAD_INIT_SCALE: 1.0
+  HEAD_MUL: [[2, 2.0], [5, 2.0], [21, 2.0]]
+  LAYER_SCALE_INIT_VALUE: 0.0
+  MLP_RATIO: 4.0
+  MODE: conv
+  NORM: layernorm
+  NORM_STEM: False
+  NUM_HEADS: 1
+  PATCH_2D: False
+  PATCH_KERNEL: [3, 7, 7]
+  PATCH_PADDING: [1, 3, 3]
+  PATCH_STRIDE: [2, 4, 4]
+  POOL_FIRST: False
+  POOL_KVQ_KERNEL: [3, 3, 3]
+  POOL_KV_STRIDE: []
+  POOL_KV_STRIDE_ADAPTIVE: [1, 8, 8]
+  POOL_Q_STRIDE: [[0, 1, 1, 1], [1, 1, 1, 1], [2, 1, 2, 2], [3, 1, 1, 1], [4, 1, 1, 1], [5, 1, 2, 2], [6, 1, 1, 1], [7, 1, 1, 1], [8, 1, 1, 1], [9, 1, 1, 1], [10, 1, 1, 1], [11, 1, 1, 1], [12, 1, 1, 1], [13, 1, 1, 1], [14, 1, 1, 1], [15, 1, 1, 1], [16, 1, 1, 1], [17, 1, 1, 1], [18, 1, 1, 1], [19, 1, 1, 1], [20, 1, 1, 1], [21, 1, 2, 2], [22, 1, 1, 1], [23, 1, 1, 1]]
+  QKV_BIAS: True
+  REL_POS_SPATIAL: True
+  REL_POS_TEMPORAL: True
+  REL_POS_ZERO_INIT: False
+  RESIDUAL_POOLING: True
+  REV:
+    BUFFER_LAYERS: []
+    ENABLE: False
+    PRE_Q_FUSION: avg
+    RESPATH_FUSE: concat
+    RES_PATH: conv
+  SEPARATE_QKV: False
+  SEP_POS_EMBED: False
+  USE_ABS_POS: False
+  USE_FIXED_SINCOS_POS: False
+  USE_MEAN_POOLING: False
+  ZERO_DECAY_POS_CLS: False
+NONLOCAL:
+  GROUP: [[1], [1], [1], [1]]
+  INSTANTIATION: dot_product
+  LOCATION: [[[]], [[]], [[]], [[]]]
+  POOL: [[[1, 2, 2], [1, 2, 2]], [[1, 2, 2], [1, 2, 2]], [[1, 2, 2], [1, 2, 2]], [[1, 2, 2], [1, 2, 2]]]
+NUM_GPUS: 1
+NUM_SHARDS: 1
+OUTPUT_DIR: .
+PROMPT:
+  ENABLE: False
+  GPU: None
+  IMAGE_FOLDER: ./visual_prompting/save/images/mvitv2-b_fixed_patch
+  LEARNING_RATE: 0.1
+  METHOD: multi_cam_padding
+  MODEL_FOLDER: ./visual_prompting/save/models/mvitv2-b_fixed_patch
+  MOMENTUM: 0.9
+  PRINT_GRADS: False
+  PROMPT_SIZE: 30
+  RESUME: ./visual_prompting/save/models/mvitv2-b_fixed_patch/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_200epochs/checkpoint_400_epochs.pth.tar
+  SELECTIVE_UPDATING: True
+  START_EPOCH: 1
+  WARMUP: 30
+  WEIGHT_DECAY: 0.0001
+RESNET:
+  DEPTH: 50
+  INPLACE_RELU: True
+  NUM_BLOCK_TEMP_KERNEL: [[3], [4], [6], [3]]
+  NUM_GROUPS: 1
+  SPATIAL_DILATIONS: [[1], [1], [1], [1]]
+  SPATIAL_STRIDES: [[1], [2], [2], [2]]
+  STRIDE_1X1: False
+  TRANS_FUNC: bottleneck_transform
+  WIDTH_PER_GROUP: 64
+  ZERO_INIT_FINAL_BN: False
+  ZERO_INIT_FINAL_CONV: False
+RNG_SEED: 0
+SHARD_ID: 0
+SLOWFAST:
+  ALPHA: 8
+  BETA_INV: 8
+  FUSION_CONV_CHANNEL_RATIO: 2
+  FUSION_KERNEL_SZ: 5
+SOLVER:
+  BASE_LR: 0.0002
+  BASE_LR_SCALE_NUM_SHARDS: True
+  BETAS: (0.9, 0.999)
+  CLIP_GRAD_L2NORM: 1.0
+  CLIP_GRAD_VAL: None
+  COSINE_AFTER_WARMUP: True
+  COSINE_END_LR: 2e-06
+  DAMPENING: 0.0
+  GAMMA: 0.1
+  LARS_ON: False
+  LAYER_DECAY: 1.0
+  LRS: []
+  LR_POLICY: cosine
+  MAX_EPOCH: 200
+  MOMENTUM: 0.9
+  NESTEROV: True
+  OPTIMIZING_METHOD: adamw
+  STEPS: []
+  STEP_SIZE: 1
+  WARMUP_EPOCHS: 30.0
+  WARMUP_FACTOR: 0.1
+  WARMUP_START_LR: 2e-06
+  WEIGHT_DECAY: 0.0001
+  ZERO_WD_1D_PARAM: True
+TAL:
+  ENABLE: True
+TASK: 
+TENSORBOARD:
+  CATEGORIES_PATH: 
+  CLASS_NAMES_PATH: 
+  CONFUSION_MATRIX:
+    ENABLE: False
+    FIGSIZE: [8, 8]
+    SUBSET_PATH: 
+  ENABLE: False
+  HISTOGRAM:
+    ENABLE: False
+    FIGSIZE: [8, 8]
+    SUBSET_PATH: 
+    TOPK: 10
+  LOG_DIR: 
+  MODEL_VIS:
+    ACTIVATIONS: False
+    COLORMAP: Pastel2
+    ENABLE: False
+    GRAD_CAM:
+      COLORMAP: viridis
+      ENABLE: True
+      LAYER_LIST: []
+      USE_TRUE_LABEL: False
+    INPUT_VIDEO: False
+    LAYER_LIST: []
+    MODEL_WEIGHTS: False
+    TOPK_PREDS: 1
+  PREDICTIONS_PATH: 
+  WRONG_PRED_VIS:
+    ENABLE: False
+    SUBSET_PATH: 
+    TAG: Incorrectly classified videos.
+TEST:
+  BATCH_SIZE: 3
+  CHECKPOINT_FILE_PATH: 
+  CHECKPOINT_TYPE: pytorch
+  DATASET: kinetics
+  ENABLE: True
+  NUM_ENSEMBLE_VIEWS: 1
+  NUM_SPATIAL_CROPS: 1
+  NUM_TEMPORAL_CLIPS: [1]
+  SAVE_RESULTS_PATH: 
+TRAIN:
+  AUTO_RESUME: True
+  BATCH_SIZE: 16
+  CHECKPOINT_CLEAR_NAME_PATTERN: ()
+  CHECKPOINT_EPOCH_RESET: False
+  CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6/checkpoint_epoch_00200.pyth
+  CHECKPOINT_INFLATE: False
+  CHECKPOINT_IN_INIT: False
+  CHECKPOINT_PERIOD: 20
+  CHECKPOINT_TYPE: pytorch
+  DATASET: kinetics
+  ENABLE: False
+  EVAL_PERIOD: 2
+  KILL_LOSS_EXPLOSION_FACTOR: 0.0
+  MIXED_PRECISION: False
+VIS_MASK:
+  ENABLE: False
+X3D:
+  BN_LIN5: False
+  BOTTLENECK_FACTOR: 1.0
+  CHANNELWISE_3x3x3: True
+  DEPTH_FACTOR: 1.0
+  DIM_C1: 12
+  DIM_C5: 2048
+  SCALE_RES2: False
+  WIDTH_FACTOR: 1.0
+[07/19 15:13:13][INFO] misc.py:  185: Model:
+MViT(
+  (patch_embed): PatchEmbed(
+    (proj): Conv3d(3, 96, kernel_size=(3, 7, 7), stride=(2, 4, 4), padding=(1, 3, 3))
+  )
+  (blocks): ModuleList(
+    (0): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (1): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (2): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+      (proj): Linear(in_features=96, out_features=192, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (3): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (4): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (5): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+      (proj): Linear(in_features=192, out_features=384, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (6): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (7): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (8): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (9): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (10): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (11): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (12): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (13): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (14): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (15): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (16): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (17): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (18): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (19): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (20): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (21): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+      (proj): Linear(in_features=384, out_features=768, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (22): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+    (23): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  (head): TransformerBasicHead(
+    (dropout): Dropout(p=0.5, inplace=False)
+    (projection): Linear(in_features=768, out_features=16, bias=True)
+    (act): Softmax(dim=1)
+  )
+)
+[07/19 15:13:13][INFO] misc.py:  187: Params: 50,897,968
+[07/19 15:13:13][INFO] misc.py:  188: Mem: 0.19084548950195312 MB
+[07/19 15:13:16][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/19 15:13:16][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/19 15:13:16][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/19 15:13:16][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/19 15:13:16][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/19 15:13:16][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/19 15:13:16][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/19 15:13:16][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/19 15:13:16][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/19 15:13:16][INFO] misc.py:  190: Flops: 92.63208983999999 G
+[07/19 15:13:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[07/19 15:13:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/19 15:13:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/19 15:13:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/19 15:13:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/19 15:13:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/19 15:13:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/19 15:13:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/19 15:13:18][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/19 15:13:18][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/19 15:13:18][INFO] misc.py:  191: Activations: 357.084096 M
+[07/19 15:13:18][INFO] misc.py:  196: nvidia-smi
+[07/19 15:13:18][INFO] misc.py:  185: Model:
+MViT(
+  (patch_embed): PatchEmbed(
+    (proj): Conv3d(3, 96, kernel_size=(3, 7, 7), stride=(2, 4, 4), padding=(1, 3, 3))
+  )
+  (blocks): ModuleList(
+    (0): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (1): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (2): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+      (proj): Linear(in_features=96, out_features=192, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (3): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (4): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (5): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+      (proj): Linear(in_features=192, out_features=384, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (6): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (7): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (8): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (9): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (10): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (11): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (12): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (13): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (14): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (15): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (16): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (17): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (18): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (19): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (20): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (21): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+      (proj): Linear(in_features=384, out_features=768, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (22): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+    (23): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  (head): TransformerBasicHead(
+    (dropout): Dropout(p=0.5, inplace=False)
+    (projection): Linear(in_features=768, out_features=16, bias=True)
+    (act): Softmax(dim=1)
+  )
+)
+[07/19 15:13:18][INFO] misc.py:  187: Params: 50,897,968
+[07/19 15:13:18][INFO] misc.py:  188: Mem: 2.495626449584961 MB
+[07/19 15:13:21][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/19 15:13:21][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/19 15:13:21][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/19 15:13:21][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/19 15:13:21][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/19 15:13:21][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/19 15:13:21][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/19 15:13:21][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/19 15:13:21][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/19 15:13:21][INFO] misc.py:  190: Flops: 92.63208983999999 G
+[07/19 15:13:23][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[07/19 15:13:23][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/19 15:13:23][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/19 15:13:23][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/19 15:13:23][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 96 time(s)
+[07/19 15:13:23][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 120 time(s)
+[07/19 15:13:23][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/19 15:13:23][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/19 15:13:23][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/19 15:13:23][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/19 15:13:23][INFO] misc.py:  191: Activations: 357.084096 M
+[07/19 15:13:23][INFO] misc.py:  196: nvidia-smi
+[07/19 15:13:23][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6/checkpoint_epoch_00200.pyth.
+[07/19 15:13:23][INFO] kinetics.py:   93: Constructing Kinetics test...
+[07/19 15:13:23][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 7095 skip_rows 0) from test.csv 
+[07/19 15:13:23][INFO] test_net.py:  379: Testing model for 2365 iterations
+[07/19 15:13:24][INFO] test_net.py:  193: batch: 0, Right_side_window, pred: 11, prob: 0.723
+[07/19 15:13:24][INFO] test_net.py:  193: batch: 0, Right_side_window, pred: 15, prob: 0.402
+[07/19 15:13:24][INFO] test_net.py:  193: batch: 0, Right_side_window, pred: 0, prob: 0.890
+[07/19 15:13:24][INFO] test_net.py:  231: batch: 0, agg pred: 0, agg prob: 0.890
+[07/19 15:13:26][INFO] test_net.py:  193: batch: 1, Right_side_window, pred: 0, prob: 0.992
+[07/19 15:13:26][INFO] test_net.py:  193: batch: 1, Right_side_window, pred: 13, prob: 0.633
+[07/19 15:13:26][INFO] test_net.py:  193: batch: 1, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:13:26][INFO] test_net.py:  224: batch: 1, agg pred: 0, agg prob: 0.995
+[07/19 15:13:27][INFO] test_net.py:  193: batch: 2, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:13:27][INFO] test_net.py:  193: batch: 2, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:13:27][INFO] test_net.py:  193: batch: 2, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:13:27][INFO] test_net.py:  224: batch: 2, agg pred: 0, agg prob: 0.998
+[07/19 15:13:28][INFO] test_net.py:  193: batch: 3, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:13:28][INFO] test_net.py:  193: batch: 3, Right_side_window, pred: 0, prob: 0.995
+[07/19 15:13:28][INFO] test_net.py:  193: batch: 3, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:13:28][INFO] test_net.py:  224: batch: 3, agg pred: 0, agg prob: 0.997
+[07/19 15:13:29][INFO] test_net.py:  193: batch: 4, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:29][INFO] test_net.py:  193: batch: 4, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:29][INFO] test_net.py:  193: batch: 4, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:29][INFO] test_net.py:  224: batch: 4, agg pred: 15, agg prob: 1.000
+[07/19 15:13:30][INFO] test_net.py:  193: batch: 5, Right_side_window, pred: 15, prob: 0.999
+[07/19 15:13:30][INFO] test_net.py:  193: batch: 5, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:30][INFO] test_net.py:  193: batch: 5, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:30][INFO] test_net.py:  224: batch: 5, agg pred: 15, agg prob: 1.000
+[07/19 15:13:31][INFO] test_net.py:  193: batch: 6, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:31][INFO] test_net.py:  193: batch: 6, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:31][INFO] test_net.py:  193: batch: 6, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:31][INFO] test_net.py:  224: batch: 6, agg pred: 15, agg prob: 1.000
+[07/19 15:13:32][INFO] test_net.py:  193: batch: 7, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:32][INFO] test_net.py:  193: batch: 7, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:33][INFO] test_net.py:  193: batch: 7, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:33][INFO] test_net.py:  224: batch: 7, agg pred: 15, agg prob: 1.000
+[07/19 15:13:34][INFO] test_net.py:  193: batch: 8, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:34][INFO] test_net.py:  193: batch: 8, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:34][INFO] test_net.py:  193: batch: 8, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:34][INFO] test_net.py:  224: batch: 8, agg pred: 15, agg prob: 1.000
+[07/19 15:13:35][INFO] test_net.py:  193: batch: 9, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:35][INFO] test_net.py:  193: batch: 9, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:35][INFO] test_net.py:  193: batch: 9, Right_side_window, pred: 15, prob: 0.999
+[07/19 15:13:35][INFO] test_net.py:  224: batch: 9, agg pred: 15, agg prob: 1.000
+[07/19 15:13:36][INFO] test_net.py:  193: batch: 10, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:36][INFO] test_net.py:  193: batch: 10, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:36][INFO] test_net.py:  193: batch: 10, Right_side_window, pred: 15, prob: 0.995
+[07/19 15:13:36][INFO] test_net.py:  224: batch: 10, agg pred: 15, agg prob: 0.998
+[07/19 15:13:37][INFO] test_net.py:  193: batch: 11, Right_side_window, pred: 15, prob: 0.996
+[07/19 15:13:37][INFO] test_net.py:  193: batch: 11, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:37][INFO] test_net.py:  193: batch: 11, Right_side_window, pred: 15, prob: 0.968
+[07/19 15:13:37][INFO] test_net.py:  224: batch: 11, agg pred: 15, agg prob: 0.988
+[07/19 15:13:38][INFO] test_net.py:  193: batch: 12, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:38][INFO] test_net.py:  193: batch: 12, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:38][INFO] test_net.py:  193: batch: 12, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:38][INFO] test_net.py:  224: batch: 12, agg pred: 15, agg prob: 1.000
+[07/19 15:13:39][INFO] test_net.py:  193: batch: 13, Right_side_window, pred: 15, prob: 0.999
+[07/19 15:13:39][INFO] test_net.py:  193: batch: 13, Right_side_window, pred: 15, prob: 1.000
+[07/19 15:13:39][INFO] test_net.py:  193: batch: 13, Right_side_window, pred: 15, prob: 0.998
+[07/19 15:13:39][INFO] test_net.py:  224: batch: 13, agg pred: 15, agg prob: 0.999
+[07/19 15:13:41][INFO] test_net.py:  193: batch: 14, Right_side_window, pred: 15, prob: 0.988
+[07/19 15:13:41][INFO] test_net.py:  193: batch: 14, Right_side_window, pred: 15, prob: 0.999
+[07/19 15:13:41][INFO] test_net.py:  193: batch: 14, Right_side_window, pred: 15, prob: 0.951
+[07/19 15:13:41][INFO] test_net.py:  224: batch: 14, agg pred: 15, agg prob: 0.979
+[07/19 15:13:42][INFO] test_net.py:  193: batch: 15, Right_side_window, pred: 11, prob: 0.998
+[07/19 15:13:42][INFO] test_net.py:  193: batch: 15, Right_side_window, pred: 6, prob: 0.808
+[07/19 15:13:42][INFO] test_net.py:  193: batch: 15, Right_side_window, pred: 3, prob: 0.609
+[07/19 15:13:42][INFO] test_net.py:  231: batch: 15, agg pred: 11, agg prob: 0.998
+[07/19 15:13:43][INFO] test_net.py:  193: batch: 16, Right_side_window, pred: 0, prob: 0.975
+[07/19 15:13:43][INFO] test_net.py:  193: batch: 16, Right_side_window, pred: 0, prob: 0.967
+[07/19 15:13:43][INFO] test_net.py:  193: batch: 16, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:13:43][INFO] test_net.py:  224: batch: 16, agg pred: 0, agg prob: 0.980
+[07/19 15:13:45][INFO] test_net.py:  193: batch: 17, Right_side_window, pred: 6, prob: 0.456
+[07/19 15:13:45][INFO] test_net.py:  193: batch: 17, Right_side_window, pred: 0, prob: 0.966
+[07/19 15:13:45][INFO] test_net.py:  193: batch: 17, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:13:45][INFO] test_net.py:  224: batch: 17, agg pred: 0, agg prob: 0.981
+[07/19 15:13:46][INFO] test_net.py:  193: batch: 18, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:13:46][INFO] test_net.py:  193: batch: 18, Right_side_window, pred: 0, prob: 0.994
+[07/19 15:13:46][INFO] test_net.py:  193: batch: 18, Right_side_window, pred: 0, prob: 0.996
+[07/19 15:13:46][INFO] test_net.py:  224: batch: 18, agg pred: 0, agg prob: 0.995
+[07/19 15:13:47][INFO] test_net.py:  193: batch: 19, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:13:47][INFO] test_net.py:  193: batch: 19, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:13:47][INFO] test_net.py:  193: batch: 19, Right_side_window, pred: 0, prob: 0.990
+[07/19 15:13:47][INFO] test_net.py:  224: batch: 19, agg pred: 0, agg prob: 0.996
+[07/19 15:13:48][INFO] test_net.py:  193: batch: 20, Right_side_window, pred: 0, prob: 0.985
+[07/19 15:13:48][INFO] test_net.py:  193: batch: 20, Right_side_window, pred: 0, prob: 0.996
+[07/19 15:13:49][INFO] test_net.py:  193: batch: 20, Right_side_window, pred: 1, prob: 0.737
+[07/19 15:13:49][INFO] test_net.py:  224: batch: 20, agg pred: 0, agg prob: 0.990
+[07/19 15:13:50][INFO] test_net.py:  193: batch: 21, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:50][INFO] test_net.py:  193: batch: 21, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:50][INFO] test_net.py:  193: batch: 21, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:50][INFO] test_net.py:  224: batch: 21, agg pred: 14, agg prob: 1.000
+[07/19 15:13:51][INFO] test_net.py:  193: batch: 22, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:51][INFO] test_net.py:  193: batch: 22, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:51][INFO] test_net.py:  193: batch: 22, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:51][INFO] test_net.py:  224: batch: 22, agg pred: 14, agg prob: 1.000
+[07/19 15:13:52][INFO] test_net.py:  193: batch: 23, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:52][INFO] test_net.py:  193: batch: 23, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:52][INFO] test_net.py:  193: batch: 23, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:52][INFO] test_net.py:  224: batch: 23, agg pred: 14, agg prob: 1.000
+[07/19 15:13:54][INFO] test_net.py:  193: batch: 24, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:54][INFO] test_net.py:  193: batch: 24, Right_side_window, pred: 14, prob: 0.999
+[07/19 15:13:54][INFO] test_net.py:  193: batch: 24, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:54][INFO] test_net.py:  224: batch: 24, agg pred: 14, agg prob: 1.000
+[07/19 15:13:55][INFO] test_net.py:  193: batch: 25, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:55][INFO] test_net.py:  193: batch: 25, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:55][INFO] test_net.py:  193: batch: 25, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:55][INFO] test_net.py:  224: batch: 25, agg pred: 14, agg prob: 1.000
+[07/19 15:13:56][INFO] test_net.py:  193: batch: 26, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:56][INFO] test_net.py:  193: batch: 26, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:56][INFO] test_net.py:  193: batch: 26, Right_side_window, pred: 14, prob: 0.999
+[07/19 15:13:56][INFO] test_net.py:  224: batch: 26, agg pred: 14, agg prob: 0.999
+[07/19 15:13:57][INFO] test_net.py:  193: batch: 27, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:57][INFO] test_net.py:  193: batch: 27, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:57][INFO] test_net.py:  193: batch: 27, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:57][INFO] test_net.py:  224: batch: 27, agg pred: 14, agg prob: 1.000
+[07/19 15:13:58][INFO] test_net.py:  193: batch: 28, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:58][INFO] test_net.py:  193: batch: 28, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:58][INFO] test_net.py:  193: batch: 28, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:58][INFO] test_net.py:  224: batch: 28, agg pred: 14, agg prob: 1.000
+[07/19 15:13:59][INFO] test_net.py:  193: batch: 29, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:59][INFO] test_net.py:  193: batch: 29, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:13:59][INFO] test_net.py:  193: batch: 29, Right_side_window, pred: 14, prob: 0.999
+[07/19 15:13:59][INFO] test_net.py:  224: batch: 29, agg pred: 14, agg prob: 1.000
+[07/19 15:14:01][INFO] test_net.py:  193: batch: 30, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:14:01][INFO] test_net.py:  193: batch: 30, Right_side_window, pred: 14, prob: 0.999
+[07/19 15:14:01][INFO] test_net.py:  193: batch: 30, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:14:01][INFO] test_net.py:  224: batch: 30, agg pred: 14, agg prob: 1.000
+[07/19 15:14:02][INFO] test_net.py:  193: batch: 31, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:14:02][INFO] test_net.py:  193: batch: 31, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:14:02][INFO] test_net.py:  193: batch: 31, Right_side_window, pred: 14, prob: 0.999
+[07/19 15:14:02][INFO] test_net.py:  224: batch: 31, agg pred: 14, agg prob: 0.999
+[07/19 15:14:03][INFO] test_net.py:  193: batch: 32, Right_side_window, pred: 14, prob: 1.000
+[07/19 15:14:03][INFO] test_net.py:  193: batch: 32, Right_side_window, pred: 14, prob: 0.999
+[07/19 15:14:03][INFO] test_net.py:  193: batch: 32, Right_side_window, pred: 4, prob: 0.936
+[07/19 15:14:03][INFO] test_net.py:  224: batch: 32, agg pred: 14, agg prob: 0.999
+[07/19 15:14:04][INFO] test_net.py:  193: batch: 33, Right_side_window, pred: 13, prob: 0.841
+[07/19 15:14:04][INFO] test_net.py:  193: batch: 33, Right_side_window, pred: 13, prob: 0.989
+[07/19 15:14:04][INFO] test_net.py:  193: batch: 33, Right_side_window, pred: 13, prob: 0.765
+[07/19 15:14:04][INFO] test_net.py:  224: batch: 33, agg pred: 13, agg prob: 0.865
+[07/19 15:14:06][INFO] test_net.py:  193: batch: 34, Right_side_window, pred: 13, prob: 0.599
+[07/19 15:14:06][INFO] test_net.py:  193: batch: 34, Right_side_window, pred: 13, prob: 0.998
+[07/19 15:14:06][INFO] test_net.py:  193: batch: 34, Right_side_window, pred: 0, prob: 0.991
+[07/19 15:14:06][INFO] test_net.py:  224: batch: 34, agg pred: 13, agg prob: 0.799
+[07/19 15:14:07][INFO] test_net.py:  193: batch: 35, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:14:07][INFO] test_net.py:  193: batch: 35, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:14:07][INFO] test_net.py:  193: batch: 35, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:14:07][INFO] test_net.py:  224: batch: 35, agg pred: 0, agg prob: 0.998
+[07/19 15:14:08][INFO] test_net.py:  193: batch: 36, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:14:08][INFO] test_net.py:  193: batch: 36, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:14:08][INFO] test_net.py:  193: batch: 36, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:14:08][INFO] test_net.py:  224: batch: 36, agg pred: 0, agg prob: 0.998
+[07/19 15:14:09][INFO] test_net.py:  193: batch: 37, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:14:09][INFO] test_net.py:  193: batch: 37, Right_side_window, pred: 0, prob: 0.546
+[07/19 15:14:09][INFO] test_net.py:  193: batch: 37, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:14:09][INFO] test_net.py:  224: batch: 37, agg pred: 0, agg prob: 0.847
+[07/19 15:14:10][INFO] test_net.py:  193: batch: 38, Right_side_window, pred: 0, prob: 0.992
+[07/19 15:14:10][INFO] test_net.py:  193: batch: 38, Right_side_window, pred: 0, prob: 0.937
+[07/19 15:14:10][INFO] test_net.py:  193: batch: 38, Right_side_window, pred: 0, prob: 0.916
+[07/19 15:14:10][INFO] test_net.py:  224: batch: 38, agg pred: 0, agg prob: 0.948
+[07/19 15:14:11][INFO] test_net.py:  193: batch: 39, Right_side_window, pred: 1, prob: 0.758
+[07/19 15:14:11][INFO] test_net.py:  193: batch: 39, Right_side_window, pred: 1, prob: 0.894
+[07/19 15:14:12][INFO] test_net.py:  193: batch: 39, Right_side_window, pred: 8, prob: 0.999
+[07/19 15:14:12][INFO] test_net.py:  224: batch: 39, agg pred: 1, agg prob: 0.826
+[07/19 15:14:13][INFO] test_net.py:  193: batch: 40, Right_side_window, pred: 8, prob: 0.511
+[07/19 15:14:13][INFO] test_net.py:  193: batch: 40, Right_side_window, pred: 8, prob: 0.979
+[07/19 15:14:13][INFO] test_net.py:  193: batch: 40, Right_side_window, pred: 8, prob: 0.999
+[07/19 15:14:13][INFO] test_net.py:  224: batch: 40, agg pred: 8, agg prob: 0.829
+[07/19 15:14:14][INFO] test_net.py:  193: batch: 41, Right_side_window, pred: 5, prob: 0.895
+[07/19 15:14:14][INFO] test_net.py:  193: batch: 41, Right_side_window, pred: 8, prob: 1.000
+[07/19 15:14:14][INFO] test_net.py:  193: batch: 41, Right_side_window, pred: 8, prob: 1.000
+[07/19 15:14:14][INFO] test_net.py:  224: batch: 41, agg pred: 8, agg prob: 1.000
+[07/19 15:14:15][INFO] test_net.py:  193: batch: 42, Right_side_window, pred: 8, prob: 0.915
+[07/19 15:14:15][INFO] test_net.py:  193: batch: 42, Right_side_window, pred: 8, prob: 0.968
+[07/19 15:14:15][INFO] test_net.py:  193: batch: 42, Right_side_window, pred: 8, prob: 1.000
+[07/19 15:14:15][INFO] test_net.py:  224: batch: 42, agg pred: 8, agg prob: 0.961
+[07/19 15:14:16][INFO] test_net.py:  193: batch: 43, Right_side_window, pred: 1, prob: 0.816
+[07/19 15:14:16][INFO] test_net.py:  193: batch: 43, Right_side_window, pred: 13, prob: 0.503
+[07/19 15:14:16][INFO] test_net.py:  193: batch: 43, Right_side_window, pred: 13, prob: 0.926
+[07/19 15:14:16][INFO] test_net.py:  224: batch: 43, agg pred: 13, agg prob: 0.714
+[07/19 15:14:18][INFO] test_net.py:  193: batch: 44, Right_side_window, pred: 0, prob: 0.972
+[07/19 15:14:18][INFO] test_net.py:  193: batch: 44, Right_side_window, pred: 0, prob: 0.994
+[07/19 15:14:18][INFO] test_net.py:  193: batch: 44, Right_side_window, pred: 8, prob: 0.488
+[07/19 15:14:18][INFO] test_net.py:  224: batch: 44, agg pred: 0, agg prob: 0.983
+[07/19 15:14:19][INFO] test_net.py:  193: batch: 45, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:14:19][INFO] test_net.py:  193: batch: 45, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:14:19][INFO] test_net.py:  193: batch: 45, Right_side_window, pred: 0, prob: 0.984
+[07/19 15:14:19][INFO] test_net.py:  224: batch: 45, agg pred: 0, agg prob: 0.994
+[07/19 15:14:20][INFO] test_net.py:  193: batch: 46, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:14:20][INFO] test_net.py:  193: batch: 46, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:14:20][INFO] test_net.py:  193: batch: 46, Right_side_window, pred: 0, prob: 0.779
+[07/19 15:14:20][INFO] test_net.py:  224: batch: 46, agg pred: 0, agg prob: 0.925
+[07/19 15:14:21][INFO] test_net.py:  193: batch: 47, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:14:21][INFO] test_net.py:  193: batch: 47, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:14:21][INFO] test_net.py:  193: batch: 47, Right_side_window, pred: 8, prob: 0.440
+[07/19 15:14:21][INFO] test_net.py:  224: batch: 47, agg pred: 0, agg prob: 0.999
+[07/19 15:14:22][INFO] test_net.py:  193: batch: 48, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:14:22][INFO] test_net.py:  193: batch: 48, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:14:22][INFO] test_net.py:  193: batch: 48, Right_side_window, pred: 0, prob: 0.990
+[07/19 15:14:22][INFO] test_net.py:  224: batch: 48, agg pred: 0, agg prob: 0.996
+[07/19 15:14:23][INFO] test_net.py:  193: batch: 49, Right_side_window, pred: 0, prob: 0.994
+[07/19 15:14:23][INFO] test_net.py:  193: batch: 49, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:14:23][INFO] test_net.py:  193: batch: 49, Right_side_window, pred: 0, prob: 0.627
+[07/19 15:14:23][INFO] test_net.py:  224: batch: 49, agg pred: 0, agg prob: 0.873
+[07/19 15:14:24][INFO] test_net.py:  193: batch: 50, Right_side_window, pred: 0, prob: 0.994
+[07/19 15:14:25][INFO] test_net.py:  193: batch: 50, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:14:25][INFO] test_net.py:  193: batch: 50, Right_side_window, pred: 0, prob: 0.833
+[07/19 15:14:25][INFO] test_net.py:  224: batch: 50, agg pred: 0, agg prob: 0.941
+[07/19 15:14:26][INFO] test_net.py:  193: batch: 51, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:14:26][INFO] test_net.py:  193: batch: 51, Right_side_window, pred: 0, prob: 0.912
+[07/19 15:14:26][INFO] test_net.py:  193: batch: 51, Right_side_window, pred: 13, prob: 0.966
+[07/19 15:14:26][INFO] test_net.py:  224: batch: 51, agg pred: 0, agg prob: 0.955
+[07/19 15:14:27][INFO] test_net.py:  193: batch: 52, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:14:27][INFO] test_net.py:  193: batch: 52, Right_side_window, pred: 0, prob: 0.538
+[07/19 15:14:27][INFO] test_net.py:  193: batch: 52, Right_side_window, pred: 0, prob: 0.903
+[07/19 15:14:27][INFO] test_net.py:  224: batch: 52, agg pred: 0, agg prob: 0.813
+[07/19 15:14:28][INFO] test_net.py:  193: batch: 53, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:14:28][INFO] test_net.py:  193: batch: 53, Right_side_window, pred: 0, prob: 0.976
+[07/19 15:14:28][INFO] test_net.py:  193: batch: 53, Right_side_window, pred: 0, prob: 0.980
+[07/19 15:14:28][INFO] test_net.py:  224: batch: 53, agg pred: 0, agg prob: 0.985
+[07/19 15:14:29][INFO] test_net.py:  193: batch: 54, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:14:29][INFO] test_net.py:  193: batch: 54, Right_side_window, pred: 13, prob: 0.996
+[07/19 15:14:29][INFO] test_net.py:  193: batch: 54, Right_side_window, pred: 0, prob: 0.994
+[07/19 15:14:29][INFO] test_net.py:  224: batch: 54, agg pred: 0, agg prob: 0.996
+[07/19 15:14:31][INFO] test_net.py:  193: batch: 55, Right_side_window, pred: 0, prob: 0.994
+[07/19 15:14:31][INFO] test_net.py:  193: batch: 55, Right_side_window, pred: 13, prob: 0.999
+[07/19 15:14:31][INFO] test_net.py:  193: batch: 55, Right_side_window, pred: 0, prob: 0.990
+[07/19 15:14:31][INFO] test_net.py:  224: batch: 55, agg pred: 0, agg prob: 0.992
+[07/19 15:14:32][INFO] test_net.py:  193: batch: 56, Right_side_window, pred: 4, prob: 0.977
+[07/19 15:14:32][INFO] test_net.py:  193: batch: 56, Right_side_window, pred: 4, prob: 0.941
+[07/19 15:14:32][INFO] test_net.py:  193: batch: 56, Right_side_window, pred: 8, prob: 0.828
+[07/19 15:14:32][INFO] test_net.py:  224: batch: 56, agg pred: 4, agg prob: 0.959
+[07/19 15:14:33][INFO] test_net.py:  193: batch: 57, Right_side_window, pred: 4, prob: 0.997
+[07/19 15:14:33][INFO] test_net.py:  193: batch: 57, Right_side_window, pred: 4, prob: 0.998
+[07/19 15:14:33][INFO] test_net.py:  193: batch: 57, Right_side_window, pred: 4, prob: 0.826
+[07/19 15:14:33][INFO] test_net.py:  224: batch: 57, agg pred: 4, agg prob: 0.940
+[07/19 15:14:34][INFO] test_net.py:  193: batch: 58, Right_side_window, pred: 4, prob: 0.985
+[07/19 15:14:34][INFO] test_net.py:  193: batch: 58, Right_side_window, pred: 4, prob: 0.999
+[07/19 15:14:34][INFO] test_net.py:  193: batch: 58, Right_side_window, pred: 5, prob: 0.529
+[07/19 15:14:34][INFO] test_net.py:  224: batch: 58, agg pred: 4, agg prob: 0.992
+[07/19 15:14:35][INFO] test_net.py:  193: batch: 59, Right_side_window, pred: 5, prob: 0.847
+[07/19 15:14:35][INFO] test_net.py:  193: batch: 59, Right_side_window, pred: 4, prob: 0.876
+[07/19 15:14:35][INFO] test_net.py:  193: batch: 59, Right_side_window, pred: 8, prob: 0.999
+[07/19 15:14:35][INFO] test_net.py:  231: batch: 59, agg pred: 8, agg prob: 0.999
+[07/19 15:14:37][INFO] test_net.py:  193: batch: 60, Right_side_window, pred: 4, prob: 0.483
+[07/19 15:14:37][INFO] test_net.py:  193: batch: 60, Right_side_window, pred: 4, prob: 0.537
+[07/19 15:14:37][INFO] test_net.py:  193: batch: 60, Right_side_window, pred: 8, prob: 0.998
+[07/19 15:14:37][INFO] test_net.py:  224: batch: 60, agg pred: 4, agg prob: 0.510
+[07/19 15:14:38][INFO] test_net.py:  193: batch: 61, Right_side_window, pred: 8, prob: 0.997
+[07/19 15:14:38][INFO] test_net.py:  193: batch: 61, Right_side_window, pred: 8, prob: 0.997
+[07/19 15:14:38][INFO] test_net.py:  193: batch: 61, Right_side_window, pred: 8, prob: 0.999
+[07/19 15:14:38][INFO] test_net.py:  224: batch: 61, agg pred: 8, agg prob: 0.998
+[07/19 15:14:39][INFO] test_net.py:  193: batch: 62, Right_side_window, pred: 4, prob: 1.000
+[07/19 15:14:39][INFO] test_net.py:  193: batch: 62, Right_side_window, pred: 4, prob: 0.999
+[07/19 15:14:39][INFO] test_net.py:  193: batch: 62, Right_side_window, pred: 4, prob: 1.000
+[07/19 15:14:39][INFO] test_net.py:  224: batch: 62, agg pred: 4, agg prob: 1.000
+[07/19 15:14:40][INFO] test_net.py:  193: batch: 63, Right_side_window, pred: 4, prob: 1.000
+[07/19 15:14:40][INFO] test_net.py:  193: batch: 63, Right_side_window, pred: 4, prob: 1.000
+[07/19 15:14:40][INFO] test_net.py:  193: batch: 63, Right_side_window, pred: 4, prob: 0.999
+[07/19 15:14:40][INFO] test_net.py:  224: batch: 63, agg pred: 4, agg prob: 0.999
+[07/19 15:14:41][INFO] test_net.py:  193: batch: 64, Right_side_window, pred: 4, prob: 0.905
+[07/19 15:14:41][INFO] test_net.py:  193: batch: 64, Right_side_window, pred: 4, prob: 0.999
+[07/19 15:14:41][INFO] test_net.py:  193: batch: 64, Right_side_window, pred: 4, prob: 0.963
+[07/19 15:14:41][INFO] test_net.py:  224: batch: 64, agg pred: 4, agg prob: 0.955
+[07/19 15:14:43][INFO] test_net.py:  193: batch: 65, Right_side_window, pred: 4, prob: 0.952
+[07/19 15:14:43][INFO] test_net.py:  193: batch: 65, Right_side_window, pred: 6, prob: 0.694
+[07/19 15:14:43][INFO] test_net.py:  193: batch: 65, Right_side_window, pred: 8, prob: 0.965
+[07/19 15:14:43][INFO] test_net.py:  231: batch: 65, agg pred: 8, agg prob: 0.965
+[07/19 15:14:44][INFO] test_net.py:  193: batch: 66, Right_side_window, pred: 8, prob: 0.999
+[07/19 15:14:44][INFO] test_net.py:  193: batch: 66, Right_side_window, pred: 8, prob: 0.846
+[07/19 15:14:44][INFO] test_net.py:  193: batch: 66, Right_side_window, pred: 8, prob: 0.677
+[07/19 15:14:44][INFO] test_net.py:  224: batch: 66, agg pred: 8, agg prob: 0.841
+[07/19 15:14:45][INFO] test_net.py:  193: batch: 67, Right_side_window, pred: 11, prob: 0.999
+[07/19 15:14:45][INFO] test_net.py:  193: batch: 67, Right_side_window, pred: 11, prob: 0.992
+[07/19 15:14:45][INFO] test_net.py:  193: batch: 67, Right_side_window, pred: 11, prob: 0.984
+[07/19 15:14:45][INFO] test_net.py:  224: batch: 67, agg pred: 11, agg prob: 0.992
+[07/19 15:14:46][INFO] test_net.py:  193: batch: 68, Right_side_window, pred: 11, prob: 0.968
+[07/19 15:14:46][INFO] test_net.py:  193: batch: 68, Right_side_window, pred: 11, prob: 0.551
+[07/19 15:14:46][INFO] test_net.py:  193: batch: 68, Right_side_window, pred: 11, prob: 0.988
+[07/19 15:14:46][INFO] test_net.py:  224: batch: 68, agg pred: 11, agg prob: 0.836
+[07/19 15:14:47][INFO] test_net.py:  193: batch: 69, Right_side_window, pred: 5, prob: 0.975
+[07/19 15:14:47][INFO] test_net.py:  193: batch: 69, Right_side_window, pred: 6, prob: 0.816
+[07/19 15:14:47][INFO] test_net.py:  193: batch: 69, Right_side_window, pred: 1, prob: 0.415
+[07/19 15:14:47][INFO] test_net.py:  231: batch: 69, agg pred: 5, agg prob: 0.975
+[07/19 15:14:48][INFO] test_net.py:  193: batch: 70, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:14:48][INFO] test_net.py:  193: batch: 70, Right_side_window, pred: 0, prob: 0.982
+[07/19 15:14:48][INFO] test_net.py:  193: batch: 70, Right_side_window, pred: 0, prob: 0.989
+[07/19 15:14:48][INFO] test_net.py:  224: batch: 70, agg pred: 0, agg prob: 0.990
+[07/19 15:14:49][INFO] test_net.py:  193: batch: 71, Right_side_window, pred: 0, prob: 0.996
+[07/19 15:14:49][INFO] test_net.py:  193: batch: 71, Right_side_window, pred: 6, prob: 0.895
+[07/19 15:14:50][INFO] test_net.py:  193: batch: 71, Right_side_window, pred: 0, prob: 0.994
+[07/19 15:14:50][INFO] test_net.py:  224: batch: 71, agg pred: 0, agg prob: 0.995
+[07/19 15:14:51][INFO] test_net.py:  193: batch: 72, Right_side_window, pred: 0, prob: 0.995
+[07/19 15:14:51][INFO] test_net.py:  193: batch: 72, Right_side_window, pred: 6, prob: 0.882
+[07/19 15:14:51][INFO] test_net.py:  193: batch: 72, Right_side_window, pred: 0, prob: 0.998
+[07/19 15:14:51][INFO] test_net.py:  224: batch: 72, agg pred: 0, agg prob: 0.997
+[07/19 15:14:52][INFO] test_net.py:  193: batch: 73, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:14:52][INFO] test_net.py:  193: batch: 73, Right_side_window, pred: 0, prob: 0.935
+[07/19 15:14:52][INFO] test_net.py:  193: batch: 73, Right_side_window, pred: 0, prob: 0.969
+[07/19 15:14:52][INFO] test_net.py:  224: batch: 73, agg pred: 0, agg prob: 0.967
+[07/19 15:14:53][INFO] test_net.py:  193: batch: 74, Right_side_window, pred: 0, prob: 0.414
+[07/19 15:14:53][INFO] test_net.py:  193: batch: 74, Right_side_window, pred: 6, prob: 0.846
+[07/19 15:14:53][INFO] test_net.py:  193: batch: 74, Right_side_window, pred: 5, prob: 0.616
+[07/19 15:14:53][INFO] test_net.py:  231: batch: 74, agg pred: 6, agg prob: 0.846
+[07/19 15:14:54][INFO] test_net.py:  193: batch: 75, Right_side_window, pred: 11, prob: 0.996
+[07/19 15:14:54][INFO] test_net.py:  193: batch: 75, Right_side_window, pred: 11, prob: 0.996
+[07/19 15:14:54][INFO] test_net.py:  193: batch: 75, Right_side_window, pred: 11, prob: 0.995
+[07/19 15:14:54][INFO] test_net.py:  224: batch: 75, agg pred: 11, agg prob: 0.995
+[07/19 15:14:55][INFO] test_net.py:  193: batch: 76, Right_side_window, pred: 11, prob: 0.995
+[07/19 15:14:56][INFO] test_net.py:  193: batch: 76, Right_side_window, pred: 11, prob: 0.993
+[07/19 15:14:56][INFO] test_net.py:  193: batch: 76, Right_side_window, pred: 11, prob: 0.994
+[07/19 15:14:56][INFO] test_net.py:  224: batch: 76, agg pred: 11, agg prob: 0.994
+[07/19 15:14:57][INFO] test_net.py:  193: batch: 77, Right_side_window, pred: 11, prob: 0.998
+[07/19 15:14:57][INFO] test_net.py:  193: batch: 77, Right_side_window, pred: 11, prob: 0.997
+[07/19 15:14:57][INFO] test_net.py:  193: batch: 77, Right_side_window, pred: 11, prob: 0.993
+[07/19 15:14:57][INFO] test_net.py:  224: batch: 77, agg pred: 11, agg prob: 0.996
+[07/19 15:14:58][INFO] test_net.py:  193: batch: 78, Right_side_window, pred: 11, prob: 0.996
+[07/19 15:14:58][INFO] test_net.py:  193: batch: 78, Right_side_window, pred: 11, prob: 0.996
+[07/19 15:14:58][INFO] test_net.py:  193: batch: 78, Right_side_window, pred: 11, prob: 0.985
+[07/19 15:14:58][INFO] test_net.py:  224: batch: 78, agg pred: 11, agg prob: 0.993
+[07/19 15:14:59][INFO] test_net.py:  193: batch: 79, Right_side_window, pred: 11, prob: 0.996
+[07/19 15:14:59][INFO] test_net.py:  193: batch: 79, Right_side_window, pred: 11, prob: 0.998
+[07/19 15:14:59][INFO] test_net.py:  193: batch: 79, Right_side_window, pred: 11, prob: 0.976
+[07/19 15:14:59][INFO] test_net.py:  224: batch: 79, agg pred: 11, agg prob: 0.990
+[07/19 15:15:00][INFO] test_net.py:  193: batch: 80, Right_side_window, pred: 5, prob: 0.997
+[07/19 15:15:00][INFO] test_net.py:  193: batch: 80, Right_side_window, pred: 11, prob: 0.976
+[07/19 15:15:00][INFO] test_net.py:  193: batch: 80, Right_side_window, pred: 0, prob: 0.518
+[07/19 15:15:00][INFO] test_net.py:  231: batch: 80, agg pred: 5, agg prob: 0.997
+[07/19 15:15:02][INFO] test_net.py:  193: batch: 81, Right_side_window, pred: 0, prob: 0.508
+[07/19 15:15:02][INFO] test_net.py:  193: batch: 81, Right_side_window, pred: 0, prob: 0.995
+[07/19 15:15:02][INFO] test_net.py:  193: batch: 81, Right_side_window, pred: 0, prob: 0.937
+[07/19 15:15:02][INFO] test_net.py:  224: batch: 81, agg pred: 0, agg prob: 0.813
+[07/19 15:15:03][INFO] test_net.py:  193: batch: 82, Right_side_window, pred: 11, prob: 0.783
+[07/19 15:15:03][INFO] test_net.py:  193: batch: 82, Right_side_window, pred: 6, prob: 0.807
+[07/19 15:15:03][INFO] test_net.py:  193: batch: 82, Right_side_window, pred: 0, prob: 0.921
+[07/19 15:15:03][INFO] test_net.py:  231: batch: 82, agg pred: 0, agg prob: 0.921
+[07/19 15:15:04][INFO] test_net.py:  193: batch: 83, Right_side_window, pred: 13, prob: 0.847
+[07/19 15:15:04][INFO] test_net.py:  193: batch: 83, Right_side_window, pred: 3, prob: 0.413
+[07/19 15:15:04][INFO] test_net.py:  193: batch: 83, Right_side_window, pred: 6, prob: 0.429
+[07/19 15:15:04][INFO] test_net.py:  231: batch: 83, agg pred: 13, agg prob: 0.847
+[07/19 15:15:05][INFO] test_net.py:  193: batch: 84, Right_side_window, pred: 0, prob: 0.861
+[07/19 15:15:05][INFO] test_net.py:  193: batch: 84, Right_side_window, pred: 0, prob: 0.954
+[07/19 15:15:05][INFO] test_net.py:  193: batch: 84, Right_side_window, pred: 0, prob: 0.990
+[07/19 15:15:05][INFO] test_net.py:  224: batch: 84, agg pred: 0, agg prob: 0.935
+[07/19 15:15:07][INFO] test_net.py:  193: batch: 85, Right_side_window, pred: 0, prob: 0.997
+[07/19 15:15:07][INFO] test_net.py:  193: batch: 85, Right_side_window, pred: 6, prob: 0.962
+[07/19 15:15:07][INFO] test_net.py:  193: batch: 85, Right_side_window, pred: 0, prob: 0.958
+[07/19 15:15:07][INFO] test_net.py:  224: batch: 85, agg pred: 0, agg prob: 0.978
+[07/19 15:15:08][INFO] test_net.py:  193: batch: 86, Right_side_window, pred: 0, prob: 0.999
+[07/19 15:15:08][INFO] test_net.py:  193: batch: 86, Right_side_window, pred: 0, prob: 0.990
+[07/19 15:15:08][INFO] test_net.py:  193: batch: 86, Right_side_window, pred: 0, prob: 0.992
+[07/19 15:15:08][INFO] test_net.py:  224: batch: 86, agg pred: 0, agg prob: 0.994

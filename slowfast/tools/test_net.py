@@ -166,6 +166,8 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
             assert len(cam_views) == 3, f"Cam view mismatch for batch {cur_iter}"
             assert len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for batch {cur_iter}"
 
+            logger.info(f"CUR ITER: {cur_iter}")
+            
             while cur_iter == next_iter:
                 
                 all_cam_view_preds = []
@@ -174,13 +176,13 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
                 for cam_view_type in cam_view_clips.keys():
 
                     if cam_view_clips[cam_view_type].shape[0] == cfg.DATA.NUM_FRAMES:
-                        input = [cam_view_clips[cam_view_type].permute(0,1,2,3).unsqueeze(dim=0)]
+                        input = [cam_view_clips[cam_view_type].permute(1,0,2,3).unsqueeze(dim=0)]
                     
                     else:
                         start_idx = 0
                         end_idx = start_idx + cfg.DATA.NUM_FRAMES - 1
                         sampled = temporal_sampling(cam_view_clips[cam_view_type], start_idx, end_idx, cfg.DATA.NUM_FRAMES)
-                        input = [sampled.permute(0,1,2,3).unsqueeze(dim=0)]
+                        input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
 
                     cam_view_preds = model(input).cpu()
                     
@@ -189,8 +191,8 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
 
                     cam_view_pred = cam_view_preds.argmax().item()
                     cam_view_prob = cam_view_preds.max().item()
-
-                    logger.info(f"pred: {cam_view_pred}, prob: {cam_view_prob:.3f}")
+                    
+                    logger.info(f"batch: {next_iter}, {cam_view}, pred: {cam_view_pred}, prob: {cam_view_prob:.3f}")
 
                     all_cam_view_preds.append(cam_view_pred)
                     all_cam_view_probs.append(cam_view_prob)
@@ -220,17 +222,30 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
                     # # select common pred if mean of common pred probs >= threshold
                     # else:
                     activity_ids.append(mode_pred)
-                    # agg_.append(mode_probs.mean())
+                    agg_prob = mode_probs.mean()
+                    logger.info(f"batch: {next_iter}, agg pred: {mode_pred}, agg prob: {agg_prob:.3f}")
 
                 # no common pred => select highest prob pred among all three camera angles
                 else:
                     best_prob_idx = probs.argmax()
                     activity_ids.append(preds[best_prob_idx])
-                    # agg_probs.append(probs.max())
+                    agg_prob = probs.max()
+                    logger.info(f"batch: {next_iter}, agg pred: {preds[best_prob_idx]}, agg prob: {agg_prob:.3f}")
 
                 localization_tuples.append((proposal[1][0], proposal[2][0]))
 
                 (inputs, labels, video_idx, time, meta, proposal) = next(iter(test_loader))
+
+                if cfg.NUM_GPUS:
+                    # Transfer the data to the current GPU device.
+                    if isinstance(inputs, (list,)):
+                        for i in range(len(inputs)):
+                            inputs[i] = inputs[i].cuda(non_blocking=True)
+                    else:
+                        inputs = inputs.cuda(non_blocking=True)
+                    # Transfer the data to the current GPU device.
+                labels = labels.cuda()
+                video_idx = video_idx.cuda()
                 next_iter += 1
                 cam_views = set()
                         
