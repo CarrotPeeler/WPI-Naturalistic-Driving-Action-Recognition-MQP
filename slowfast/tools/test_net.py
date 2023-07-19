@@ -62,7 +62,6 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
     if cfg.TAL.ENABLE == True:
         activity_ids = []
         localization_tuples = []
-        next_iter = 0
 
         start_time = 0
         end_time = 0
@@ -198,17 +197,17 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
                         and cam_view_clips[cview].shape[2] == cfg.DATA.TEST_CROP_SIZE \
                         and cam_view_clips[cview].shape[3] == cfg.DATA.TEST_CROP_SIZE, f"Shape mismatch, got {cam_view_clips[cview].shape}"
 
-                assert len(cviews) == 3, f"Cam view mismatch for next batch {next_iter}"
-                assert len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for next batch {next_iter}"
+                assert len(cviews) == 3, f"Cam view mismatch for next batch {cur_iter}"
+                assert len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for next batch {cur_iter}"
 
-            logger.info(f"CUR ITER: {cur_iter}")
+            # logger.info(f"CUR ITER: {cur_iter}")
                     
             all_cam_view_preds = []
             all_cam_view_probs = []
 
             for cam_view_type in cam_view_clips.keys():
                 if(cam_view_type == "Dashboard"):
-                    logger.info(f"CLIP AGG SHAPE: {cam_view_clips[cam_view_type].shape[0]}")
+                    logger.info(f"NUM FRAMES AGGREGATED: {cam_view_clips[cam_view_type].shape[0]}")
 
                 if cam_view_clips[cam_view_type].shape[0] == cfg.DATA.NUM_FRAMES:
                     input = [cam_view_clips[cam_view_type].permute(1,0,2,3).unsqueeze(dim=0)]
@@ -228,7 +227,7 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
                 cam_view_prob = cam_view_preds.max().item()
 
                 # cam_view = test_loader.dataset._path_to_videos[video_idx[i]].rpartition('/')[-1].partition('_user')[0] 
-                # logger.info(f"batch: {next_iter}, {cam_view}, pred: {cam_view_pred}, prob: {cam_view_prob:.3f}")
+                # logger.info(f"batch: {cur_iter}, {cam_view}, pred: {cam_view_pred}, prob: {cam_view_prob:.3f}")
 
                 all_cam_view_preds.append(cam_view_pred)
                 all_cam_view_probs.append(cam_view_prob)
@@ -259,14 +258,14 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
                 # else:
                 curr_agg_pred = mode_pred
                 agg_prob = mode_probs.mean()
-                logger.info(f"batch: {next_iter}, agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
+                logger.info(f"batch: {cur_iter}, agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
 
             # no common pred => select highest prob pred among all three camera angles
             else:
                 best_prob_idx = probs.argmax()
                 curr_agg_pred = preds[best_prob_idx]
                 agg_prob = probs.max()
-                logger.info(f"batch: {next_iter}, agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
+                logger.info(f"batch: {cur_iter}, agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
 
             # localization for this action segment is done
             if curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0:
