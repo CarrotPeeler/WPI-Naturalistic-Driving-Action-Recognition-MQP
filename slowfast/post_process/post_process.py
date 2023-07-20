@@ -148,7 +148,8 @@ def aggregate_video_data(video_id_df: pd.DataFrame, prob_threshold:float):
         else:
             best_prob_idx = probs.argmax()
             agg_preds.append(preds[best_prob_idx])
-            agg_probs.append(probs.max())
+            # agg_probs.append(probs.max())
+            agg_probs.append(0)
 
     # print(f"NUM OF COMMON PRED ROWS: {cnt}")
 

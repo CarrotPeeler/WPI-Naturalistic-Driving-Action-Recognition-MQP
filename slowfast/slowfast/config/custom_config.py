@@ -12,6 +12,9 @@ def add_custom_config(_C):
 
     _C.TAL = CfgNode()
     _C.TAL.ENABLE = False
+    
+    # filters out prediction probabilities lower than this value
+    _C.TAL.FILTERING_THRESHOLD = 0.9
 
     # enable crop prompting for data loaders
     _C.DATA.CROP_PROMPT = False

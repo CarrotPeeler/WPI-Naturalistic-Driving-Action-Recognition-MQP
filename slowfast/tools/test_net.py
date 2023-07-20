@@ -60,11 +60,13 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
 
 
     if cfg.TAL.ENABLE == True:
+        video_ids = []
         activity_ids = []
         localization_tuples = []
 
         start_time = 0
         end_time = 0
+        video_id = -1
 
         prev_agg_pred = -1
 
@@ -163,7 +165,8 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
 
         elif cfg.TAL.ENABLE == True and cfg.TEST.BATCH_SIZE == 3:
                 
-            if clip_agg_cnt == 0:
+            # AGGREGATION STEP: aggregate clip frames together in order to increase temporal resolution for classification
+            if cur_iter == 0: 
                 # perform first iter setup
                 cam_views = set()
                         
@@ -178,10 +181,16 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
                 assert len(cam_views) == 3, f"Cam view mismatch for batch {cur_iter}"
                 assert len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for batch {cur_iter}"
 
+                # only set start_time here if 1st iter; otherwise, its set when prev_agg_pred changes
+                
                 start_time = proposal[1][0]
+
                 end_time = proposal[2][0]
 
+                video_id = proposal[0][0]
+
             else:
+                # this proposal may contain a new action pred, so use start time of this proposal as end time to prev action pred
                 end_time = proposal[1][0]
 
                 cviews = set()
@@ -205,17 +214,33 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
             all_cam_view_preds = []
             all_cam_view_probs = []
 
+            # PREDICTION STEP: make predictions for each camera angle using identical proposal length and space
             for cam_view_type in cam_view_clips.keys():
-                if(cam_view_type == "Dashboard"):
-                    logger.info(f"NUM FRAMES AGGREGATED: {cam_view_clips[cam_view_type].shape[0]}")
+                # if(cam_view_type == "Dashboard"): logger.info(f"NUM FRAMES AGGREGATED: {cam_view_clips[cam_view_type].shape[0]}")
 
+                # subsample 16 frames from clip agg for each cam angle, then make pred
                 if cam_view_clips[cam_view_type].shape[0] == cfg.DATA.NUM_FRAMES:
                     input = [cam_view_clips[cam_view_type].permute(1,0,2,3).unsqueeze(dim=0)]
-                
-                else:
+
+                elif cam_view_clips[cam_view_type].shape[0] <= cfg.DATA.NUM_FRAMES * 3:
                     start_idx = 0
                     end_idx = start_idx + cam_view_clips[cam_view_type].shape[0] - 1
                     sampled = temporal_sampling(cam_view_clips[cam_view_type], start_idx, end_idx, cfg.DATA.NUM_FRAMES)
+                    input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
+
+                else:
+                    # evenly sample half the num of input frames from among last half of frames in clip aggregation pool
+                    start_idx_1 = int(cam_view_clips[cam_view_type].shape[0]*.75) - 1
+                    end_idx_1 = start_idx + cam_view_clips[cam_view_type].shape[0] - 1
+                    sampled_1 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_1, end_idx_1, int(cfg.DATA.NUM_FRAMES*.5))
+
+                    # evenly sample half the num of input frames from among last 16 frames (most recently added proposal) in clip aggregation pool
+                    start_idx_2 = cam_view_clips[cam_view_type].shape[0] - 1 - 16
+                    end_idx_2 = start_idx + cam_view_clips[cam_view_type].shape[0] - 1
+                    sampled_2 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_2, end_idx_2, int(cfg.DATA.NUM_FRAMES*.5))
+
+                    sampled = torch.cat([sampled_1, sampled_2], dim=0)
+
                     input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
 
                 cam_view_preds = model(input).cpu()
@@ -226,26 +251,26 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
                 cam_view_pred = cam_view_preds.argmax().item()
                 cam_view_prob = cam_view_preds.max().item()
 
-                # cam_view = test_loader.dataset._path_to_videos[video_idx[i]].rpartition('/')[-1].partition('_user')[0] 
-                # logger.info(f"batch: {cur_iter}, {cam_view}, pred: {cam_view_pred}, prob: {cam_view_prob:.3f}")
+                # logger.info(f"{cam_view_type}, pred: {cam_view_pred}, prob: {cam_view_prob:.3f}")
 
                 all_cam_view_preds.append(cam_view_pred)
                 all_cam_view_probs.append(cam_view_prob)
 
+
+            # CONSOLIDATION STEP: Consolidate predictions among the three camera angles into 1 final pred
             preds = np.array(all_cam_view_preds)
             probs = np.array(all_cam_view_probs)
 
             # check if there is a common pred among candidates
             if(stats.mode(preds, keepdims=False)[1] > 1):
-                # cnt += 1
                 # validate the probs of each pred are high enough to not be coincidence
                 mode_pred = stats.mode(preds, keepdims=False)[0]
 
                 mode_pred_idxs = np.where(preds == mode_pred)[0]
-                minority_pred_idxs = np.where(preds != mode_pred)[0]
+                # minority_pred_idxs = np.where(preds != mode_pred)[0]
 
                 mode_probs = np.array([probs[z] for z in mode_pred_idxs])
-                minority_probs = np.array([probs[j] for j in minority_pred_idxs])
+                # minority_probs = np.array([probs[j] for j in minority_pred_idxs])
 
                 # # check if minority pred exists and its prob is higher than mode probs
                 # if(len(minority_pred_idxs) > 0 and minority_probs.max() > mode_probs.max() and mode_probs.max() < prob_threshold):
@@ -256,38 +281,65 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
                 
                 # # select common pred if mean of common pred probs >= threshold
                 # else:
-                curr_agg_pred = mode_pred
                 agg_prob = mode_probs.mean()
-                logger.info(f"batch: {cur_iter}, agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
+
+                # even if there's a common pred among camera angles, check if mean of their probs is lower than threshold
+                if agg_prob >= cfg.TAL.FILTERING_THRESHOLD:
+                    curr_agg_pred = mode_pred
+                else:
+                    curr_agg_pred = -1
+
+                # logger.info(f"agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
 
             # no common pred => select highest prob pred among all three camera angles
             else:
-                best_prob_idx = probs.argmax()
-                curr_agg_pred = preds[best_prob_idx]
-                agg_prob = probs.max()
-                logger.info(f"batch: {cur_iter}, agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
+                # best_prob_idx = probs.argmax()
+                # curr_agg_pred = preds[best_prob_idx]
+                # agg_prob = probs.max()
+                # logger.info(f"batch: {cur_iter}, agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
+                curr_agg_pred = -1
 
-            # localization for this action segment is done
-            if curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0:
-                logger.info(f"pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
-                activity_ids.append(prev_agg_pred)
-                localization_tuples.append((start_time, end_time))
+            # ASSESSMENT STEP: check if temporal localization for the current action is done
+            if video_id != proposal[0][0] or (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0):
+
+                if prev_agg_pred != -1:
+                    activity_ids.append(prev_agg_pred)
+                    video_ids.append(video_id)
+
+                    start_time = int(float(start_time)//1)
+                    end_time = int(float(end_time)//1)
+                    localization_tuples.append((start_time, end_time))
+                    
+                    # logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
                 # update previous prediction for next batch iter
                 prev_agg_pred = curr_agg_pred
 
-                # update start time
-                start_time = proposal[2][0]
+                if video_id == proposal[0][0]:
+                    # update start time
+                    start_time = proposal[1][0]
+
+                video_id = proposal[0][0]
 
                 # reset all clip aggregation variables
-                clip_agg_cnt = 0
+                clip_agg_cnt = 1
                 cam_view_clips = {}
-            else:
+                
+                # re-add this iteration's frames from the clip
+                for b in range(cfg.TEST.BATCH_SIZE):
+                    cview = test_loader.dataset._path_to_videos[video_idx[b]].rpartition('/')[-1].partition('_user')[0]
+                    cam_view_clips[cview] = inputs[0][b].permute(1,0,2,3)
+
+            else: 
+                # continue localization for current action pred
+
                 # update previous prediction for next batch iter
                 prev_agg_pred = curr_agg_pred
 
                 # increment count for num clips concatenated consecutively
                 clip_agg_cnt += 1
+
+        ######################## T A L  E N D ########################
 
         else:
             # Perform the forward pass.
@@ -301,11 +353,6 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
             labels = labels.cpu()
             video_idx = video_idx.cpu()
 
-        # if proposal is not None:    
-        #     # write video_id, pred, max_prob, start_time, end_time to file for post-processing
-        #     with open(os.getcwd() + "/post_process/predictions.txt", "a+") as f:
-        #         f.writelines(f"{proposal[0][0]} {pred} {max_prob} {proposal[1][0]} {proposal[2][0]}\n")
-
         test_meter.iter_toc()
 
         if not cfg.VIS_MASK.ENABLE and cfg.TAL.ENABLE == False:
@@ -318,7 +365,14 @@ def perform_test(test_loader, model, test_meter, cfg, writer=None, prompter=None
 
         test_meter.iter_tic()
 
-    if(cfg.TAL.ENABLE == False):
+    if cfg.TAL.ENABLE == True and proposal is not None:
+        assert len(video_ids) == len(activity_ids) == len(localization_tuples), "Length mismatch between video ids, preds, and temporal intervals"
+        # write video_id, pred, max_prob, start_time, end_time to file for post-processing
+        with open(os.getcwd() + "/post_process/submission.txt", "a+") as f:
+            for l in range(len(video_ids)):
+                f.writelines(f"{video_ids[l]} {activity_ids[l]} {localization_tuples[l][0]} {localization_tuples[l][1]}\n")
+
+    else:
         # Log epoch stats and print the final testing results.
         if not cfg.DETECTION.ENABLE:
             all_preds = test_meter.video_preds.clone().detach()
