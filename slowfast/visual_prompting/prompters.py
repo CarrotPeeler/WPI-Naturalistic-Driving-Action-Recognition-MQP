@@ -554,7 +554,13 @@ class MultiCamBoundaryPatch(nn.Module):
         super(MultiCamBoundaryPatch, self).__init__()
         image_size = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
 
-        self.patch = nn.ParameterDict({
+        self.start_patch = nn.ParameterDict({
+            'Dashboard': nn.Parameter(torch.randn([1, 3, image_size, image_size])),
+            'Right_side_window': nn.Parameter(torch.randn([1, 3, image_size, image_size])),
+            'Rear_view': nn.Parameter(torch.randn([1, 3, image_size, image_size]))  
+        })
+
+        self.end_patch = nn.ParameterDict({
             'Dashboard': nn.Parameter(torch.randn([1, 3, image_size, image_size])),
             'Right_side_window': nn.Parameter(torch.randn([1, 3, image_size, image_size])),
             'Rear_view': nn.Parameter(torch.randn([1, 3, image_size, image_size]))  
@@ -574,8 +580,10 @@ class MultiCamBoundaryPatch(nn.Module):
             prompted_frames = []
 
             for frame_idx, frame in enumerate(clip):
-                if frame_idx == 0 or frame_idx == x.shape[2]-1:
-                    prompted_frames.append(self.patch[cam_view])
+                if frame_idx == 0:
+                    prompted_frames.append(self.start_patch[cam_view])
+                elif frame_idx == x.shape[2]-1:
+                    prompted_frames.append(self.end_patch[cam_view])
                 else:
                     prompted_frames.append(frame.unsqueeze(dim=0))
 

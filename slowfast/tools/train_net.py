@@ -461,8 +461,7 @@ def eval_epoch(
                                     prompt = prompted_clip[jdx] - clip[jdx]
                                     save_image(prompt, f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch + 1}_batch_{cur_iter}_prompted_clip_{idx}_frame_{jdx}_prompt.png")
                                     # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
-                                else: 
-                                    break
+                               
             else:
                 preds = model(inputs)
 
