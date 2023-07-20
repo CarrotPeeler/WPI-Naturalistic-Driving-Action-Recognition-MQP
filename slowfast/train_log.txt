@@ -1,3 +1,8 @@
+config files: ['configs/MVITv2_B_32x3_prompted.yaml', 'DATA.PATH_TO_DATA_DIR', '.']
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
+  warnings.warn(
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
+  warnings.warn(
 [07/19 21:26:28][INFO] train_net.py:  653: Train with config:
 [07/19 21:26:28][INFO] train_net.py:  654: {'AUG': {'AA_TYPE': 'rand-m9-mstd0.5-inc1',
          'COLOR_JITTER': 0.4,
@@ -903,6 +908,10 @@ DistributedDataParallel(
 )
 [07/19 21:26:31][INFO] misc.py:  187: Params: 50,897,968
 [07/19 21:26:31][INFO] misc.py:  188: Mem: 0.38045549392700195 MB
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
+  warnings.warn(
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
+  warnings.warn(
 [07/19 21:26:35][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
 [07/19 21:26:35][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
 [07/19 21:26:35][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
@@ -927,6 +936,35 @@ module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_pat
 module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_path, module.blocks.12.drop_path, module.blocks.13.drop_path, module.blocks.14.drop_path, module.blocks.15.drop_path, module.blocks.16.drop_path, module.blocks.17.drop_path, module.blocks.18.drop_path, module.blocks.19.drop_path, module.blocks.2.drop_path, module.blocks.20.drop_path, module.blocks.21.drop_path, module.blocks.22.drop_path, module.blocks.23.drop_path, module.blocks.3.drop_path, module.blocks.4.drop_path, module.blocks.5.drop_path, module.blocks.6.drop_path, module.blocks.7.drop_path, module.blocks.8.drop_path, module.blocks.9.drop_path
 [07/19 21:26:38][INFO] misc.py:  191: Activations: 357.084096 M
 [07/19 21:26:38][INFO] misc.py:  196: nvidia-smi
+Wed Jul 19 21:26:38 2023       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 470.182.03   Driver Version: 470.182.03   CUDA Version: 11.4     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA RTX A5000    Off  | 00000000:17:00.0 Off |                  Off |
+| 30%   39C    P2    61W / 230W |   4179MiB / 24256MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  NVIDIA RTX A5000    Off  | 00000000:65:00.0 Off |                  Off |
+| 30%   41C    P2    66W / 230W |   1376MiB / 24247MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|    0   N/A  N/A      1550      G   /usr/lib/xorg/Xorg                  4MiB |
+|    0   N/A  N/A   1630489      C   /usr/bin/python3                 4171MiB |
+|    1   N/A  N/A      1550      G   /usr/lib/xorg/Xorg                 34MiB |
+|    1   N/A  N/A      2487      G   /usr/bin/gnome-shell                8MiB |
+|    1   N/A  N/A   1630490      C   /usr/bin/python3                 1329MiB |
++-----------------------------------------------------------------------------+
+bn 0, non bn 246, zero 343, no grad 0
 [07/19 21:26:38][INFO] train_net.py:  695: Load from given checkpoint file.
 [07/19 21:26:38][INFO] checkpoint.py:  223: Loading network weights from checkpoints/MViTv2_B_32x3_k400_f304025456.pyth.
 [07/19 21:26:38][INFO] checkpoint.py:  487: blocks.0.attn.rel_pos_t reshaped from torch.Size([31, 96]) to torch.Size([15, 96])
@@ -957,11 +995,18 @@ module.blocks.1.drop_path, module.blocks.10.drop_path, module.blocks.11.drop_pat
 [07/19 21:26:38][INFO] checkpoint.py:  542: Network weights head.projection.bias not loaded.
 [07/19 21:26:38][INFO] checkpoint.py:  545: Network weights head.projection.weight not used.
 [07/19 21:26:38][INFO] checkpoint.py:  545: Network weights head.projection.bias not used.
+missing keys: ['head.projection.weight', 'head.projection.bias']
+unexpected keys: []
 [07/19 21:26:38][INFO] kinetics.py:   93: Constructing Kinetics train...
 [07/19 21:26:38][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 1927 skip_rows 0) from train.csv 
 [07/19 21:26:38][INFO] kinetics.py:   93: Constructing Kinetics val...
 [07/19 21:26:38][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 482 skip_rows 0) from val.csv 
+Using Prompting Method multi_cam_bpatch with Params:
 [07/19 21:26:38][INFO] train_net.py:  793: Start epoch: 1
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_functional_video.py:6: UserWarning: The 'torchvision.transforms._functional_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms.functional' module instead.
+  warnings.warn(
+/usr/local/lib/python3.8/dist-packages/torchvision-0.14.1a0+5e8e2f1-py3.8-linux-x86_64.egg/torchvision/transforms/_transforms_video.py:22: UserWarning: The 'torchvision.transforms._transforms_video' module is deprecated since 0.12 and will be removed in the future. Please use the 'torchvision.transforms' module instead.
+  warnings.warn(
 [07/19 21:26:50][INFO] distributed.py: 1027: Reducer buckets have been rebuilt in this iteration.
 [07/19 21:27:01][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.26995, "dt_data": 0.00038, "dt_net": 1.26957, "epoch": "1/200", "eta": "8:27:46", "gpu_mem": "17.92G", "grad_norm": 3.46120, "iter": "10/120", "loss": 2.82599, "lr": 0.0000024950, "top1_acc": 3.12500, "top1_err": 96.87500, "top5_acc": 31.25000, "top5_err": 68.75000}
 [07/19 21:27:14][INFO] logging.py:  101: json_stats: {"_type": "train_iter_", "dt": 1.27792, "dt_data": 0.00032, "dt_net": 1.27760, "epoch": "1/200", "eta": "8:30:44", "gpu_mem": "17.92G", "grad_norm": 3.53868, "iter": "20/120", "loss": 2.79371, "lr": 0.0000030450, "top1_acc": 3.12500, "top1_err": 96.87500, "top5_acc": 37.50000, "top5_err": 62.50000}

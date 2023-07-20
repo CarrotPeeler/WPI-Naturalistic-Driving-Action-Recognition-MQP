@@ -547,6 +547,44 @@ class MultiCamPadV2Prompter(nn.Module):
         prompt = torch.cat(clip_prompts, dim=0)
         
         return [x + prompt] # pyslowfast models expect list of tensors as input
+
+
+class MultiCamBoundaryPatch(nn.Module):
+    def __init__(self, args):
+        super(MultiCamBoundaryPatch, self).__init__()
+        image_size = args.DATA.TRAIN_CROP_SIZE if isinstance(args, CfgNode) else args.image_size
+
+        self.patch = nn.ParameterDict({
+            'Dashboard': nn.Parameter(torch.randn([1, 3, image_size, image_size])),
+            'Right_side_window': nn.Parameter(torch.randn([1, 3, image_size, image_size])),
+            'Rear_view': nn.Parameter(torch.randn([1, 3, image_size, image_size]))  
+        })
+
+    def forward(self, x, cam_views):
+        assert x.shape[0] == len(cam_views), \
+            f"len of cam_views does not match batch size of x; expected {x.shape[0]}, got {len(cam_views)} instead"
+        
+        prompted_clips = []
+
+        for clip_idx, clip in enumerate(x):
+            cam_view = cam_views[clip_idx]
+
+            clip = clip.permute(1,0,2,3)
+
+            prompted_frames = []
+
+            for frame_idx, frame in enumerate(clip):
+                if frame_idx == 0 or frame_idx == x.shape[2]-1:
+                    prompted_frames.append(self.patch[cam_view])
+                else:
+                    prompted_frames.append(frame.unsqueeze(dim=0))
+
+            prompted_clip = torch.cat(prompted_frames, dim=0).permute(1,0,2,3).unsqueeze(dim=0)
+            prompted_clips.append(prompted_clip)
+
+        prompted_x = torch.cat(prompted_clips, dim=0)
+        
+        return [prompted_x] # pyslowfast models expect list of tensors as input
     
 
 def padding(args):
@@ -583,3 +621,7 @@ def multi_cam_padding(args):
 
 def multi_cam_padding_v2(args):
     return MultiCamPadPrompter(args)
+
+
+def multi_cam_bpatch(args):
+    return MultiCamBoundaryPatch(args)

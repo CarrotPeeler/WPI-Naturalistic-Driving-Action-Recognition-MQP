@@ -454,7 +454,7 @@ def eval_epoch(
                             # prompt = prompted_images[1][0].permute(1, 0, 2, 3) # prompted clip
 
                             for jdx in range(prompted_clip.shape[0]):
-                                if(jdx < 3):
+                                if(jdx in [0, 7, cfg.DATA.NUM_FRAMES-1]):
                                     # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
                                     save_image(prompted_clip[jdx], f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch + 1}_batch_{cur_iter}_prompted_clip_{idx}_frame_{jdx}.png")
 
