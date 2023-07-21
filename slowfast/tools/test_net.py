@@ -7,6 +7,7 @@ import numpy as np
 import os
 import pickle
 import torch
+import sys
 
 from scipy import stats
 
@@ -65,21 +66,19 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
 
     if cfg.TAL.ENABLE == True:
-        video_ids = []
-        activity_ids = []
-        localization_tuples = []
-
         start_time = 0
         end_time = 0
         video_id = -1
-
         prev_agg_pred = -1
 
         # stores aggregated clips (batches) for each cam view type
         cam_view_clips = {}
 
+        # num clips aggregated for current temporal action interval
         clip_agg_cnt = 0
 
+        # num of aggregated clips to keep from last iteration
+        agg_threshold = cfg.TAL.CLIP_AGG_THRESHOLD - cfg.DATA.NUM_FRAMES 
         
 
     for cur_iter, (inputs, labels, video_idx, time, meta, proposal) in enumerate(
@@ -206,7 +205,11 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     cview = test_loader.dataset._path_to_videos[video_idx[j]].rpartition('/')[-1].partition('_user')[0]
                     cviews.add(cview)
 
-                    cam_view_clips[cview] = torch.cat([cam_view_clips[cview], inputs[0][j].permute(1,0,2,3)], dim=0)
+                    # fix the aggregation clip size to be constant past the threshold 
+                    start_idx = cam_view_clips[cview].shape[0] - agg_threshold if clip_agg_cnt > agg_threshold else 0 
+
+                    cam_view_clips[cview] = torch.cat([cam_view_clips[cview][start_idx:], inputs[0][j].permute(1,0,2,3)], dim=0)
+
                     assert cam_view_clips[cview].shape[1] == 3 \
                         and cam_view_clips[cview].shape[2] == cfg.DATA.TEST_CROP_SIZE \
                         and cam_view_clips[cview].shape[3] == cfg.DATA.TEST_CROP_SIZE, f"Shape mismatch, got {cam_view_clips[cview].shape}"
@@ -215,7 +218,6 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 assert len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for next batch {cur_iter}"
 
             # logger.info(f"CUR ITER: {cur_iter}")
-
             
             # PREDICTION STEP: make predictions for each camera angle using identical proposal length and space
             all_cam_view_preds = []
@@ -232,13 +234,29 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
                 # elif cam_view_clips[cam_view_type].shape[0] <= cfg.DATA.NUM_FRAMES * 3:
                 else:
-                    start_idx = 0
-                    end_idx = start_idx + cam_view_clips[cam_view_type].shape[0] - 1
-                    sampled = temporal_sampling(cam_view_clips[cam_view_type], start_idx, end_idx, cfg.DATA.NUM_FRAMES)
+                    # start_idx = 0
+                    # end_idx = start_idx + cam_view_clips[cam_view_type].shape[0] - 1
+                    # sampled = temporal_sampling(cam_view_clips[cam_view_type], start_idx, end_idx, cfg.DATA.NUM_FRAMES)
+                    # input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
+
+                    # evenly sample half the num of input frames from among last half of frames in clip aggregation pool
+                    start_idx_1 = cam_view_clips[cam_view_type].shape[0] - agg_threshold
+                    end_idx_1 = start_idx_1 + cam_view_clips[cam_view_type].shape[0] - 1 - cfg.DATA.NUM_FRAMES
+                    sampled_1 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_1, end_idx_1, int(cfg.DATA.NUM_FRAMES*cfg.TAL.AGG_SAMPLING_RATIO))
+
+                    # evenly sample half the num of input frames from last clip (most recently added proposal) in aggregation pool
+                    start_idx_2 = cam_view_clips[cam_view_type].shape[0] - cfg.DATA.NUM_FRAMES
+                    end_idx_2 = start_idx_2 + cam_view_clips[cam_view_type].shape[0] - 1
+                    sampled_2 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_2, end_idx_2, int(cfg.DATA.NUM_FRAMES*cfg.TAL.SINGLE_PROP_SAMPLING_RATIO))
+
+                    sampled = torch.cat([sampled_1, sampled_2], dim=0)
+
+                    # aggregated input
                     input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
 
-                    start_idx_2 = cam_view_clips[cam_view_type].shape[0] - 16
-                    input_2 = [cam_view_clips[cam_view_type][start_idx_2:].permute(1,0,2,3).unsqueeze(dim=0).to('cuda:1')]
+                    # single clip input
+                    dev = 'cuda:1' if cfg.TAL.USE_2_GPUS == True else 'cuda:0'
+                    input_2 = [cam_view_clips[cam_view_type][start_idx_2:].permute(1,0,2,3).unsqueeze(dim=0).to(dev)] 
 
                     cam_view_preds_2 = model_2(input_2).cpu()
                     cam_view_pred_2 = cam_view_preds_2.argmax().item()
@@ -247,21 +265,6 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
                     all_cam_view_preds_2.append(cam_view_pred_2)
                     all_cam_view_probs_2.append(cam_view_prob_2)
-
-                # else:
-                #     # evenly sample half the num of input frames from among last half of frames in clip aggregation pool
-                #     start_idx_1 = cam_view_clips[cam_view_type].shape[0] - 48
-                #     end_idx_1 = start_idx + cam_view_clips[cam_view_type].shape[0] - 1
-                #     sampled_1 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_1, end_idx_1, int(cfg.DATA.NUM_FRAMES*.5))
-
-                #     # evenly sample half the num of input frames from among last 16 frames (most recently added proposal) in clip aggregation pool
-                #     start_idx_2 = cam_view_clips[cam_view_type].shape[0] - 16
-                #     end_idx_2 = start_idx + cam_view_clips[cam_view_type].shape[0] - 1
-                #     sampled_2 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_2, end_idx_2, int(cfg.DATA.NUM_FRAMES*.5))
-
-                #     sampled = torch.cat([sampled_1, sampled_2], dim=0)
-
-                #     input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
 
                 cam_view_preds = model(input).cpu()
                 cam_view_pred = cam_view_preds.argmax().item()
@@ -284,7 +287,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             agg_pred_1 = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD)
             if len(preds_2) == 3: agg_pred_2 = consolidate_preds(preds_2, probs_2, cfg.TAL.FILTERING_THRESHOLD)
 
-            if len(preds_2) == 0 or agg_pred_1 == agg_pred_2:
+            # use agg_pred_1 only when equal to agg_pred_2, agg_pred_2 not initialized, or agg_pred_2 is not reliable (== -1)
+            if len(preds_2) == 0 or agg_pred_1 == agg_pred_2: #or agg_pred_2 == -1:
                 curr_agg_pred = agg_pred_1
             else:
                 curr_agg_pred = -1
@@ -294,14 +298,13 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             if video_id != proposal[0][0] or (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0):
 
                 if prev_agg_pred != -1:
-                    activity_ids.append(prev_agg_pred)
-                    video_ids.append(video_id)
-
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
-                    localization_tuples.append((start_time, end_time))
+
+                    with open(os.getcwd() + "/post_process/unmerged.txt", "a+") as f:
+                        f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
                     
-                    logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
+                    # logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
                 # update previous prediction for next batch iter
                 prev_agg_pred = curr_agg_pred
@@ -314,6 +317,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
                 # reset all clip aggregation variables
                 clip_agg_cnt = 1
+                del cam_view_clips
                 cam_view_clips = {}
                 
                 # re-add this iteration's frames from the clip
@@ -356,14 +360,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
         test_meter.iter_tic()
 
-    if cfg.TAL.ENABLE == True and proposal is not None:
-        assert len(video_ids) == len(activity_ids) == len(localization_tuples), "Length mismatch between video ids, preds, and temporal intervals"
-        # write video_id, pred, max_prob, start_time, end_time to file for post-processing
-        with open(os.getcwd() + "/post_process/submission.txt", "a+") as f:
-            for l in range(len(video_ids)):
-                f.writelines(f"{video_ids[l]} {activity_ids[l]} {localization_tuples[l][0]} {localization_tuples[l][1]}\n")
-
-    else:
+    if cfg.TAL.ENABLE == False:
         # Log epoch stats and print the final testing results.
         if not cfg.DETECTION.ENABLE:
             all_preds = test_meter.video_preds.clone().detach()
@@ -423,8 +420,10 @@ def test(cfg):
         # Build the video model and print model statistics.
         model = build_model(cfg, 0)
 
-        if cfg.TAL.ENABLE == True:
+        if cfg.TAL.ENABLE == True and cfg.TAL.USE_2_GPUS == True:
             model_2 = build_model(cfg, 1)
+        else:
+            model_2 = model
 
         flops, params = 0.0, 0.0
         if du.is_master_proc() and cfg.LOG_MODEL_INFO:
@@ -448,7 +447,7 @@ def test(cfg):
 
         cu.load_test_checkpoint(cfg, model)
 
-        if cfg.TAL.ENABLE == True:
+        if cfg.TAL.ENABLE == True and cfg.TAL.USE_2_GPUS == True:
             cu.load_test_checkpoint(cfg, model_2)
 
         # Create video testing loaders.

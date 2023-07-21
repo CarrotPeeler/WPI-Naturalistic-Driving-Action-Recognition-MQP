@@ -16,6 +16,16 @@ def add_custom_config(_C):
     # filters out prediction probabilities lower than this value
     _C.TAL.FILTERING_THRESHOLD = 0.9
 
+    # Max number of clips to aggregate at once
+    _C.TAL.CLIP_AGG_THRESHOLD = 64
+
+    # Enables the use of a 2nd GPU for TAL (speeds up inferencing)
+    _C.TAL.USE_2_GPUS = False
+
+    # percent of frames to evenly sample among the clip aggregation pool and the single proposal input
+    _C.TAL.AGG_SAMPLING_RATIO = 0.5
+    _C.TAL.SINGLE_PROP_SAMPLING_RATIO = 0.5
+
     # enable crop prompting for data loaders
     _C.DATA.CROP_PROMPT = False
 

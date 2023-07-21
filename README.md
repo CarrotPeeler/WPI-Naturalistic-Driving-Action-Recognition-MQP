@@ -28,6 +28,7 @@ sudo chmod 777 {path to torchvision repo}
 
 
 ### Setup
+- NOTE: setup uses 2 NVIDIA A5000 RTX GPUs with 24GB VRAM each, and 32GB RAM (inferencing most likely works with)
 - Download the data for track #3 [here](https://www.aicitychallenge.org/2023-data-and-evaluation/)
 - Download the checkpoint (SLOWFAST_8x8_R50) from the MODEL_ZOO.md and place file in checkpoints folder (must edit the checkpoint path in slowfast config)
 - create an empty folder within the repo where the video clips will be dumped 
@@ -54,7 +55,8 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_unprompted.yaml DATA.PATH_T
 
 ### Inference
 - edit the config in slowfast/slowfast/configs (MVITv2_B_32x3_inf.yaml)
-    - i.e., DATA.NUM_FRAMES and DATA.SAMPLING_RATE
+    - for Temporal Action Localization (TAL), USE_2_GPUS can be set to True if you have 2 GPUs available
+    - make sure checkpoint file points to correct file path
 - cd into outermost slowfast folder (make sure you cd from within the python interpreter, not from bash)
 - in inference folder > prepare_loc_data.py, adjust A2_data_path and other params as necessary
 - run the following to segment test data videos and create proposals
@@ -69,7 +71,7 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_
 ```
 - then in post_process folder, run post_process.py to obtain the post_processed_data.txt used for submission to the evaluation server
 
-### TODO
+<!-- ### TODO
 - before splitting videos into clips using ffmpeg, 
     need to also check video length &
     create clips for empty durations where no distracted behavior happens and label them with -1 :heavy_check_mark:
@@ -127,3 +129,5 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_
 - incorporate visual prompting or experiment with other action recognition aspects :o:
 
 - retrain MViTv2-B separately on each set of camera angle data and then combine results in post-processing
+-->
+
