@@ -30,7 +30,7 @@ sudo chmod 777 {path to torchvision repo}
 ### Setup
 - NOTE: setup uses 2 NVIDIA A5000 RTX GPUs with 24GB VRAM each, and 32GB RAM (inferencing most likely works with)
 - Download the data for track #3 [here](https://www.aicitychallenge.org/2023-data-and-evaluation/)
-- Download the checkpoint (SLOWFAST_8x8_R50) from the MODEL_ZOO.md and place file in checkpoints folder (must edit the checkpoint path in slowfast config)
+- Download the checkpoint [`(link)`](https://dl.fbaipublicfiles.com/pyslowfast/model_zoo/mvitv2/pysf_video_models/MViTv2_B_32x3_k400_f304025456.pyth) from the MODEL_ZOO.md and place file in checkpoints folder (must edit the checkpoint path in slowfast config)
 - create an empty folder within the repo where the video clips will be dumped 
 - in prepare_data.py, edit the following to where you saved the A1 data folder and where you created the empty folder
 ```python
