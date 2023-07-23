@@ -1,0 +1,39 @@
+
+200 epochs:            
+
+Incorrect Prediction Stats:		Correct Prediction Stats:                        
+total incorrect preds = 70		total correct preds = 412                        
+
+mean prob = 0.647			mean prob = 0.859                        
+median prob = 0.642			median prob = 0.897                        
+max prob = 0.912			max prob = 0.922                        
+min prob = 0.170			min prob = 0.276                        
+
+total preds with prob >= 0.9 = 6	total preds with prob >= 0.9 = 186                        
+                       < 0.9 = 64	                       < 0.9 = 226                        
+                       < 0.8 = 44	                       < 0.8 = 47                        
+
+mean prob by camera angle:            
+
+Dashboard = 0.612			Dashboard = 0.861                        
+Rearview = 0.654			Rearview = 0.870                        
+Right Side Window = 0.683		Right Side Window = 0.848                        
+
+incorrect pred confidence ranking:            
+
+                              pred   prob             
+                                     mean median count
+11                     Text (Left)  0.838  0.838     1
+6      Pick up from floor (Driver)  0.802  0.818     3
+7   Pick up from floor (Passenger)  0.757  0.887     3
+2                           Eating  0.741  0.768     6
+5                 Phone Call(left)  0.719  0.734     4
+1                         Drinking  0.712  0.704     4
+0             Adjust control panel  0.702  0.872     3
+10  Talk to passenger at the right  0.699  0.764    11
+3                     Hand on head  0.697  0.718     4
+12                    Text (Right)  0.686  0.711     7
+9    Talk to passenger at backseat  0.566  0.533     8
+13                         Yawning  0.560  0.622     3
+4           Normal Forward Driving  0.465  0.431    10
+8    Singing or dancing with music  0.459  0.459     3            

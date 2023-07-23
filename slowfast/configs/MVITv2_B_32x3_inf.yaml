@@ -5,9 +5,7 @@ TRAIN:
   EVAL_PERIOD: 2
   CHECKPOINT_PERIOD: 20
   AUTO_RESUME: True
-  CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6/checkpoint_epoch_00140.pyth
-  #checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_200epochs/checkpoint_epoch_00200.pyth
-  #checkpoints/mvitv2-b32x3/Json_stats_mvitv2-b_round1_unprompted_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6/checkpoint_epoch_00140.pyth
+  CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted/checkpoint_epoch_00200.pyth
   CHECKPOINT_TYPE: pytorch
 DATA:
   USE_OFFSET_SAMPLING: True

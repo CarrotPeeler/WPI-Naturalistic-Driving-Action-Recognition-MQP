@@ -312,8 +312,8 @@ if __name__ == '__main__':
 
     classes_to_match = [11, 12]
 
-    save_dir_preds = '/evaluation/val_preds/mvitv2-b_sel_up_multicam_padding_lr_0.1'
-    save_dir_graph = '/evaluation/graphs/mvitv2-b_sel_up_multicam_padding_lr_0.1'
+    save_dir_preds = '/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted'
+    save_dir_graph = '/evaluation/graphs/MVITv2_B_32x3_mixup_aug_unprompted'
 
     if not os.path.exists(os.getcwd() + save_dir_graph):
         os.mkdir(os.getcwd() + save_dir_graph)
