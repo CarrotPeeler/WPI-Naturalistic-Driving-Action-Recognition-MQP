@@ -21,8 +21,8 @@ params:
     sliding_window: window size for moving average
     tracked_accs: creates a horizontal line for particular accuracy values (to help better compare results)
 """
-def graph_top1_val_acc(json_stat_paths:list, epochs:int, eval_freq:int, legend_labels:list, figtitle:str, min_epoch_window=1, sliding_window=10, tracked_accs=[80]):
-    x_validation = list(range(min_epoch_window, epochs+1, eval_freq))
+def graph_top1_val_acc(json_stat_paths:list, epochs:int, legend_labels:list, figtitle:str, min_epoch_window=1, sliding_window=10, tracked_accs=[80]):
+    x_validation = []
     x_train = list(range(1, epochs+1))
     y_validation = []
     y_train = []
@@ -38,6 +38,9 @@ def graph_top1_val_acc(json_stat_paths:list, epochs:int, eval_freq:int, legend_l
                     y_trains.append(float(line.rpartition('top1_acc":')[-1].partition(',')[0]))
         y_validation.append(y_vals)
         y_train.append(y_trains)
+
+        eval_freq = int(epochs/len(y_vals))
+        x_validation.append(list(range(min_epoch_window, epochs+1, eval_freq)))
 
     fig = plt.figure(figsize=(17, 6))
 
@@ -62,11 +65,11 @@ def graph_top1_val_acc(json_stat_paths:list, epochs:int, eval_freq:int, legend_l
         c = next(color_cycle)
 
         # ax.scatter(x_validation, y_validation[idx], s=5, c=c)
-        ax.plot(x_validation, y_validation[idx][min_epoch_window_idx-1:], c, alpha=0.2, linestyle="dashdot")
-        ax.plot(x_validation, y_validation_moving_avg, c)
+        ax.plot(x_validation[idx], y_validation[idx][min_epoch_window_idx-1:], c, alpha=0.2, linestyle="dashdot")
+        ax.plot(x_validation[idx], y_validation_moving_avg, c)
 
         for acc in tracked_accs:
-            ax.plot(x_validation, [acc]*len(x_validation), 'k', alpha=0.2, linestyle='dashed')
+            ax.plot(x_validation[idx], [acc]*len(x_validation[idx]), 'k', alpha=0.2, linestyle='dashed')
 
         # # create trend line
         # z = np.polyfit(x_validation, y_validation[idx], 2)
@@ -99,7 +102,6 @@ def graph_top1_val_acc(json_stat_paths:list, epochs:int, eval_freq:int, legend_l
 if __name__ == '__main__':
 
     num_epochs = 200
-    eval_freq = 2
     dir_path = '/home/vislab-001/Jared/Naturalistic-Driving-Action-Recognition-MQP/slowfast/evaluation/mvitv2-b32x3/' 
     
     json_paths = [
@@ -135,4 +137,4 @@ if __name__ == '__main__':
     figtitle = "Top1 Validation Accuracy Over Time for MViTv2-B\n(Base LR = 2e-4, start and end LR = 2e-6, 30 epoch warmup)"
     # figtitle = "Top1 Validation Accuracy Over Time for MViTv2-B\n(Base LR = 9e-5, start and end LR = 1e-6, 15 epoch warmup)"
 
-    graph_top1_val_acc(json_paths, num_epochs, eval_freq, legend_labels, figtitle, min_epoch_window=100, sliding_window=10, tracked_accs=[81, 82, 82.5, 83])
+    graph_top1_val_acc(json_paths, num_epochs, legend_labels, figtitle, min_epoch_window=100, sliding_window=10, tracked_accs=[81, 82, 82.5, 83])
