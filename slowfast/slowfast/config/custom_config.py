@@ -26,6 +26,9 @@ def add_custom_config(_C):
     _C.TAL.AGG_SAMPLING_RATIO = 0.5
     _C.TAL.SINGLE_PROP_SAMPLING_RATIO = 0.5
 
+    # output file path where results from TAL will be saved
+    _C.TAL.OUTPUT_FILE_PATH = './inference/submission_files/sub_file.txt'
+
     # enable crop prompting for data loaders
     _C.DATA.CROP_PROMPT = False
 
