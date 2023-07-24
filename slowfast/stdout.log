@@ -1,0 +1,2917 @@
+[07/24 19:26:04][INFO] test_net.py:  402: Test with config:
+[07/24 19:26:04][INFO] test_net.py:  403: AUG:
+  AA_TYPE: rand-m7-n4-mstd0.5-inc1
+  COLOR_JITTER: 0.4
+  ENABLE: False
+  GEN_MASK_LOADER: False
+  INTERPOLATION: linear
+  MASK_FRAMES: False
+  MASK_RATIO: 0.0
+  MASK_TUBE: False
+  MASK_WINDOW_SIZE: [8, 7, 7]
+  MAX_MASK_PATCHES_PER_BLOCK: None
+  NUM_SAMPLE: 2
+  RE_COUNT: 1
+  RE_MODE: pixel
+  RE_PROB: 0.25
+  RE_SPLIT: False
+AVA:
+  ANNOTATION_DIR: /mnt/vol/gfsai-flash3-east/ai-group/users/haoqifan/ava/frame_list/
+  BGR: False
+  DETECTION_SCORE_THRESH: 0.9
+  EXCLUSION_FILE: ava_val_excluded_timestamps_v2.2.csv
+  FRAME_DIR: /mnt/fair-flash3-east/ava_trainval_frames.img/
+  FRAME_LIST_DIR: /mnt/vol/gfsai-flash3-east/ai-group/users/haoqifan/ava/frame_list/
+  FULL_TEST_ON_VAL: False
+  GROUNDTRUTH_FILE: ava_val_v2.2.csv
+  IMG_PROC_BACKEND: cv2
+  LABEL_MAP_FILE: ava_action_list_v2.2_for_activitynet_2019.pbtxt
+  TEST_FORCE_FLIP: False
+  TEST_LISTS: ['val.csv']
+  TEST_PREDICT_BOX_LISTS: ['ava_val_predicted_boxes.csv']
+  TRAIN_GT_BOX_LISTS: ['ava_train_v2.2.csv']
+  TRAIN_LISTS: ['train.csv']
+  TRAIN_PCA_JITTER_ONLY: True
+  TRAIN_PREDICT_BOX_LISTS: []
+  TRAIN_USE_COLOR_AUGMENTATION: False
+BENCHMARK:
+  LOG_PERIOD: 100
+  NUM_EPOCHS: 5
+  SHUFFLE: True
+BN:
+  GLOBAL_SYNC: False
+  NORM_TYPE: batchnorm
+  NUM_BATCHES_PRECISE: 200
+  NUM_SPLITS: 1
+  NUM_SYNC_DEVICES: 1
+  USE_PRECISE_STATS: False
+  WEIGHT_DECAY: 0.0
+CONTRASTIVE:
+  BN_MLP: False
+  BN_SYNC_MLP: False
+  DELTA_CLIPS_MAX: inf
+  DELTA_CLIPS_MIN: -inf
+  DIM: 128
+  INTERP_MEMORY: False
+  KNN_ON: True
+  LENGTH: 239975
+  LOCAL_SHUFFLE_BN: True
+  MEM_TYPE: 1d
+  MLP_DIM: 2048
+  MOCO_MULTI_VIEW_QUEUE: False
+  MOMENTUM: 0.5
+  MOMENTUM_ANNEALING: False
+  NUM_CLASSES_DOWNSTREAM: 400
+  NUM_MLP_LAYERS: 1
+  PREDICTOR_DEPTHS: []
+  QUEUE_LEN: 65536
+  SEQUENTIAL: False
+  SIMCLR_DIST_ON: True
+  SWAV_QEUE_LEN: 0
+  T: 0.07
+  TYPE: mem
+DATA:
+  CAM_VIEWS_METHODS: ['crop', 'noise_crop']
+  COLOR_RND_GRAYSCALE: 0.0
+  CROP_PROMPT: False
+  DECODING_BACKEND: torchvision
+  DECODING_SHORT_SIZE: 256
+  DUMMY_LOAD: False
+  ENSEMBLE_METHOD: sum
+  IN22K_TRAINVAL: False
+  IN22k_VAL_IN1K: 
+  INPUT_CHANNEL_NUM: [3]
+  INV_UNIFORM_SAMPLE: False
+  IN_VAL_CROP_RATIO: 0.875
+  LOADER_CHUNK_OVERALL_SIZE: 0
+  LOADER_CHUNK_SIZE: 0
+  MEAN: [0.45, 0.45, 0.45]
+  MULTI_LABEL: False
+  NUM_FRAMES: 16
+  PATH_LABEL_SEPARATOR:  
+  PATH_PREFIX: 
+  PATH_TO_DATA_DIR: 
+  PATH_TO_PRELOAD_IMDB: 
+  RANDOM_FLIP: False
+  RETURN_CROPPING_PARAMS: False
+  REVERSE_INPUT_CHANNEL: False
+  SAMPLING_RATE: 4
+  SKIP_ROWS: 0
+  SSL_BLUR_SIGMA_MAX: [0.0, 2.0]
+  SSL_BLUR_SIGMA_MIN: [0.0, 0.1]
+  SSL_COLOR_BRI_CON_SAT: [0.4, 0.4, 0.4]
+  SSL_COLOR_HUE: 0.1
+  SSL_COLOR_JITTER: False
+  SSL_MOCOV2_AUG: False
+  STD: [0.225, 0.225, 0.225]
+  TARGET_FPS: 30
+  TEST_CROP_SIZE: 224
+  TIME_DIFF_PROB: 0.0
+  TRAIN_CROP_NUM_SPATIAL: 1
+  TRAIN_CROP_NUM_TEMPORAL: 1
+  TRAIN_CROP_SIZE: 224
+  TRAIN_JITTER_ASPECT_RELATIVE: [0.75, 1.3333]
+  TRAIN_JITTER_FPS: 0.0
+  TRAIN_JITTER_MOTION_SHIFT: False
+  TRAIN_JITTER_SCALES: [256, 320]
+  TRAIN_JITTER_SCALES_RELATIVE: [0.08, 1.0]
+  TRAIN_PCA_EIGVAL: [0.225, 0.224, 0.229]
+  TRAIN_PCA_EIGVEC: [[-0.5675, 0.7192, 0.4009], [-0.5808, -0.0045, -0.814], [-0.5836, -0.6948, 0.4203]]
+  USE_OFFSET_SAMPLING: True
+DATA_LOADER:
+  ENABLE_MULTI_THREAD_DECODE: False
+  NUM_WORKERS: 8
+  PIN_MEMORY: True
+DEMO:
+  BUFFER_SIZE: 0
+  CLIP_VIS_SIZE: 10
+  COMMON_CLASS_NAMES: ['watch (a person)', 'talk to (e.g., self, a person, a group)', 'listen to (a person)', 'touch (an object)', 'carry/hold (an object)', 'walk', 'sit', 'lie/sleep', 'bend/bow (at the waist)']
+  COMMON_CLASS_THRES: 0.7
+  DETECTRON2_CFG: COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml
+  DETECTRON2_THRESH: 0.9
+  DETECTRON2_WEIGHTS: detectron2://COCO-Detection/faster_rcnn_R_50_FPN_3x/137849458/model_final_280758.pkl
+  DISPLAY_HEIGHT: 0
+  DISPLAY_WIDTH: 0
+  ENABLE: False
+  FPS: 30
+  GT_BOXES: 
+  INPUT_FORMAT: BGR
+  INPUT_VIDEO: 
+  LABEL_FILE_PATH: 
+  NUM_CLIPS_SKIP: 0
+  NUM_VIS_INSTANCES: 2
+  OUTPUT_FILE: 
+  OUTPUT_FPS: -1
+  PREDS_BOXES: 
+  SLOWMO: 1
+  STARTING_SECOND: 900
+  THREAD_ENABLE: False
+  UNCOMMON_CLASS_THRES: 0.3
+  VIS_MODE: thres
+  WEBCAM: -1
+DETECTION:
+  ALIGNED: True
+  ENABLE: False
+  ROI_XFORM_RESOLUTION: 7
+  SPATIAL_SCALE_FACTOR: 16
+DIST_BACKEND: nccl
+LOG_MODEL_INFO: True
+LOG_PERIOD: 500
+MASK:
+  DECODER_DEPTH: 0
+  DECODER_EMBED_DIM: 512
+  DECODER_SEP_POS_EMBED: False
+  DEC_KV_KERNEL: []
+  DEC_KV_STRIDE: []
+  ENABLE: False
+  HEAD_TYPE: separate
+  MAE_ON: False
+  MAE_RND_MASK: False
+  NORM_PRED_PIXEL: True
+  PER_FRAME_MASKING: False
+  PRED_HOG: False
+  PRETRAIN_DEPTH: [15]
+  SCALE_INIT_BY_DEPTH: False
+  TIME_STRIDE_LOSS: True
+MIXUP:
+  ALPHA: 0.4
+  CUTMIX_ALPHA: 0.4
+  ENABLE: False
+  LABEL_SMOOTH_VALUE: 0.1
+  PROB: 1.0
+  SWITCH_PROB: 0.5
+MODEL:
+  ACT_CHECKPOINT: False
+  ARCH: mvit
+  DETACH_FINAL_FC: False
+  DROPCONNECT_RATE: 0.0
+  DROPOUT_RATE: 0.5
+  FC_INIT_STD: 0.01
+  FP16_ALLREDUCE: False
+  FROZEN_BN: False
+  HEAD_ACT: softmax
+  LOSS_FUNC: soft_cross_entropy
+  MODEL_NAME: MViT
+  MULTI_PATHWAY_ARCH: ['slowfast']
+  NUM_CLASSES: 16
+  SINGLE_PATHWAY_ARCH: ['2d', 'c2d', 'i3d', 'slow', 'x3d', 'mvit', 'maskmvit']
+MULTIGRID:
+  BN_BASE_SIZE: 8
+  DEFAULT_B: 0
+  DEFAULT_S: 0
+  DEFAULT_T: 0
+  EPOCH_FACTOR: 1.5
+  EVAL_FREQ: 3
+  LONG_CYCLE: False
+  LONG_CYCLE_FACTORS: [(0.25, 0.7071067811865476), (0.5, 0.7071067811865476), (0.5, 1), (1, 1)]
+  LONG_CYCLE_SAMPLING_RATE: 0
+  SHORT_CYCLE: False
+  SHORT_CYCLE_FACTORS: [0.5, 0.7071067811865476]
+MVIT:
+  CLS_EMBED_ON: False
+  DEPTH: 24
+  DIM_MUL: [[2, 2.0], [5, 2.0], [21, 2.0]]
+  DIM_MUL_IN_ATT: True
+  DROPOUT_RATE: 0.0
+  DROPPATH_RATE: 0.3
+  EMBED_DIM: 96
+  HEAD_INIT_SCALE: 1.0
+  HEAD_MUL: [[2, 2.0], [5, 2.0], [21, 2.0]]
+  LAYER_SCALE_INIT_VALUE: 0.0
+  MLP_RATIO: 4.0
+  MODE: conv
+  NORM: layernorm
+  NORM_STEM: False
+  NUM_HEADS: 1
+  PATCH_2D: False
+  PATCH_KERNEL: [3, 7, 7]
+  PATCH_PADDING: [1, 3, 3]
+  PATCH_STRIDE: [2, 4, 4]
+  POOL_FIRST: False
+  POOL_KVQ_KERNEL: [3, 3, 3]
+  POOL_KV_STRIDE: []
+  POOL_KV_STRIDE_ADAPTIVE: [1, 8, 8]
+  POOL_Q_STRIDE: [[0, 1, 1, 1], [1, 1, 1, 1], [2, 1, 2, 2], [3, 1, 1, 1], [4, 1, 1, 1], [5, 1, 2, 2], [6, 1, 1, 1], [7, 1, 1, 1], [8, 1, 1, 1], [9, 1, 1, 1], [10, 1, 1, 1], [11, 1, 1, 1], [12, 1, 1, 1], [13, 1, 1, 1], [14, 1, 1, 1], [15, 1, 1, 1], [16, 1, 1, 1], [17, 1, 1, 1], [18, 1, 1, 1], [19, 1, 1, 1], [20, 1, 1, 1], [21, 1, 2, 2], [22, 1, 1, 1], [23, 1, 1, 1]]
+  QKV_BIAS: True
+  REL_POS_SPATIAL: True
+  REL_POS_TEMPORAL: True
+  REL_POS_ZERO_INIT: False
+  RESIDUAL_POOLING: True
+  REV:
+    BUFFER_LAYERS: []
+    ENABLE: False
+    PRE_Q_FUSION: avg
+    RESPATH_FUSE: concat
+    RES_PATH: conv
+  SEPARATE_QKV: False
+  SEP_POS_EMBED: False
+  USE_ABS_POS: False
+  USE_FIXED_SINCOS_POS: False
+  USE_MEAN_POOLING: False
+  ZERO_DECAY_POS_CLS: False
+NONLOCAL:
+  GROUP: [[1], [1], [1], [1]]
+  INSTANTIATION: dot_product
+  LOCATION: [[[]], [[]], [[]], [[]]]
+  POOL: [[[1, 2, 2], [1, 2, 2]], [[1, 2, 2], [1, 2, 2]], [[1, 2, 2], [1, 2, 2]], [[1, 2, 2], [1, 2, 2]]]
+NUM_GPUS: 1
+NUM_SHARDS: 1
+OUTPUT_DIR: .
+PROMPT:
+  ENABLE: False
+  GPU: None
+  IMAGE_FOLDER: ./visual_prompting/save/images/mvitv2-b_fixed_patch
+  LEARNING_RATE: 0.1
+  METHOD: multi_cam_padding
+  MODEL_FOLDER: ./visual_prompting/save/models/mvitv2-b_fixed_patch
+  MOMENTUM: 0.9
+  PRINT_GRADS: False
+  PROMPT_SIZE: 30
+  RESUME: ./visual_prompting/save/models/mvitv2-b_fixed_patch/Json_stats_mvitv2-b_round1_selective_updating_multicam_padding_30_lr_0.1_wd_1e-4_base-lr_2e-4_end-lr_2e-6_30epoch-warmup-lr_2e-6_pretrained_prompt_200epochs/checkpoint_400_epochs.pth.tar
+  SELECTIVE_UPDATING: True
+  START_EPOCH: 1
+  WARMUP: 30
+  WEIGHT_DECAY: 0.0001
+RESNET:
+  DEPTH: 50
+  INPLACE_RELU: True
+  NUM_BLOCK_TEMP_KERNEL: [[3], [4], [6], [3]]
+  NUM_GROUPS: 1
+  SPATIAL_DILATIONS: [[1], [1], [1], [1]]
+  SPATIAL_STRIDES: [[1], [2], [2], [2]]
+  STRIDE_1X1: False
+  TRANS_FUNC: bottleneck_transform
+  WIDTH_PER_GROUP: 64
+  ZERO_INIT_FINAL_BN: False
+  ZERO_INIT_FINAL_CONV: False
+RNG_SEED: 0
+SHARD_ID: 0
+SLOWFAST:
+  ALPHA: 8
+  BETA_INV: 8
+  FUSION_CONV_CHANNEL_RATIO: 2
+  FUSION_KERNEL_SZ: 5
+SOLVER:
+  BASE_LR: 0.0005
+  BASE_LR_SCALE_NUM_SHARDS: True
+  BETAS: (0.9, 0.999)
+  CLIP_GRAD_L2NORM: 1.0
+  CLIP_GRAD_VAL: None
+  COSINE_AFTER_WARMUP: True
+  COSINE_END_LR: 1e-06
+  DAMPENING: 0.0
+  GAMMA: 0.1
+  LARS_ON: False
+  LAYER_DECAY: 1.0
+  LRS: []
+  LR_POLICY: cosine
+  MAX_EPOCH: 200
+  MOMENTUM: 0.9
+  NESTEROV: True
+  OPTIMIZING_METHOD: adamw
+  STEPS: []
+  STEP_SIZE: 1
+  WARMUP_EPOCHS: 35.0
+  WARMUP_FACTOR: 0.1
+  WARMUP_START_LR: 1e-06
+  WEIGHT_DECAY: 0.05
+  ZERO_WD_1D_PARAM: True
+TAL:
+  AGG_SAMPLING_RATIO: 0.5
+  CLIP_AGG_THRESHOLD: 48
+  ENABLE: True
+  FILTERING_THRESHOLD: 0.8
+  OUTPUT_FILE_PATH: ./inference/submission_files/sub_file.txt
+  SINGLE_PROP_SAMPLING_RATIO: 0.5
+  USE_2_GPUS: True
+TASK: 
+TENSORBOARD:
+  CATEGORIES_PATH: 
+  CLASS_NAMES_PATH: 
+  CONFUSION_MATRIX:
+    ENABLE: False
+    FIGSIZE: [8, 8]
+    SUBSET_PATH: 
+  ENABLE: False
+  HISTOGRAM:
+    ENABLE: False
+    FIGSIZE: [8, 8]
+    SUBSET_PATH: 
+    TOPK: 10
+  LOG_DIR: 
+  MODEL_VIS:
+    ACTIVATIONS: False
+    COLORMAP: Pastel2
+    ENABLE: False
+    GRAD_CAM:
+      COLORMAP: viridis
+      ENABLE: True
+      LAYER_LIST: []
+      USE_TRUE_LABEL: False
+    INPUT_VIDEO: False
+    LAYER_LIST: []
+    MODEL_WEIGHTS: False
+    TOPK_PREDS: 1
+  PREDICTIONS_PATH: 
+  WRONG_PRED_VIS:
+    ENABLE: False
+    SUBSET_PATH: 
+    TAG: Incorrectly classified videos.
+TEST:
+  BATCH_SIZE: 3
+  CHECKPOINT_FILE_PATH: 
+  CHECKPOINT_TYPE: pytorch
+  DATASET: kinetics
+  ENABLE: True
+  NUM_ENSEMBLE_VIEWS: 1
+  NUM_SPATIAL_CROPS: 1
+  NUM_TEMPORAL_CLIPS: [1]
+  SAVE_RESULTS_PATH: 
+TRAIN:
+  AUTO_RESUME: True
+  BATCH_SIZE: 16
+  CHECKPOINT_CLEAR_NAME_PATTERN: ()
+  CHECKPOINT_EPOCH_RESET: False
+  CHECKPOINT_FILE_PATH: checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted/checkpoint_epoch_00200.pyth
+  CHECKPOINT_INFLATE: False
+  CHECKPOINT_IN_INIT: False
+  CHECKPOINT_PERIOD: 20
+  CHECKPOINT_TYPE: pytorch
+  DATASET: kinetics
+  ENABLE: False
+  EVAL_PERIOD: 2
+  KILL_LOSS_EXPLOSION_FACTOR: 0.0
+  MIXED_PRECISION: False
+VIS_MASK:
+  ENABLE: False
+X3D:
+  BN_LIN5: False
+  BOTTLENECK_FACTOR: 1.0
+  CHANNELWISE_3x3x3: True
+  DEPTH_FACTOR: 1.0
+  DIM_C1: 12
+  DIM_C5: 2048
+  SCALE_RES2: False
+  WIDTH_FACTOR: 1.0
+[07/24 19:26:07][INFO] misc.py:  185: Model:
+MViT(
+  (patch_embed): PatchEmbed(
+    (proj): Conv3d(3, 96, kernel_size=(3, 7, 7), stride=(2, 4, 4), padding=(1, 3, 3))
+  )
+  (blocks): ModuleList(
+    (0): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (1): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (2): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+      (proj): Linear(in_features=96, out_features=192, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (3): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (4): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (5): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+      (proj): Linear(in_features=192, out_features=384, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (6): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (7): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (8): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (9): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (10): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (11): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (12): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (13): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (14): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (15): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (16): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (17): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (18): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (19): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (20): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (21): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+      (proj): Linear(in_features=384, out_features=768, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (22): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+    (23): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  (head): TransformerBasicHead(
+    (dropout): Dropout(p=0.5, inplace=False)
+    (projection): Linear(in_features=768, out_features=16, bias=True)
+    (act): Softmax(dim=1)
+  )
+)
+[07/24 19:26:07][INFO] misc.py:  187: Params: 50,897,872
+[07/24 19:26:07][INFO] misc.py:  188: Mem: 0.19084501266479492 MB
+[07/24 19:26:10][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/24 19:26:10][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/24 19:26:10][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/24 19:26:10][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
+[07/24 19:26:10][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
+[07/24 19:26:10][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/24 19:26:10][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/24 19:26:10][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/24 19:26:10][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
+[07/24 19:26:10][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/24 19:26:10][INFO] misc.py:  190: Flops: 92.53320168 G
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
+[07/24 19:26:12][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/24 19:26:12][INFO] misc.py:  191: Activations: 356.738832 M
+[07/24 19:26:12][INFO] misc.py:  196: nvidia-smi
+[07/24 19:26:12][INFO] misc.py:  185: Model:
+MViT(
+  (patch_embed): PatchEmbed(
+    (proj): Conv3d(3, 96, kernel_size=(3, 7, 7), stride=(2, 4, 4), padding=(1, 3, 3))
+  )
+  (blocks): ModuleList(
+    (0): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (1): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=288, bias=True)
+        (proj): Linear(in_features=96, out_features=96, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 8, 8), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=96, out_features=384, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=384, out_features=96, bias=True)
+      )
+    )
+    (2): MultiScaleBlock(
+      (norm1): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=96, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+      (proj): Linear(in_features=96, out_features=192, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (3): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (4): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=576, bias=True)
+        (proj): Linear(in_features=192, out_features=192, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 4, 4), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=192, out_features=768, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=768, out_features=192, bias=True)
+      )
+    )
+    (5): MultiScaleBlock(
+      (norm1): LayerNorm((192,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=192, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+      (proj): Linear(in_features=192, out_features=384, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (6): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (7): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (8): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (9): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (10): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (11): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (12): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (13): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (14): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (15): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (16): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (17): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (18): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (19): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (20): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=1152, bias=True)
+        (proj): Linear(in_features=384, out_features=384, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=384, out_features=1536, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=1536, out_features=384, bias=True)
+      )
+    )
+    (21): MultiScaleBlock(
+      (norm1): LayerNorm((384,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=384, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 2, 2), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+      (proj): Linear(in_features=384, out_features=768, bias=True)
+      (pool_skip): MaxPool3d(kernel_size=[1, 3, 3], stride=[1, 2, 2], padding=[0, 1, 1], dilation=1, ceil_mode=False)
+    )
+    (22): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+    (23): MultiScaleBlock(
+      (norm1): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (attn): MultiScaleAttention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (pool_q): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_q): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_k): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_k): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+        (pool_v): Conv3d(96, 96, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1), groups=96, bias=False)
+        (norm_v): LayerNorm((96,), eps=1e-06, elementwise_affine=True)
+      )
+      (drop_path): DropPath()
+      (norm2): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+      (mlp): Mlp(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-06, elementwise_affine=True)
+  (head): TransformerBasicHead(
+    (dropout): Dropout(p=0.5, inplace=False)
+    (projection): Linear(in_features=768, out_features=16, bias=True)
+    (act): Softmax(dim=1)
+  )
+)
+[07/24 19:26:12][INFO] misc.py:  187: Params: 50,897,872
+[07/24 19:26:12][INFO] misc.py:  188: Mem: 2.4974565505981445 MB
+[07/24 19:26:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/24 19:26:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/24 19:26:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/24 19:26:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
+[07/24 19:26:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
+[07/24 19:26:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/24 19:26:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/24 19:26:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/24 19:26:14][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
+[07/24 19:26:14][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/24 19:26:14][INFO] misc.py:  190: Flops: 92.53320168 G
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
+[07/24 19:26:15][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
+[07/24 19:26:15][INFO] misc.py:  191: Activations: 356.738832 M
+[07/24 19:26:15][INFO] misc.py:  196: nvidia-smi
+[07/24 19:26:16][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted/checkpoint_epoch_00200.pyth.
+[07/24 19:26:16][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted/checkpoint_epoch_00200.pyth.
+[07/24 19:26:16][INFO] kinetics.py:   93: Constructing Kinetics test...
+[07/24 19:26:16][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 7095 skip_rows 0) from test.csv 
+[07/24 19:26:16][INFO] test_net.py:  440: Testing model for 2365 iterations
+[07/24 19:26:17][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 16
+[07/24 19:26:17][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.892
+[07/24 19:26:17][INFO] TAL.py:   90: SING: Rear_view, pred: 6, prob: 0.661
+[07/24 19:26:17][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.568
+[07/24 19:26:17][INFO] TAL.py:  147: agg pred: 15, agg prob: 0.892
+[07/24 19:26:17][INFO] test_net.py:  279: prev code: None, cur code: -2
+[07/24 19:26:17][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.532
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.681
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.694
+[07/24 19:26:18][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.606
+[07/24 19:26:18][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:18][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.791
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.843
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.912
+[07/24 19:26:18][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.877
+[07/24 19:26:18][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:18][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.899
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.908
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.916
+[07/24 19:26:18][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.912
+[07/24 19:26:18][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.459
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.186
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.737
+[07/24 19:26:18][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.598
+[07/24 19:26:18][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:18][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (4, 8)
+[07/24 19:26:18][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.884
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.821
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.905
+[07/24 19:26:18][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.895
+[07/24 19:26:18][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.843
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.837
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.901
+[07/24 19:26:18][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.872
+[07/24 19:26:18][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.881
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.890
+[07/24 19:26:18][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.880
+[07/24 19:26:18][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.886
+[07/24 19:26:18][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.516
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.892
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.856
+[07/24 19:26:19][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.874
+[07/24 19:26:19][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.750
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.898
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.899
+[07/24 19:26:19][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.899
+[07/24 19:26:19][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.817
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.915
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.506
+[07/24 19:26:19][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.866
+[07/24 19:26:19][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.907
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.915
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.861
+[07/24 19:26:19][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.911
+[07/24 19:26:19][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.794
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.910
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.680
+[07/24 19:26:19][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.852
+[07/24 19:26:19][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.846
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.913
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.902
+[07/24 19:26:19][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.907
+[07/24 19:26:19][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.882
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.905
+[07/24 19:26:19][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.873
+[07/24 19:26:19][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.893
+[07/24 19:26:20][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.267
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.518
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.295
+[07/24 19:26:20][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.393
+[07/24 19:26:20][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:20][INFO] test_net.py:  289: vid_id: 1, pred: 15, stamps: (8, 32)
+[07/24 19:26:20][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.284
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.307
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.519
+[07/24 19:26:20][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.413
+[07/24 19:26:20][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:20][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.850
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.860
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.909
+[07/24 19:26:20][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.884
+[07/24 19:26:20][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.691
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.875
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.918
+[07/24 19:26:20][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.896
+[07/24 19:26:20][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.900
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.916
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.919
+[07/24 19:26:20][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.917
+[07/24 19:26:20][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.833
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.916
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.886
+[07/24 19:26:20][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.874
+[07/24 19:26:20][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.892
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.894
+[07/24 19:26:20][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.564
+[07/24 19:26:20][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.893
+[07/24 19:26:20][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:20][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (34, 44)
+[07/24 19:26:20][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.877
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.901
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.851
+[07/24 19:26:21][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.889
+[07/24 19:26:21][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.894
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.905
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.899
+[07/24 19:26:21][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.902
+[07/24 19:26:21][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.901
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.905
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.855
+[07/24 19:26:21][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.903
+[07/24 19:26:21][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.898
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.905
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.857
+[07/24 19:26:21][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.901
+[07/24 19:26:21][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.900
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.907
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.880
+[07/24 19:26:21][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.903
+[07/24 19:26:21][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.905
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.882
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.883
+[07/24 19:26:21][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.894
+[07/24 19:26:21][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.898
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.878
+[07/24 19:26:21][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.885
+[07/24 19:26:21][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.891
+[07/24 19:26:22][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.906
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.893
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.893
+[07/24 19:26:22][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.900
+[07/24 19:26:22][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.906
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.907
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.874
+[07/24 19:26:22][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.907
+[07/24 19:26:22][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.906
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.905
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.406
+[07/24 19:26:22][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.906
+[07/24 19:26:22][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.718
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.817
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.450
+[07/24 19:26:22][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.767
+[07/24 19:26:22][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:22][INFO] test_net.py:  289: vid_id: 1, pred: 14, stamps: (44, 68)
+[07/24 19:26:22][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.425
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.679
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.400
+[07/24 19:26:22][INFO] TAL.py:  147: agg pred: 10, agg prob: 0.679
+[07/24 19:26:22][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:22][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.419
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.533
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.421
+[07/24 19:26:22][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.476
+[07/24 19:26:22][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:22][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.638
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.496
+[07/24 19:26:22][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.866
+[07/24 19:26:22][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.752
+[07/24 19:26:22][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:22][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.916
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.915
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.918
+[07/24 19:26:23][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.917
+[07/24 19:26:23][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.761
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.907
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.912
+[07/24 19:26:23][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.910
+[07/24 19:26:23][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.272
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.865
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.829
+[07/24 19:26:23][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.847
+[07/24 19:26:23][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.687
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Rear_view, pred: 8, prob: 0.500
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Right_side_window, pred: 8, prob: 0.535
+[07/24 19:26:23][INFO] TAL.py:  137: agg pred: 8, agg prob: 0.611
+[07/24 19:26:23][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:23][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (74, 83)
+[07/24 19:26:23][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.714
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Rear_view, pred: 8, prob: 0.571
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Right_side_window, pred: 8, prob: 0.872
+[07/24 19:26:23][INFO] TAL.py:  137: agg pred: 8, agg prob: 0.793
+[07/24 19:26:23][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:23][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.834
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Rear_view, pred: 8, prob: 0.782
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Right_side_window, pred: 8, prob: 0.918
+[07/24 19:26:23][INFO] TAL.py:  137: agg pred: 8, agg prob: 0.876
+[07/24 19:26:23][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.903
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Rear_view, pred: 8, prob: 0.861
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Right_side_window, pred: 8, prob: 0.891
+[07/24 19:26:23][INFO] TAL.py:  137: agg pred: 8, agg prob: 0.897
+[07/24 19:26:23][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:23][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.308
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.669
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.535
+[07/24 19:26:24][INFO] TAL.py:  147: agg pred: 0, agg prob: 0.669
+[07/24 19:26:24][INFO] test_net.py:  279: prev code: 0, cur code: -2
+[07/24 19:26:24][INFO] test_net.py:  289: vid_id: 1, pred: 8, stamps: (85, 91)
+[07/24 19:26:24][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.239
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.528
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.767
+[07/24 19:26:24][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.647
+[07/24 19:26:24][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:24][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.811
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.866
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.908
+[07/24 19:26:24][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.887
+[07/24 19:26:24][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.832
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.891
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.903
+[07/24 19:26:24][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.897
+[07/24 19:26:24][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.885
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.902
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.904
+[07/24 19:26:24][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.903
+[07/24 19:26:24][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.446
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.883
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.888
+[07/24 19:26:24][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.886
+[07/24 19:26:24][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.313
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.894
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.891
+[07/24 19:26:24][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.892
+[07/24 19:26:24][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.457
+[07/24 19:26:24][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.900
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.906
+[07/24 19:26:25][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.903
+[07/24 19:26:25][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.679
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.911
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.869
+[07/24 19:26:25][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.890
+[07/24 19:26:25][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.751
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.895
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.900
+[07/24 19:26:25][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.898
+[07/24 19:26:25][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.426
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.869
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.900
+[07/24 19:26:25][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.884
+[07/24 19:26:25][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.234
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.857
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.864
+[07/24 19:26:25][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.861
+[07/24 19:26:25][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.635
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.863
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.554
+[07/24 19:26:25][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.749
+[07/24 19:26:25][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:25][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (93, 117)
+[07/24 19:26:25][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.284
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.330
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.804
+[07/24 19:26:25][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.567
+[07/24 19:26:25][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:25][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.906
+[07/24 19:26:25][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.864
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.857
+[07/24 19:26:26][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.885
+[07/24 19:26:26][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.852
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.770
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.822
+[07/24 19:26:26][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.837
+[07/24 19:26:26][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.774
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.311
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.735
+[07/24 19:26:26][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.542
+[07/24 19:26:26][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:26][INFO] test_net.py:  289: vid_id: 1, pred: 4, stamps: (119, 125)
+[07/24 19:26:26][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.777
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.439
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Right_side_window, pred: 8, prob: 0.685
+[07/24 19:26:26][INFO] TAL.py:  147: agg pred: 10, agg prob: 0.777
+[07/24 19:26:26][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:26][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.229
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Rear_view, pred: 8, prob: 0.874
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Right_side_window, pred: 8, prob: 0.818
+[07/24 19:26:26][INFO] TAL.py:  137: agg pred: 8, agg prob: 0.846
+[07/24 19:26:26][INFO] test_net.py:  279: prev code: -2, cur code: 0
+[07/24 19:26:26][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.792
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.894
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.856
+[07/24 19:26:26][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.875
+[07/24 19:26:26][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:26][INFO] test_net.py:  289: vid_id: 1, pred: 8, stamps: (130, 132)
+[07/24 19:26:26][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.907
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.902
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.878
+[07/24 19:26:26][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.905
+[07/24 19:26:26][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.511
+[07/24 19:26:26][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.807
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.905
+[07/24 19:26:27][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.856
+[07/24 19:26:27][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.870
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.724
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.881
+[07/24 19:26:27][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.797
+[07/24 19:26:27][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:27][INFO] test_net.py:  289: vid_id: 1, pred: 4, stamps: (132, 138)
+[07/24 19:26:27][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.480
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.621
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.288
+[07/24 19:26:27][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.551
+[07/24 19:26:27][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:27][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.761
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.776
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.877
+[07/24 19:26:27][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.827
+[07/24 19:26:27][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:27][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.799
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.847
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.850
+[07/24 19:26:27][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.848
+[07/24 19:26:27][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.852
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.814
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.777
+[07/24 19:26:27][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.833
+[07/24 19:26:27][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.368
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.523
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.788
+[07/24 19:26:27][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.655
+[07/24 19:26:27][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:27][INFO] test_net.py:  289: vid_id: 1, pred: 11, stamps: (142, 149)
+[07/24 19:26:27][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.881
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.908
+[07/24 19:26:27][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.905
+[07/24 19:26:27][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.906
+[07/24 19:26:27][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.348
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.880
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.905
+[07/24 19:26:28][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.893
+[07/24 19:26:28][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.734
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.893
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.902
+[07/24 19:26:28][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.898
+[07/24 19:26:28][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.632
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.853
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.727
+[07/24 19:26:28][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.790
+[07/24 19:26:28][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:28][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (149, 157)
+[07/24 19:26:28][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.504
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.695
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.810
+[07/24 19:26:28][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.753
+[07/24 19:26:28][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:28][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.531
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.657
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.811
+[07/24 19:26:28][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.734
+[07/24 19:26:28][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:28][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.848
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.680
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.873
+[07/24 19:26:28][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.861
+[07/24 19:26:28][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.830
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.809
+[07/24 19:26:28][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.849
+[07/24 19:26:28][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.839
+[07/24 19:26:28][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.852
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.842
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.824
+[07/24 19:26:29][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.847
+[07/24 19:26:29][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.836
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.799
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.871
+[07/24 19:26:29][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.853
+[07/24 19:26:29][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.333
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.402
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.856
+[07/24 19:26:29][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.629
+[07/24 19:26:29][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:29][INFO] test_net.py:  289: vid_id: 1, pred: 11, stamps: (162, 172)
+[07/24 19:26:29][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.175
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.585
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.694
+[07/24 19:26:29][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.639
+[07/24 19:26:29][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:29][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.369
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.360
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.426
+[07/24 19:26:29][INFO] TAL.py:  147: agg pred: 15, agg prob: 0.426
+[07/24 19:26:29][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:29][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Dashboard, pred: 13, prob: 0.358
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.224
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.708
+[07/24 19:26:29][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.466
+[07/24 19:26:29][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:29][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.734
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.866
+[07/24 19:26:29][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.904
+[07/24 19:26:29][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.885
+[07/24 19:26:29][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.506
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.876
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.916
+[07/24 19:26:30][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.896
+[07/24 19:26:30][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.706
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.885
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.906
+[07/24 19:26:30][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.896
+[07/24 19:26:30][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.813
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.893
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.902
+[07/24 19:26:30][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.898
+[07/24 19:26:30][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.797
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.898
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.467
+[07/24 19:26:30][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.847
+[07/24 19:26:30][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Dashboard, pred: 12, prob: 0.553
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.401
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.797
+[07/24 19:26:30][INFO] TAL.py:  147: agg pred: 15, agg prob: 0.797
+[07/24 19:26:30][INFO] test_net.py:  279: prev code: 0, cur code: -2
+[07/24 19:26:30][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (179, 192)
+[07/24 19:26:30][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Dashboard, pred: 12, prob: 0.327
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Rear_view, pred: 12, prob: 0.347
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Right_side_window, pred: 12, prob: 0.371
+[07/24 19:26:30][INFO] TAL.py:  137: agg pred: 12, agg prob: 0.359
+[07/24 19:26:30][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:30][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.364
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Rear_view, pred: 13, prob: 0.298
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.416
+[07/24 19:26:30][INFO] TAL.py:  147: agg pred: 15, agg prob: 0.416
+[07/24 19:26:30][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:30][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:30][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.393
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Rear_view, pred: 13, prob: 0.494
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.216
+[07/24 19:26:31][INFO] TAL.py:  147: agg pred: 13, agg prob: 0.494
+[07/24 19:26:31][INFO] test_net.py:  279: prev code: -2, cur code: -2
+[07/24 19:26:31][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.383
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.531
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.383
+[07/24 19:26:31][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.457
+[07/24 19:26:31][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:31][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.583
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.896
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.903
+[07/24 19:26:31][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.899
+[07/24 19:26:31][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.829
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.894
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.900
+[07/24 19:26:31][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.897
+[07/24 19:26:31][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.843
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.904
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.899
+[07/24 19:26:31][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.902
+[07/24 19:26:31][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.772
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.888
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.881
+[07/24 19:26:31][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.884
+[07/24 19:26:31][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.637
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.881
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.908
+[07/24 19:26:31][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.895
+[07/24 19:26:31][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.603
+[07/24 19:26:31][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.795
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.862
+[07/24 19:26:32][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.828
+[07/24 19:26:32][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.581
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.865
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.792
+[07/24 19:26:32][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.828
+[07/24 19:26:32][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.251
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.807
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.856
+[07/24 19:26:32][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.832
+[07/24 19:26:32][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.512
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.882
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.863
+[07/24 19:26:32][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.872
+[07/24 19:26:32][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.889
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Rear_view, pred: 3, prob: 0.835
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.750
+[07/24 19:26:32][INFO] TAL.py:  137: agg pred: 3, agg prob: 0.862
+[07/24 19:26:32][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:32][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (200, 221)
+[07/24 19:26:32][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.870
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Rear_view, pred: 3, prob: 0.705
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.647
+[07/24 19:26:32][INFO] TAL.py:  137: agg pred: 3, agg prob: 0.787
+[07/24 19:26:32][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:32][INFO] test_net.py:  289: vid_id: 1, pred: 3, stamps: (221, 224)
+[07/24 19:26:32][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.501
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.563
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.896
+[07/24 19:26:32][INFO] TAL.py:  147: agg pred: 0, agg prob: 0.896
+[07/24 19:26:32][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:32][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.248
+[07/24 19:26:32][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.687
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.922
+[07/24 19:26:33][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.804
+[07/24 19:26:33][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.213
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.764
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.842
+[07/24 19:26:33][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.803
+[07/24 19:26:33][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.188
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.906
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.898
+[07/24 19:26:33][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.902
+[07/24 19:26:33][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Dashboard, pred: 12, prob: 0.162
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.895
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.922
+[07/24 19:26:33][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.908
+[07/24 19:26:33][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.427
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.886
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.865
+[07/24 19:26:33][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.876
+[07/24 19:26:33][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.227
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.895
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.907
+[07/24 19:26:33][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.901
+[07/24 19:26:33][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.310
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.867
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.913
+[07/24 19:26:33][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.890
+[07/24 19:26:33][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.535
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.897
+[07/24 19:26:33][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.920
+[07/24 19:26:33][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.909
+[07/24 19:26:33][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.528
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.571
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.681
+[07/24 19:26:34][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.626
+[07/24 19:26:34][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:34][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (226, 245)
+[07/24 19:26:34][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.711
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.423
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.516
+[07/24 19:26:34][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.469
+[07/24 19:26:34][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:34][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.491
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Rear_view, pred: 11, prob: 0.327
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Right_side_window, pred: 11, prob: 0.640
+[07/24 19:26:34][INFO] TAL.py:  137: agg pred: 11, agg prob: 0.484
+[07/24 19:26:34][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:34][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Dashboard, pred: 6, prob: 0.253
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.695
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.905
+[07/24 19:26:34][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.800
+[07/24 19:26:34][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:34][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.507
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.873
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.836
+[07/24 19:26:34][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.855
+[07/24 19:26:34][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.805
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.889
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.901
+[07/24 19:26:34][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.895
+[07/24 19:26:34][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:34][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (251, 256)
+[07/24 19:26:34][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Dashboard, pred: 9, prob: 0.822
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.884
+[07/24 19:26:34][INFO] TAL.py:   90: SING: Right_side_window, pred: 9, prob: 0.875
+[07/24 19:26:34][INFO] TAL.py:  137: agg pred: 9, agg prob: 0.849
+[07/24 19:26:34][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:34][INFO] test_net.py:  289: vid_id: 1, pred: 10, stamps: (256, 258)
+[07/24 19:26:34][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.530
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.495
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Right_side_window, pred: 9, prob: 0.916
+[07/24 19:26:35][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.513
+[07/24 19:26:35][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:35][INFO] test_net.py:  289: vid_id: 1, pred: 9, stamps: (258, 260)
+[07/24 19:26:35][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.865
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.912
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.640
+[07/24 19:26:35][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.889
+[07/24 19:26:35][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.798
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.422
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.862
+[07/24 19:26:35][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.610
+[07/24 19:26:35][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:35][INFO] test_net.py:  289: vid_id: 1, pred: 10, stamps: (260, 264)
+[07/24 19:26:35][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.709
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.822
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.874
+[07/24 19:26:35][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.848
+[07/24 19:26:35][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:35][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.395
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.450
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.512
+[07/24 19:26:35][INFO] TAL.py:  147: agg pred: 0, agg prob: 0.512
+[07/24 19:26:35][INFO] test_net.py:  279: prev code: 0, cur code: -2
+[07/24 19:26:35][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (266, 268)
+[07/24 19:26:35][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.475
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.442
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.899
+[07/24 19:26:35][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.687
+[07/24 19:26:35][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:35][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.557
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.787
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.885
+[07/24 19:26:35][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.721
+[07/24 19:26:35][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:35][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:35][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.672
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.837
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.911
+[07/24 19:26:36][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.874
+[07/24 19:26:36][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.380
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Rear_view, pred: 5, prob: 0.536
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Right_side_window, pred: 5, prob: 0.461
+[07/24 19:26:36][INFO] TAL.py:  137: agg pred: 5, agg prob: 0.499
+[07/24 19:26:36][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:36][INFO] test_net.py:  289: vid_id: 1, pred: 4, stamps: (273, 277)
+[07/24 19:26:36][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Dashboard, pred: 5, prob: 0.894
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Rear_view, pred: 5, prob: 0.896
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Right_side_window, pred: 5, prob: 0.895
+[07/24 19:26:36][INFO] TAL.py:  137: agg pred: 5, agg prob: 0.895
+[07/24 19:26:36][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Dashboard, pred: 5, prob: 0.870
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Rear_view, pred: 5, prob: 0.891
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Right_side_window, pred: 5, prob: 0.440
+[07/24 19:26:36][INFO] TAL.py:  137: agg pred: 5, agg prob: 0.880
+[07/24 19:26:36][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.843
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Rear_view, pred: 5, prob: 0.581
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.815
+[07/24 19:26:36][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.829
+[07/24 19:26:36][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:36][INFO] test_net.py:  289: vid_id: 1, pred: 5, stamps: (277, 283)
+[07/24 19:26:36][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.438
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.455
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.775
+[07/24 19:26:36][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.447
+[07/24 19:26:36][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:36][INFO] test_net.py:  289: vid_id: 1, pred: 4, stamps: (283, 285)
+[07/24 19:26:36][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.234
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.261
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.345
+[07/24 19:26:36][INFO] TAL.py:  147: agg pred: 0, agg prob: 0.345
+[07/24 19:26:36][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:36][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:36][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.734
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.420
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.781
+[07/24 19:26:37][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.601
+[07/24 19:26:37][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:37][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.753
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.476
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.865
+[07/24 19:26:37][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.809
+[07/24 19:26:37][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:37][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.819
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.823
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.849
+[07/24 19:26:37][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.836
+[07/24 19:26:37][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.764
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.864
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.906
+[07/24 19:26:37][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.885
+[07/24 19:26:37][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.671
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.839
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.887
+[07/24 19:26:37][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.863
+[07/24 19:26:37][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.812
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.892
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.919
+[07/24 19:26:37][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.906
+[07/24 19:26:37][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.809
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.906
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.918
+[07/24 19:26:37][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.912
+[07/24 19:26:37][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:37][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.868
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.889
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.913
+[07/24 19:26:38][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.901
+[07/24 19:26:38][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.846
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.898
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.901
+[07/24 19:26:38][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.900
+[07/24 19:26:38][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.633
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.702
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.611
+[07/24 19:26:38][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.668
+[07/24 19:26:38][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:38][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (292, 309)
+[07/24 19:26:38][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Dashboard, pred: 12, prob: 0.831
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Rear_view, pred: 7, prob: 0.685
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Right_side_window, pred: 7, prob: 0.243
+[07/24 19:26:38][INFO] TAL.py:  137: agg pred: 7, agg prob: 0.464
+[07/24 19:26:38][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:38][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Dashboard, pred: 7, prob: 0.896
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Rear_view, pred: 7, prob: 0.913
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Right_side_window, pred: 7, prob: 0.889
+[07/24 19:26:38][INFO] TAL.py:  137: agg pred: 7, agg prob: 0.904
+[07/24 19:26:38][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Dashboard, pred: 7, prob: 0.850
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.660
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.551
+[07/24 19:26:38][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.606
+[07/24 19:26:38][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:38][INFO] test_net.py:  289: vid_id: 1, pred: 7, stamps: (311, 315)
+[07/24 19:26:38][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.921
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.647
+[07/24 19:26:38][INFO] TAL.py:   90: SING: Right_side_window, pred: 7, prob: 0.515
+[07/24 19:26:38][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.784
+[07/24 19:26:38][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:38][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.643
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.586
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.504
+[07/24 19:26:39][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.615
+[07/24 19:26:39][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:39][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.285
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.723
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.384
+[07/24 19:26:39][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.335
+[07/24 19:26:39][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:39][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.451
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.411
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.818
+[07/24 19:26:39][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.614
+[07/24 19:26:39][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:39][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.530
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.763
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.845
+[07/24 19:26:39][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.804
+[07/24 19:26:39][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.302
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.441
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.868
+[07/24 19:26:39][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.655
+[07/24 19:26:39][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:39][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (324, 328)
+[07/24 19:26:39][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.249
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.533
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.418
+[07/24 19:26:39][INFO] TAL.py:  147: agg pred: 0, agg prob: 0.533
+[07/24 19:26:39][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:39][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Dashboard, pred: 8, prob: 0.327
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.395
+[07/24 19:26:39][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.897
+[07/24 19:26:39][INFO] TAL.py:  147: agg pred: 4, agg prob: 0.897
+[07/24 19:26:39][INFO] test_net.py:  279: prev code: -2, cur code: -2
+[07/24 19:26:39][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.792
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.894
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.776
+[07/24 19:26:40][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.843
+[07/24 19:26:40][INFO] test_net.py:  279: prev code: -2, cur code: 0
+[07/24 19:26:40][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Dashboard, pred: 6, prob: 0.340
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Rear_view, pred: 6, prob: 0.536
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.866
+[07/24 19:26:40][INFO] TAL.py:  137: agg pred: 6, agg prob: 0.438
+[07/24 19:26:40][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:40][INFO] test_net.py:  289: vid_id: 1, pred: 10, stamps: (334, 337)
+[07/24 19:26:40][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.896
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Rear_view, pred: 3, prob: 0.906
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.904
+[07/24 19:26:40][INFO] TAL.py:  137: agg pred: 3, agg prob: 0.905
+[07/24 19:26:40][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:40][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.882
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Rear_view, pred: 3, prob: 0.911
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.907
+[07/24 19:26:40][INFO] TAL.py:  137: agg pred: 3, agg prob: 0.909
+[07/24 19:26:40][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.892
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Rear_view, pred: 3, prob: 0.911
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.895
+[07/24 19:26:40][INFO] TAL.py:  137: agg pred: 3, agg prob: 0.903
+[07/24 19:26:40][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.907
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Rear_view, pred: 3, prob: 0.908
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.873
+[07/24 19:26:40][INFO] TAL.py:  137: agg pred: 3, agg prob: 0.908
+[07/24 19:26:40][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.808
+[07/24 19:26:40][INFO] TAL.py:   90: SING: Rear_view, pred: 3, prob: 0.493
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.911
+[07/24 19:26:41][INFO] TAL.py:  137: agg pred: 3, agg prob: 0.650
+[07/24 19:26:41][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:41][INFO] test_net.py:  289: vid_id: 1, pred: 3, stamps: (339, 347)
+[07/24 19:26:41][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Dashboard, pred: 1, prob: 0.540
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Rear_view, pred: 1, prob: 0.821
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.606
+[07/24 19:26:41][INFO] TAL.py:  137: agg pred: 1, agg prob: 0.680
+[07/24 19:26:41][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:41][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.705
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.865
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.909
+[07/24 19:26:41][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.887
+[07/24 19:26:41][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:41][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.813
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.884
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.911
+[07/24 19:26:41][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.898
+[07/24 19:26:41][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.760
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.572
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.830
+[07/24 19:26:41][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.666
+[07/24 19:26:41][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:41][INFO] test_net.py:  289: vid_id: 1, pred: 4, stamps: (352, 356)
+[07/24 19:26:41][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.422
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.459
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.636
+[07/24 19:26:41][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.548
+[07/24 19:26:41][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:41][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.300
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.243
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.910
+[07/24 19:26:41][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.605
+[07/24 19:26:41][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:41][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.897
+[07/24 19:26:41][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.806
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.892
+[07/24 19:26:42][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.894
+[07/24 19:26:42][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.662
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.785
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.386
+[07/24 19:26:42][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.724
+[07/24 19:26:42][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:42][INFO] test_net.py:  289: vid_id: 1, pred: 4, stamps: (360, 364)
+[07/24 19:26:42][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Dashboard, pred: 6, prob: 0.892
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Rear_view, pred: 6, prob: 0.732
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Right_side_window, pred: 6, prob: 0.910
+[07/24 19:26:42][INFO] TAL.py:  137: agg pred: 6, agg prob: 0.901
+[07/24 19:26:42][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:42][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Dashboard, pred: 6, prob: 0.901
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Rear_view, pred: 6, prob: 0.712
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Right_side_window, pred: 6, prob: 0.908
+[07/24 19:26:42][INFO] TAL.py:  137: agg pred: 6, agg prob: 0.904
+[07/24 19:26:42][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.619
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.721
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.637
+[07/24 19:26:42][INFO] TAL.py:  147: agg pred: 15, agg prob: 0.721
+[07/24 19:26:42][INFO] test_net.py:  279: prev code: 0, cur code: -2
+[07/24 19:26:42][INFO] test_net.py:  289: vid_id: 1, pred: 6, stamps: (366, 371)
+[07/24 19:26:42][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.304
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.447
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.307
+[07/24 19:26:42][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.375
+[07/24 19:26:42][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:42][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.669
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.813
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.688
+[07/24 19:26:42][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.750
+[07/24 19:26:42][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:42][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:42][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.845
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.868
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.919
+[07/24 19:26:43][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.894
+[07/24 19:26:43][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.855
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.875
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.916
+[07/24 19:26:43][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.895
+[07/24 19:26:43][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.620
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.853
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.895
+[07/24 19:26:43][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.874
+[07/24 19:26:43][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.848
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.840
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.350
+[07/24 19:26:43][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.844
+[07/24 19:26:43][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.809
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.810
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.814
+[07/24 19:26:43][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.812
+[07/24 19:26:43][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:43][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (375, 386)
+[07/24 19:26:43][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.574
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.407
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Right_side_window, pred: 13, prob: 0.652
+[07/24 19:26:43][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.490
+[07/24 19:26:43][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:43][INFO] test_net.py:  289: vid_id: 1, pred: 15, stamps: (386, 388)
+[07/24 19:26:43][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Dashboard, pred: 3, prob: 0.293
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Rear_view, pred: 3, prob: 0.355
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.840
+[07/24 19:26:43][INFO] TAL.py:  137: agg pred: 3, agg prob: 0.324
+[07/24 19:26:43][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:43][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:43][INFO] TAL.py:   90: SING: Dashboard, pred: 1, prob: 0.357
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.310
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Right_side_window, pred: 2, prob: 0.886
+[07/24 19:26:44][INFO] TAL.py:  147: agg pred: 2, agg prob: 0.886
+[07/24 19:26:44][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:44][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Dashboard, pred: 2, prob: 0.884
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Rear_view, pred: 2, prob: 0.894
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Right_side_window, pred: 2, prob: 0.904
+[07/24 19:26:44][INFO] TAL.py:  137: agg pred: 2, agg prob: 0.899
+[07/24 19:26:44][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Dashboard, pred: 2, prob: 0.848
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Rear_view, pred: 2, prob: 0.902
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Right_side_window, pred: 2, prob: 0.904
+[07/24 19:26:44][INFO] TAL.py:  137: agg pred: 2, agg prob: 0.903
+[07/24 19:26:44][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Dashboard, pred: 2, prob: 0.904
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Rear_view, pred: 2, prob: 0.903
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Right_side_window, pred: 2, prob: 0.906
+[07/24 19:26:44][INFO] TAL.py:  137: agg pred: 2, agg prob: 0.905
+[07/24 19:26:44][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Dashboard, pred: 2, prob: 0.903
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Rear_view, pred: 2, prob: 0.904
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Right_side_window, pred: 2, prob: 0.887
+[07/24 19:26:44][INFO] TAL.py:  137: agg pred: 2, agg prob: 0.903
+[07/24 19:26:44][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Dashboard, pred: 2, prob: 0.793
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Rear_view, pred: 2, prob: 0.461
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Right_side_window, pred: 2, prob: 0.550
+[07/24 19:26:44][INFO] TAL.py:  137: agg pred: 2, agg prob: 0.671
+[07/24 19:26:44][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:44][INFO] test_net.py:  289: vid_id: 1, pred: 2, stamps: (392, 403)
+[07/24 19:26:44][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Dashboard, pred: 2, prob: 0.453
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Rear_view, pred: 2, prob: 0.618
+[07/24 19:26:44][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.376
+[07/24 19:26:44][INFO] TAL.py:  137: agg pred: 2, agg prob: 0.536
+[07/24 19:26:44][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:44][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.243
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.318
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.880
+[07/24 19:26:45][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.599
+[07/24 19:26:45][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:45][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.899
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.840
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.909
+[07/24 19:26:45][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.904
+[07/24 19:26:45][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.768
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.781
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.692
+[07/24 19:26:45][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.775
+[07/24 19:26:45][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:45][INFO] test_net.py:  289: vid_id: 1, pred: 4, stamps: (407, 411)
+[07/24 19:26:45][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.848
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Rear_view, pred: 6, prob: 0.584
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.299
+[07/24 19:26:45][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.573
+[07/24 19:26:45][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:45][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.842
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.841
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Right_side_window, pred: 5, prob: 0.450
+[07/24 19:26:45][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.842
+[07/24 19:26:45][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.425
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.499
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.872
+[07/24 19:26:45][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.686
+[07/24 19:26:45][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:45][INFO] test_net.py:  289: vid_id: 1, pred: 15, stamps: (413, 418)
+[07/24 19:26:45][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.920
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.916
+[07/24 19:26:45][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.553
+[07/24 19:26:45][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.918
+[07/24 19:26:45][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:45][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.920
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.923
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Right_side_window, pred: 9, prob: 0.774
+[07/24 19:26:46][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.921
+[07/24 19:26:46][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.825
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.900
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.653
+[07/24 19:26:46][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.862
+[07/24 19:26:46][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Dashboard, pred: 10, prob: 0.284
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Rear_view, pred: 10, prob: 0.250
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.770
+[07/24 19:26:46][INFO] TAL.py:  137: agg pred: 10, agg prob: 0.267
+[07/24 19:26:46][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:46][INFO] test_net.py:  289: vid_id: 1, pred: 10, stamps: (420, 426)
+[07/24 19:26:46][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.433
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.447
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Right_side_window, pred: 5, prob: 0.561
+[07/24 19:26:46][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.440
+[07/24 19:26:46][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:46][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.813
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.830
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.724
+[07/24 19:26:46][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.821
+[07/24 19:26:46][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.346
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.362
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.795
+[07/24 19:26:46][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.354
+[07/24 19:26:46][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:46][INFO] test_net.py:  289: vid_id: 1, pred: 15, stamps: (428, 433)
+[07/24 19:26:46][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.909
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.823
+[07/24 19:26:46][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.905
+[07/24 19:26:46][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.907
+[07/24 19:26:46][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:46][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.921
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.913
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.711
+[07/24 19:26:47][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.917
+[07/24 19:26:47][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.879
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.711
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.912
+[07/24 19:26:47][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.895
+[07/24 19:26:47][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:47][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (435, 439)
+[07/24 19:26:47][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.893
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.893
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.902
+[07/24 19:26:47][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.898
+[07/24 19:26:47][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.349
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.847
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.852
+[07/24 19:26:47][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.849
+[07/24 19:26:47][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.676
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Rear_view, pred: 4, prob: 0.616
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.699
+[07/24 19:26:47][INFO] TAL.py:  137: agg pred: 4, agg prob: 0.646
+[07/24 19:26:47][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:47][INFO] test_net.py:  289: vid_id: 1, pred: 4, stamps: (439, 445)
+[07/24 19:26:47][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.394
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.705
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.813
+[07/24 19:26:47][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.759
+[07/24 19:26:47][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:47][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.765
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.587
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.854
+[07/24 19:26:47][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.810
+[07/24 19:26:47][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:47][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.496
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.636
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.883
+[07/24 19:26:48][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.759
+[07/24 19:26:48][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:48][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (448, 452)
+[07/24 19:26:48][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.384
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.811
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.911
+[07/24 19:26:48][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.861
+[07/24 19:26:48][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.504
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.739
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.730
+[07/24 19:26:48][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.735
+[07/24 19:26:48][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:48][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (452, 456)
+[07/24 19:26:48][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.377
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.696
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.325
+[07/24 19:26:48][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.536
+[07/24 19:26:48][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:48][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.814
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.849
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.383
+[07/24 19:26:48][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.832
+[07/24 19:26:48][INFO] test_net.py:  279: prev code: -1, cur code: 0
+[07/24 19:26:48][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.787
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.537
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.806
+[07/24 19:26:48][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.796
+[07/24 19:26:48][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:48][INFO] test_net.py:  289: vid_id: 1, pred: 15, stamps: (460, 462)
+[07/24 19:26:48][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.771
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.860
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.909
+[07/24 19:26:48][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.884
+[07/24 19:26:48][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:48][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.791
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.875
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.695
+[07/24 19:26:49][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.833
+[07/24 19:26:49][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Dashboard, pred: 13, prob: 0.910
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Rear_view, pred: 13, prob: 0.811
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.482
+[07/24 19:26:49][INFO] TAL.py:  137: agg pred: 13, agg prob: 0.861
+[07/24 19:26:49][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:49][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (462, 469)
+[07/24 19:26:49][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Dashboard, pred: 13, prob: 0.914
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Rear_view, pred: 13, prob: 0.912
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Right_side_window, pred: 13, prob: 0.907
+[07/24 19:26:49][INFO] TAL.py:  137: agg pred: 13, agg prob: 0.913
+[07/24 19:26:49][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Dashboard, pred: 13, prob: 0.754
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.461
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Right_side_window, pred: 10, prob: 0.561
+[07/24 19:26:49][INFO] TAL.py:  147: agg pred: 13, agg prob: 0.754
+[07/24 19:26:49][INFO] test_net.py:  279: prev code: 0, cur code: -2
+[07/24 19:26:49][INFO] test_net.py:  289: vid_id: 1, pred: 13, stamps: (469, 473)
+[07/24 19:26:49][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Dashboard, pred: 11, prob: 0.347
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Rear_view, pred: 12, prob: 0.247
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.464
+[07/24 19:26:49][INFO] TAL.py:  147: agg pred: 0, agg prob: 0.464
+[07/24 19:26:49][INFO] test_net.py:  279: prev code: -2, cur code: -2
+[07/24 19:26:49][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.554
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.646
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.666
+[07/24 19:26:49][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.656
+[07/24 19:26:49][INFO] test_net.py:  279: prev code: -2, cur code: -1
+[07/24 19:26:49][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.839
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.879
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.902
+[07/24 19:26:49][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.890
+[07/24 19:26:49][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.553
+[07/24 19:26:49][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.522
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.755
+[07/24 19:26:50][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.638
+[07/24 19:26:50][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:50][INFO] test_net.py:  289: vid_id: 1, pred: 0, stamps: (477, 482)
+[07/24 19:26:50][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.872
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.717
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.885
+[07/24 19:26:50][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.795
+[07/24 19:26:50][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:50][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.773
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.600
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.598
+[07/24 19:26:50][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.686
+[07/24 19:26:50][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.764
+[07/24 19:26:50][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.479
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Rear_view, pred: 6, prob: 0.515
+[07/24 19:26:50][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.621
+[07/24 19:26:50][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.503
+[07/24 19:26:50][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.210
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.575
+[07/24 19:26:50][INFO] TAL.py:  147: agg pred: 0, agg prob: 0.575
+[07/24 19:26:50][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.888
+[07/24 19:26:50][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.696
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.797
+[07/24 19:26:50][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.843
+[07/24 19:26:50][INFO] test_net.py:  279: prev code: -2, cur code: 0
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.858
+[07/24 19:26:50][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.507
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.870
+[07/24 19:26:50][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.864
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.870
+[07/24 19:26:50][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:50][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.450
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.892
+[07/24 19:26:51][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.881
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.827
+[07/24 19:26:51][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.796
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.911
+[07/24 19:26:51][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.869
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.685
+[07/24 19:26:51][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.647
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.807
+[07/24 19:26:51][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.746
+[07/24 19:26:51][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:51][INFO] test_net.py:  289: vid_id: 2, pred: 15, stamps: (6, 14)
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.859
+[07/24 19:26:51][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.893
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.907
+[07/24 19:26:51][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.900
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.781
+[07/24 19:26:51][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.570
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.663
+[07/24 19:26:51][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.722
+[07/24 19:26:51][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:51][INFO] test_net.py:  289: vid_id: 2, pred: 15, stamps: (14, 19)
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.885
+[07/24 19:26:51][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.821
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.898
+[07/24 19:26:51][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.892
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.535
+[07/24 19:26:51][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.806
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.857
+[07/24 19:26:51][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.831
+[07/24 19:26:51][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.799
+[07/24 19:26:51][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.888
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.781
+[07/24 19:26:52][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.844
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.871
+[07/24 19:26:52][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.529
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.912
+[07/24 19:26:52][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.892
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Right_side_window, pred: 15, prob: 0.733
+[07/24 19:26:52][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.765
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.904
+[07/24 19:26:52][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.834
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.357
+[07/24 19:26:52][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.703
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.809
+[07/24 19:26:52][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.756
+[07/24 19:26:52][INFO] test_net.py:  279: prev code: 0, cur code: -1
+[07/24 19:26:52][INFO] test_net.py:  289: vid_id: 2, pred: 15, stamps: (19, 32)
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Right_side_window, pred: 4, prob: 0.534
+[07/24 19:26:52][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Dashboard, pred: 15, prob: 0.638
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Rear_view, pred: 15, prob: 0.794
+[07/24 19:26:52][INFO] TAL.py:  137: agg pred: 15, agg prob: 0.716
+[07/24 19:26:52][INFO] test_net.py:  279: prev code: -1, cur code: -1
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.730
+[07/24 19:26:52][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Dashboard, pred: 4, prob: 0.327
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.313
+[07/24 19:26:52][INFO] TAL.py:  147: agg pred: 3, agg prob: 0.730
+[07/24 19:26:52][INFO] test_net.py:  279: prev code: -1, cur code: -2
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.866
+[07/24 19:26:52][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.282
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.888
+[07/24 19:26:52][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.877
+[07/24 19:26:52][INFO] test_net.py:  279: prev code: -2, cur code: 0
+[07/24 19:26:52][INFO] TAL.py:   90: SING: Right_side_window, pred: 0, prob: 0.879
+[07/24 19:26:52][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.907
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.912
+[07/24 19:26:53][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.909
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Right_side_window, pred: 3, prob: 0.581
+[07/24 19:26:53][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Dashboard, pred: 0, prob: 0.850
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Rear_view, pred: 0, prob: 0.898
+[07/24 19:26:53][INFO] TAL.py:  137: agg pred: 0, agg prob: 0.874
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.728
+[07/24 19:26:53][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.822
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.889
+[07/24 19:26:53][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.856
+[07/24 19:26:53][INFO] test_net.py:  279: prev code: 0, cur code: 0
+[07/24 19:26:53][INFO] test_net.py:  289: vid_id: 2, pred: 0, stamps: (38, 44)
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.895
+[07/24 19:26:53][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 32
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.889
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.890
+[07/24 19:26:53][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.892
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.902
+[07/24 19:26:53][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.899
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.905
+[07/24 19:26:53][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.903
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.904
+[07/24 19:26:53][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.903
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.907
+[07/24 19:26:53][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.906
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.905
+[07/24 19:26:53][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.906
+[07/24 19:26:53][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.908
+[07/24 19:26:53][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.907
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.901
+[07/24 19:26:54][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.908
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.909
+[07/24 19:26:54][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.908
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.888
+[07/24 19:26:54][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.907
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.909
+[07/24 19:26:54][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.908
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.863
+[07/24 19:26:54][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Dashboard, pred: 14, prob: 0.909
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Rear_view, pred: 14, prob: 0.910
+[07/24 19:26:54][INFO] TAL.py:  137: agg pred: 14, agg prob: 0.909
+[07/24 19:26:54][INFO] TAL.py:   90: SING: Right_side_window, pred: 14, prob: 0.860
+[07/24 19:26:54][INFO] TAL.py:   33: NUM FRAMES AGGREGATED: 48

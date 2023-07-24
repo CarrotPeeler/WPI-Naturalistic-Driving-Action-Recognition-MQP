@@ -16,7 +16,7 @@ def add_custom_config(_C):
     # filters out prediction probabilities lower than this value
     _C.TAL.FILTERING_THRESHOLD = 0.9
 
-    # Max number of clips to aggregate at once
+    # Max number of clips to aggregate at once (MUST be a multiple of cfg.DATA.NUM_FRAMES)
     _C.TAL.CLIP_AGG_THRESHOLD = 64
 
     # Enables the use of a 2nd GPU for TAL (speeds up inferencing)

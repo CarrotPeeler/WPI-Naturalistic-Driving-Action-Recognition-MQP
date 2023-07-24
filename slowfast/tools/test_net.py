@@ -65,10 +65,11 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
 
     if cfg.TAL.ENABLE == True:
-        start_time = 0
-        end_time = 0
-        video_id = -1
-        prev_agg_pred = -1
+        start_time = None
+        end_time = None
+        video_id = None
+        prev_agg_pred = None
+        prev_consol_code = None
 
         # stores aggregated clips (batches) for each cam view type
         cam_view_clips = {}
@@ -76,8 +77,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         # num clips aggregated for current temporal action interval
         clip_agg_cnt = 0
 
-        # num of aggregated clips to keep from last iteration
-        agg_threshold = cfg.TAL.CLIP_AGG_THRESHOLD - cfg.DATA.NUM_FRAMES 
+        # num of aggregated frames to keep from last iteration
+        frame_agg_threshold = cfg.TAL.CLIP_AGG_THRESHOLD - cfg.DATA.NUM_FRAMES 
         
 
     for cur_iter, (inputs, labels, video_idx, time, meta, proposal) in enumerate(
@@ -205,7 +206,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     cviews.add(cview)
 
                     # fix the aggregation clip size to be constant past the threshold 
-                    start_idx = cam_view_clips[cview].shape[0] - agg_threshold if clip_agg_cnt > agg_threshold else 0 
+                    start_idx = cam_view_clips[cview].shape[0] - frame_agg_threshold if clip_agg_cnt*cfg.DATA.NUM_FRAMES > frame_agg_threshold else 0 
 
                     cam_view_clips[cview] = torch.cat([cam_view_clips[cview][start_idx:], inputs[0][j].permute(1,0,2,3)], dim=0)
 
@@ -219,7 +220,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             # logger.info(f"CUR ITER: {cur_iter}")
             
             # PREDICTION STEP: make predictions for each camera angle using identical proposal length and space
-            all_cam_view_preds, all_cam_view_probs = predict_cam_views(cfg, model, cam_view_clips, agg_threshold, logger, resample=False)
+            all_cam_view_preds, all_cam_view_probs = predict_cam_views(cfg, model, cam_view_clips, frame_agg_threshold, logger, resample=False)
 
             labels = labels.cpu()
             video_idx = video_idx.cpu()
@@ -231,25 +232,25 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             # probs_2 = np.array(all_cam_view_probs_2)
 
             # agg_pred_1
-            curr_agg_pred, mode_exists = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
+            curr_agg_pred, curr_consol_code = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
 
             # var to signal if start time needs adjustment
             fix_start_time = False
 
             # detect new action w/ common pred but prob is low => resample current temporal interval and consolidate again
-            if curr_agg_pred != prev_agg_pred and mode_exists and curr_agg_pred == -1:
+            if curr_agg_pred != prev_agg_pred and curr_consol_code == -1 and curr_agg_pred == -1:
                 logger.info("Perform Resampling")
-                all_cam_view_preds, all_cam_view_probs = predict_cam_views(cfg, model, cam_view_clips, agg_threshold, logger, resample=True)
+                all_cam_view_preds, all_cam_view_probs = predict_cam_views(cfg, model, cam_view_clips, frame_agg_threshold, logger, resample=True)
 
                 preds = np.array(all_cam_view_preds)
                 probs = np.array(all_cam_view_probs)
                 
-                curr_agg_pred, mode_exists = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
+                curr_agg_pred, curr_consol_code = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
 
                 # if final pred is not -1, we know resampling worked and that new action begins 1s later instead of at start of new interval
                 if curr_agg_pred != -1:
                     proposal_temporal_resolution = float(proposal[2][0]) - float(proposal[1][0])
-                    end_time += (proposal_temporal_resolution/2.0)
+                    end_time = str(float(end_time) + (proposal_temporal_resolution/2.0))
 
                     # re-evaluated precision of localization for new detected action, adjust start time accordingly
                     fix_start_time = True
@@ -264,9 +265,21 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
 
             # ASSESSMENT STEP: check if temporal localization for the current action is done
-            if video_id != proposal[0][0] or (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0):
+            """ 
+            only finish localization of an action when one of following occurs:
+                - video_id changes
+                - curr and prev preds differ
+                - there are issues predicting over the current temporal interval => toss results and reset aggregation of clips 
+            """
+            vid_id_changed = (video_id != proposal[0][0])
+            action_changed = (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0)
+            curr_pred_is_bad = curr_consol_code in [-1, -2] 
 
-                if prev_agg_pred != -1:
+            if vid_id_changed or curr_pred_is_bad or action_changed:
+                logger.info(f"prev code: {prev_consol_code}, cur code: {curr_consol_code}")
+
+                # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
+                if prev_consol_code == 0 or clip_agg_cnt > 1:
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
 
@@ -275,18 +288,15 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     
                     logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
-                # update previous prediction for next batch iter
-                prev_agg_pred = curr_agg_pred
+                # set start time of newly detected action 
+                start_time = proposal[1][0]
+                
+                # adjust start time if precision of localization for new detected action has been updated
+                if fix_start_time:
+                    proposal_temporal_resolution = float(proposal[2][0]) - float(proposal[1][0])
+                    start_time = str(float(start_time) + (proposal_temporal_resolution/2.0))
 
-                if video_id == proposal[0][0]:
-                    # update start time
-                    start_time = proposal[1][0]
-                    
-                    # adjust start time if precision of localization for new detected action has been updated
-                    if fix_start_time:
-                        proposal_temporal_resolution = float(proposal[2][0]) - float(proposal[1][0])
-                        start_time += (proposal_temporal_resolution/2.0)
-
+                # update video id
                 video_id = proposal[0][0]
 
                 # reset all clip aggregation variables
@@ -301,12 +311,13 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
             else: 
                 # continue localization for current action pred
-               
-                # update previous prediction for next batch iter
-                prev_agg_pred = curr_agg_pred
 
                 # increment count for num clips concatenated consecutively
                 clip_agg_cnt += 1
+
+            # update previous prediction for next batch iter as well as consolidation code
+            prev_consol_code = curr_consol_code
+            prev_agg_pred = curr_agg_pred
 
         ######################## T A L  E N D ########################
 

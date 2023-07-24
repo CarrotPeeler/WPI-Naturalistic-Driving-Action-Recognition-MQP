@@ -97,15 +97,18 @@ def predict_cam_views(cfg, model, cam_view_clips, agg_threshold, logger, resampl
 
 # consolidates predictions from all camera angles for a single proposal
 def consolidate_preds(preds:np.array, probs:np.array, filtering_threshold:float, logger):
-    mode_exists = False
+    """ 
+    consol_code has 3 values: 
+        0: common pred, non-tossed prediction
+       -1: common pred, tossed prediction
+       -2: no common pred, tossed prediction
+    """
 
     # check if there is a common pred among candidates
     prediction_mode_stats = stats.mode(preds, keepdims=False)
 
     # count num of predictions matching mode and check if greater than 1 (meaning mode exists)
     if(prediction_mode_stats[1] > 1):
-        mode_exists = True
-
         # retrieve common pred
         mode_pred = prediction_mode_stats[0]
 
@@ -122,20 +125,25 @@ def consolidate_preds(preds:np.array, probs:np.array, filtering_threshold:float,
         # calc mean prob of common preds
         agg_prob = mode_probs.mean()
 
+        # common pred
+        curr_agg_pred = mode_pred
+
         # even if there's a common pred among camera angles, check if mean of their probs is lower than threshold
         if agg_prob >= filtering_threshold:
-            curr_agg_pred = mode_pred
+            consol_code = 0
         else:
-            curr_agg_pred = -1
+            consol_code = -1
 
         logger.info(f"agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
 
     # no common pred => select highest prob pred among all three camera angles
     else:
-        # best_prob_idx = probs.argmax()
-        # curr_agg_pred = preds[best_prob_idx]
-        # agg_prob = probs.max()
-        # logger.info(f"batch: {cur_iter}, agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
-        curr_agg_pred = -1
+        consol_code = -2
 
-    return curr_agg_pred, mode_exists
+        best_prob_idx = probs.argmax()
+        curr_agg_pred = preds[best_prob_idx]
+        agg_prob = probs.max()
+
+        logger.info(f"agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
+
+    return curr_agg_pred, consol_code
