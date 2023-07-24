@@ -9,8 +9,6 @@ import pickle
 import torch
 import sys
 
-from scipy import stats
-
 import slowfast.utils.checkpoint as cu
 import slowfast.utils.distributed as du
 import slowfast.utils.logging as logging
@@ -21,6 +19,7 @@ from slowfast.models import build_model
 from slowfast.utils.env import pathmgr
 from slowfast.utils.meters import AVAMeter, TestMeter
 from visual_prompting import prompters
+from inference.TAL import *
 
 logger = logging.get_logger(__name__)
 
@@ -220,78 +219,48 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             # logger.info(f"CUR ITER: {cur_iter}")
             
             # PREDICTION STEP: make predictions for each camera angle using identical proposal length and space
-            all_cam_view_preds = []
-            all_cam_view_probs = []
-            all_cam_view_preds_2 = []
-            all_cam_view_probs_2 = []
+            all_cam_view_preds, all_cam_view_probs = predict_cam_views(cfg, model, cam_view_clips, agg_threshold, logger, resample=False)
 
-            for cam_view_type in cam_view_clips.keys():
-                # if(cam_view_type == "Dashboard"): logger.info(f"NUM FRAMES AGGREGATED: {cam_view_clips[cam_view_type].shape[0]}")
-
-                # subsample 16 frames from clip agg for each cam angle, then make pred
-                if cam_view_clips[cam_view_type].shape[0] == cfg.DATA.NUM_FRAMES:
-                    input = [cam_view_clips[cam_view_type].permute(1,0,2,3).unsqueeze(dim=0)]
-
-                # elif cam_view_clips[cam_view_type].shape[0] <= cfg.DATA.NUM_FRAMES * 3:
-                else:
-                    # start_idx = 0
-                    # end_idx = start_idx + cam_view_clips[cam_view_type].shape[0] - 1
-                    # sampled = temporal_sampling(cam_view_clips[cam_view_type], start_idx, end_idx, cfg.DATA.NUM_FRAMES)
-                    # input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
-
-                    # evenly sample half the num of input frames from among last half of frames in clip aggregation pool
-                    start_idx_1 = cam_view_clips[cam_view_type].shape[0] - agg_threshold
-                    end_idx_1 = start_idx_1 + cam_view_clips[cam_view_type].shape[0] - 1 - cfg.DATA.NUM_FRAMES
-                    sampled_1 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_1, end_idx_1, int(cfg.DATA.NUM_FRAMES*cfg.TAL.AGG_SAMPLING_RATIO))
-
-                    # evenly sample half the num of input frames from last clip (most recently added proposal) in aggregation pool
-                    start_idx_2 = cam_view_clips[cam_view_type].shape[0] - cfg.DATA.NUM_FRAMES
-                    end_idx_2 = start_idx_2 + cam_view_clips[cam_view_type].shape[0] - 1
-                    sampled_2 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_2, end_idx_2, int(cfg.DATA.NUM_FRAMES*cfg.TAL.SINGLE_PROP_SAMPLING_RATIO))
-
-                    sampled = torch.cat([sampled_1, sampled_2], dim=0)
-
-                    # aggregated input
-                    input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
-
-                    # single clip input
-                    dev = 'cuda:1' if cfg.TAL.USE_2_GPUS == True else 'cuda:0'
-                    input_2 = [cam_view_clips[cam_view_type][start_idx_2:].permute(1,0,2,3).unsqueeze(dim=0).to(dev)] 
-
-                    cam_view_preds_2 = model_2(input_2).cpu()
-                    cam_view_pred_2 = cam_view_preds_2.argmax().item()
-                    cam_view_prob_2 = cam_view_preds_2.max().item()
-                    # logger.info(f"PROP: {cam_view_type}, pred: {cam_view_pred_2}, prob: {cam_view_prob_2:.3f}")
-
-                    all_cam_view_preds_2.append(cam_view_pred_2)
-                    all_cam_view_probs_2.append(cam_view_prob_2)
-
-                cam_view_preds = model(input).cpu()
-                cam_view_pred = cam_view_preds.argmax().item()
-                cam_view_prob = cam_view_preds.max().item()
-                # logger.info(f"AGG: {cam_view_type}, pred: {cam_view_pred}, prob: {cam_view_prob:.3f}")
-
-                all_cam_view_preds.append(cam_view_pred)
-                all_cam_view_probs.append(cam_view_prob)
-
-                labels = labels.cpu()
-                video_idx = video_idx.cpu()
-
+            labels = labels.cpu()
+            video_idx = video_idx.cpu()
 
             # CONSOLIDATION STEP: Consolidate predictions among the three camera angles into 1 final pred
             preds = np.array(all_cam_view_preds)
             probs = np.array(all_cam_view_probs)
-            preds_2 = np.array(all_cam_view_preds_2)
-            probs_2 = np.array(all_cam_view_probs_2)
+            # preds_2 = np.array(all_cam_view_preds_2)
+            # probs_2 = np.array(all_cam_view_probs_2)
 
-            agg_pred_1 = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD)
-            if len(preds_2) == 3: agg_pred_2 = consolidate_preds(preds_2, probs_2, cfg.TAL.FILTERING_THRESHOLD)
+            # agg_pred_1
+            curr_agg_pred, mode_exists = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
 
-            # use agg_pred_1 only when equal to agg_pred_2, agg_pred_2 not initialized, or agg_pred_2 is not reliable (== -1)
-            if len(preds_2) == 0 or agg_pred_1 == agg_pred_2: #or agg_pred_2 == -1:
-                curr_agg_pred = agg_pred_1
-            else:
-                curr_agg_pred = -1
+            # var to signal if start time needs adjustment
+            fix_start_time = False
+
+            # detect new action w/ common pred but prob is low => resample current temporal interval and consolidate again
+            if curr_agg_pred != prev_agg_pred and mode_exists and curr_agg_pred == -1:
+                logger.info("Perform Resampling")
+                all_cam_view_preds, all_cam_view_probs = predict_cam_views(cfg, model, cam_view_clips, agg_threshold, logger, resample=True)
+
+                preds = np.array(all_cam_view_preds)
+                probs = np.array(all_cam_view_probs)
+                
+                curr_agg_pred, mode_exists = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
+
+                # if final pred is not -1, we know resampling worked and that new action begins 1s later instead of at start of new interval
+                if curr_agg_pred != -1:
+                    proposal_temporal_resolution = float(proposal[2][0]) - float(proposal[1][0])
+                    end_time += (proposal_temporal_resolution/2.0)
+
+                    # re-evaluated precision of localization for new detected action, adjust start time accordingly
+                    fix_start_time = True
+
+            # if len(preds_2) == 3: agg_pred_2 = consolidate_preds(preds_2, probs_2, cfg.TAL.FILTERING_THRESHOLD)
+
+            # # use agg_pred_1 only when equal to agg_pred_2, agg_pred_2 not initialized, or agg_pred_2 is not reliable (== -1)
+            # if len(preds_2) == 0 or agg_pred_1 == agg_pred_2: #or agg_pred_2 == -1:
+            #     curr_agg_pred = agg_pred_1
+            # else:
+            #     curr_agg_pred = -1
 
 
             # ASSESSMENT STEP: check if temporal localization for the current action is done
@@ -304,7 +273,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     with open(cfg.TAL.OUTPUT_FILE_PATH, "a+") as f:
                         f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
                     
-                    # logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
+                    logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
                 # update previous prediction for next batch iter
                 prev_agg_pred = curr_agg_pred
@@ -312,6 +281,11 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 if video_id == proposal[0][0]:
                     # update start time
                     start_time = proposal[1][0]
+                    
+                    # adjust start time if precision of localization for new detected action has been updated
+                    if fix_start_time:
+                        proposal_temporal_resolution = float(proposal[2][0]) - float(proposal[1][0])
+                        start_time += (proposal_temporal_resolution/2.0)
 
                 video_id = proposal[0][0]
 
@@ -553,66 +527,3 @@ def test(cfg):
         return 
     
     return result_string + " \n " + result_string_views
-
-
-def temporal_sampling(frames, start_idx, end_idx, num_samples):
-    """
-    Given the start and end frame index, sample num_samples frames between
-    the start and end with equal interval.
-    Args:
-        frames (tensor): a tensor of video frames, dimension is
-            `num video frames` x `channel` x `height` x `width`.
-        start_idx (int): the index of the start frame.
-        end_idx (int): the index of the end frame.
-        num_samples (int): number of frames to sample.
-    Returns:
-        frames (tersor): a tensor of temporal sampled video frames, dimension is
-            `num clip frames` x `channel` x `height` x `width`.
-    """
-    index = torch.linspace(start_idx, end_idx, num_samples)
-    index = torch.clamp(index, 0, frames.shape[0] - 1).long().to("cuda")
-    frames = torch.index_select(frames, 0, index)
-    return frames
-
-
-# consolidates predictions from all camera angles for a single proposal
-def consolidate_preds(preds:np.array, probs:np.array, filtering_threshold:float):
-    # check if there is a common pred among candidates
-    if(stats.mode(preds, keepdims=False)[1] > 1):
-        # validate the probs of each pred are high enough to not be coincidence
-        mode_pred = stats.mode(preds, keepdims=False)[0]
-
-        mode_pred_idxs = np.where(preds == mode_pred)[0]
-        # minority_pred_idxs = np.where(preds != mode_pred)[0]
-
-        mode_probs = np.array([probs[z] for z in mode_pred_idxs])
-        # minority_probs = np.array([probs[j] for j in minority_pred_idxs])
-
-        # # check if minority pred exists and its prob is higher than mode probs
-        # if(len(minority_pred_idxs) > 0 and minority_probs.max() > mode_probs.max() and mode_probs.max() < prob_threshold):
-        #     # print(f"{preds} ==> {probs}")
-        #     minority_pred = np.array([preds[m] for m in minority_pred_idxs]).max()
-        #     agg_preds.append(minority_pred)
-        #     agg_probs.append(minority_probs.max())
-        
-        # # select common pred if mean of common pred probs >= threshold
-        # else:
-        agg_prob = mode_probs.mean()
-
-        # even if there's a common pred among camera angles, check if mean of their probs is lower than threshold
-        if agg_prob >= filtering_threshold:
-            curr_agg_pred = mode_pred
-        else:
-            curr_agg_pred = -1
-
-        # logger.info(f"agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
-
-    # no common pred => select highest prob pred among all three camera angles
-    else:
-        # best_prob_idx = probs.argmax()
-        # curr_agg_pred = preds[best_prob_idx]
-        # agg_prob = probs.max()
-        # logger.info(f"batch: {cur_iter}, agg pred: {curr_agg_pred}, agg prob: {agg_prob:.3f}")
-        curr_agg_pred = -1
-
-    return curr_agg_pred

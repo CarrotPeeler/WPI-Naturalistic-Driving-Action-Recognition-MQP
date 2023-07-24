@@ -8,7 +8,7 @@ Completed as part of my Major Qualifying Project for Worcester Polytechnic Insti
 - Python >= 3.8.10, pytorch == 1.13.1+c117, pandas, tqdm, scikit-learn, decord, tensorrt (may have to upgrade pip3 first)
 - FFmpeg >= 4.2.7 
 - GNU Parallel 
-- Follow PySlowFast INSTALL.md 
+- Follow the INSTALL.md inside the first slowfast folder for PySlowFast reqs; do NOT clone or build PySlowFast
 
 For video and decoder functionality to work, torchvision MUST be compiled & built from source (used v0.14.1+c117): 
 - uninstall FFmpeg if you already have it, then reinstall it with the following command:
@@ -47,6 +47,7 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 
 ### Training
 - edit the config in slowfast/slowfast/configs
+    - adjust NUM_GPUS and NUM_WORKERS based on your PC specs
 - cd into outermost slowfast folder and run the following:
 - train MViTv2-B with input clips:
 ```console
