@@ -220,48 +220,38 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             # logger.info(f"CUR ITER: {cur_iter}")
             
             # PREDICTION STEP: make predictions for each camera angle using identical proposal length and space
-            all_cam_view_preds, all_cam_view_probs = predict_cam_views(cfg, model, cam_view_clips, frame_agg_threshold, logger, resample=False)
+            preds, probs, preds_2, probs_2 = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=False)
 
             labels = labels.cpu()
             video_idx = video_idx.cpu()
 
             # CONSOLIDATION STEP: Consolidate predictions among the three camera angles into 1 final pred
-            preds = np.array(all_cam_view_preds)
-            probs = np.array(all_cam_view_probs)
-            # preds_2 = np.array(all_cam_view_preds_2)
-            # probs_2 = np.array(all_cam_view_probs_2)
-
-            # agg_pred_1
             curr_agg_pred, curr_consol_code = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
+            
 
-            # var to signal if start time needs adjustment
-            fix_start_time = False
+            # CORRECTION STEP: correct prediction if necessary
+            fix_start_time = False # signal if start time needs adjustment
 
             # detect new action w/ common pred but prob is low => resample current temporal interval and consolidate again
-            if curr_agg_pred != prev_agg_pred and curr_consol_code == -1 and curr_agg_pred == -1:
+            if curr_agg_pred != prev_agg_pred and curr_consol_code == -1:
                 logger.info("Perform Resampling")
-                all_cam_view_preds, all_cam_view_probs = predict_cam_views(cfg, model, cam_view_clips, frame_agg_threshold, logger, resample=True)
-
-                preds = np.array(all_cam_view_preds)
-                probs = np.array(all_cam_view_probs)
+                preds, probs, _, _ = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=True)
                 
                 curr_agg_pred, curr_consol_code = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
 
-                # if final pred is not -1, we know resampling worked and that new action begins 1s later instead of at start of new interval
-                if curr_agg_pred != -1:
+                # if final consol code is 0, resampling worked and new action begins 1s later instead of at start of new interval
+                if curr_consol_code == 0:
                     proposal_temporal_resolution = float(proposal[2][0]) - float(proposal[1][0])
                     end_time = str(float(end_time) + (proposal_temporal_resolution/2.0))
 
                     # re-evaluated precision of localization for new detected action, adjust start time accordingly
                     fix_start_time = True
 
-            # if len(preds_2) == 3: agg_pred_2 = consolidate_preds(preds_2, probs_2, cfg.TAL.FILTERING_THRESHOLD)
+            if len(preds_2) == 3: agg_pred_2, curr_consol_code_2 = consolidate_preds(preds_2, probs_2, cfg.TAL.FILTERING_THRESHOLD, logger)
 
-            # # use agg_pred_1 only when equal to agg_pred_2, agg_pred_2 not initialized, or agg_pred_2 is not reliable (== -1)
-            # if len(preds_2) == 0 or agg_pred_1 == agg_pred_2: #or agg_pred_2 == -1:
-            #     curr_agg_pred = agg_pred_1
-            # else:
-            #     curr_agg_pred = -1
+            # invalidate results if curr_agg_pred differs from agg_pred_2 OR one of the preds is invalid
+            if curr_consol_code in [-1,-2] or curr_consol_code_2 in [-2] or curr_agg_pred != agg_pred_2:
+                curr_consol_code = -1
 
 
             # ASSESSMENT STEP: check if temporal localization for the current action is done

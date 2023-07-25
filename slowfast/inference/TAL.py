@@ -23,7 +23,7 @@ def temporal_sampling(frames, start_idx, end_idx, num_samples):
     return frames
 
 
-def predict_cam_views(cfg, model, cam_view_clips, agg_threshold, logger, resample=False):
+def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger, resample=False):
     all_cam_view_preds = []
     all_cam_view_probs = []
     all_cam_view_preds_2 = []
@@ -58,16 +58,16 @@ def predict_cam_views(cfg, model, cam_view_clips, agg_threshold, logger, resampl
             input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
 
             # single clip input
-            # dev = 'cuda:1' if cfg.TAL.USE_2_GPUS == True else 'cuda:0'
-            # input_2 = [cam_view_clips[cam_view_type][start_idx_2:].permute(1,0,2,3).unsqueeze(dim=0).to(dev)] 
+            dev = 'cuda:1' if cfg.TAL.USE_2_GPUS == True else 'cuda:0'
+            input_2 = [cam_view_clips[cam_view_type][start_idx_2:].permute(1,0,2,3).unsqueeze(dim=0).to(dev)] 
 
-            # cam_view_preds_2 = model_2(input_2).cpu()
-            # cam_view_pred_2 = cam_view_preds_2.argmax().item()
-            # cam_view_prob_2 = cam_view_preds_2.max().item()
-            # # logger.info(f"PROP: {cam_view_type}, pred: {cam_view_pred_2}, prob: {cam_view_prob_2:.3f}")
+            cam_view_preds_2 = model_2(input_2).cpu()
+            cam_view_pred_2 = cam_view_preds_2.argmax().item()
+            cam_view_prob_2 = cam_view_preds_2.max().item()
+            logger.info(f"PROP: {cam_view_type}, pred: {cam_view_pred_2}, prob: {cam_view_prob_2:.3f}")
 
-            # all_cam_view_preds_2.append(cam_view_pred_2)
-            # all_cam_view_probs_2.append(cam_view_prob_2)
+            all_cam_view_preds_2.append(cam_view_pred_2)
+            all_cam_view_probs_2.append(cam_view_prob_2)
 
         elif cam_view_clips[cam_view_type].shape[0] > cfg.DATA.NUM_FRAMES and resample == True:
             # assumes uniform sampling of new proposal failed -> resample new proposal but only select frames from 2nd half of clip
@@ -92,7 +92,12 @@ def predict_cam_views(cfg, model, cam_view_clips, agg_threshold, logger, resampl
         all_cam_view_preds.append(cam_view_pred)
         all_cam_view_probs.append(cam_view_prob)
 
-    return all_cam_view_preds, all_cam_view_probs
+    preds = np.array(all_cam_view_preds)
+    probs = np.array(all_cam_view_probs)
+    preds_2 = np.array(all_cam_view_preds_2)
+    probs_2 = np.array(all_cam_view_probs_2)
+
+    return preds, probs, preds_2, probs_2
 
 
 # consolidates predictions from all camera angles for a single proposal
