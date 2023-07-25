@@ -273,7 +273,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
 
-                    with open(cfg.TAL.OUTPUT_FILE_PATH, "a+") as f:
+                    with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
                         f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
                     
                     logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
@@ -358,6 +358,9 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 )
 
         test_meter.finalize_metrics()
+    else:
+        # merge unmerged segments
+        post_process_merge(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", cfg.TAL.OUTPUT_FILE_PATH)
     
     logger.info("Inferencing complete.")
 
