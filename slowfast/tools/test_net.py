@@ -170,7 +170,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         elif cfg.TAL.ENABLE == True and cfg.TEST.BATCH_SIZE == 3:
                 
             # AGGREGATION STEP: aggregate clip frames together in order to increase temporal resolution for classification
-            if cur_iter == 0: 
+            if clip_agg_cnt == 0: 
                 # perform first iter setup
                 cam_views = set()
                         
@@ -233,7 +233,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             fix_start_time = False # signal if start time needs adjustment
 
             # detect new action w/ common pred but prob is low => resample current temporal interval and consolidate again
-            if curr_agg_pred != prev_agg_pred and curr_consol_code == -1:
+            if clip_agg_cnt > 0 and curr_agg_pred != prev_agg_pred and curr_consol_code == -1:
                 logger.info("Perform Resampling")
                 preds, probs, _, _ = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=True)
                 
@@ -247,11 +247,16 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     # re-evaluated precision of localization for new detected action, adjust start time accordingly
                     fix_start_time = True
 
-            if len(preds_2) == 3: agg_pred_2, curr_consol_code_2 = consolidate_preds(preds_2, probs_2, cfg.TAL.FILTERING_THRESHOLD, logger)
+            # if 2nd pred available, compare against 1st pred to get final pred
+            if len(preds_2) == 3: 
+                agg_pred_2, curr_consol_code_2 = consolidate_preds(preds_2, probs_2, cfg.TAL.FILTERING_THRESHOLD, logger)
 
-            # invalidate results if curr_agg_pred differs from agg_pred_2 OR one of the preds is invalid
-            if curr_consol_code in [-1,-2] or curr_consol_code_2 in [-2] or curr_agg_pred != agg_pred_2:
-                curr_consol_code = -1
+                # invalidate results if curr_agg_pred differs from agg_pred_2 OR one of the preds is invalid
+                if curr_consol_code in [-1,-2] or curr_consol_code_2 in [-1,-2] or curr_agg_pred != agg_pred_2:
+                    # NOTE: setting this to -1 invalidates localization for this temporal interval (prev_consol_code must be 0 for valid localization)
+                    curr_consol_code = -1 
+            else: 
+                curr_consol_code_2 = None
 
 
             # ASSESSMENT STEP: check if temporal localization for the current action is done
@@ -262,11 +267,11 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 - there are issues predicting over the current temporal interval => toss results and reset aggregation of clips 
             """
             vid_id_changed = (video_id != proposal[0][0])
-            action_changed = (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0)
-            curr_pred_is_bad = curr_consol_code in [-1, -2] 
+            action_changed = (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0) 
+            curr_pred_is_bad = curr_consol_code in [-1, -2]
 
             if vid_id_changed or curr_pred_is_bad or action_changed:
-                logger.info(f"prev code: {prev_consol_code}, cur code: {curr_consol_code}")
+                logger.info(f"prev code: {prev_consol_code}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
 
                 # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
                 if prev_consol_code == 0 or clip_agg_cnt > 1:
@@ -291,14 +296,20 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 video_id = proposal[0][0]
 
                 # reset all clip aggregation variables
-                clip_agg_cnt = 1
                 del cam_view_clips
                 cam_view_clips = {}
                 
-                # re-add this iteration's frames from the clip
-                for b in range(cfg.TEST.BATCH_SIZE):
-                    cview = test_loader.dataset._path_to_videos[video_idx[b]].rpartition('/')[-1].partition('_user')[0]
-                    cam_view_clips[cview] = inputs[0][b].permute(1,0,2,3)
+                if curr_pred_is_bad:
+                    # if this temporal interval's frames caused invalid results, do not include them in future temporal intervals
+                    clip_agg_cnt = 0
+                else:
+                    # re-add this iteration's frames from the clip if they provided valid results
+                    for b in range(cfg.TEST.BATCH_SIZE):
+                        cview = test_loader.dataset._path_to_videos[video_idx[b]].rpartition('/')[-1].partition('_user')[0]
+                        cam_view_clips[cview] = inputs[0][b].permute(1,0,2,3)
+                    
+                    # one clip was just added from the above lines of code
+                    clip_agg_cnt = 1
 
             else: 
                 # continue localization for current action pred
