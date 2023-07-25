@@ -298,18 +298,14 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 # reset all clip aggregation variables
                 del cam_view_clips
                 cam_view_clips = {}
+            
+                # re-add this iteration's frames from the clip 
+                for b in range(cfg.TEST.BATCH_SIZE):
+                    cview = test_loader.dataset._path_to_videos[video_idx[b]].rpartition('/')[-1].partition('_user')[0]
+                    cam_view_clips[cview] = inputs[0][b].permute(1,0,2,3)
                 
-                if curr_pred_is_bad:
-                    # if this temporal interval's frames caused invalid results, do not include them in future temporal intervals
-                    clip_agg_cnt = 0
-                else:
-                    # re-add this iteration's frames from the clip if they provided valid results
-                    for b in range(cfg.TEST.BATCH_SIZE):
-                        cview = test_loader.dataset._path_to_videos[video_idx[b]].rpartition('/')[-1].partition('_user')[0]
-                        cam_view_clips[cview] = inputs[0][b].permute(1,0,2,3)
-                    
-                    # one clip was just added from the above lines of code
-                    clip_agg_cnt = 1
+                # one clip was just added from the above lines of code
+                clip_agg_cnt = 1
 
             else: 
                 # continue localization for current action pred
