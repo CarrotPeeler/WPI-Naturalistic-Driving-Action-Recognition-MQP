@@ -195,7 +195,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
             else:
                 # this proposal may contain a new action pred, so use start time of this proposal as end time to prev action pred
-                end_time = proposal[1][0]
+                end_time = proposal[1][0] if float(proposal[1][0]) > float(end_time) else end_time
 
                 cviews = set()
                         
@@ -278,8 +278,9 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     
                     logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
-                # set start time of newly detected action 
+                # set start time and end time of newly detected action 
                 start_time = proposal[1][0]
+                end_time = proposal[2][0]
                 
                 # adjust start time if precision of localization for new detected action has been updated
                 if fix_start_time:
