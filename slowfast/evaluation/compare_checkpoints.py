@@ -71,9 +71,9 @@ def print_incorrect_pred_stats(csv_filepath_arr, model_name, trained_epochs_list
 
 if __name__ == '__main__':  
 
-    inc_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted/incorrect_preds/"
-    cor_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted/correct_preds/"
-    save_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted/checkpoint_stats"
+    inc_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/incorrect_preds/"
+    cor_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/correct_preds/"
+    save_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/checkpoint_stats"
 
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)

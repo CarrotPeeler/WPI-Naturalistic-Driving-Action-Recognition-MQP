@@ -456,10 +456,10 @@ def eval_epoch(
                             for jdx in range(prompted_clip.shape[0]):
                                 if(jdx in [0, 7, cfg.DATA.NUM_FRAMES-1]):
                                     # save_image(clip[jdx], os.getcwd() + f"/visual_prompting/images/originals/epoch_{epoch}_batch_{batch_iter}_clip_{idx}.png")
-                                    save_image(prompted_clip[jdx], f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch + 1}_batch_{cur_iter}_prompted_clip_{idx}_frame_{jdx}.png")
+                                    save_image(prompted_clip[jdx], f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch + 1}_batch_{cur_iter}_prompted_clip_{idx}_frame_{jdx}_{cam_views[jdx]}.png")
 
                                     prompt = prompted_clip[jdx] - clip[jdx]
-                                    save_image(prompt, f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch + 1}_batch_{cur_iter}_prompted_clip_{idx}_frame_{jdx}_prompt.png")
+                                    save_image(prompt, f"{cfg.PROMPT.IMAGE_FOLDER}/val_epoch_{cur_epoch + 1}_batch_{cur_iter}_prompted_clip_{idx}_frame_{jdx}_prompt_{cam_views[jdx]}.png")
                                     # save_image(prompt[jdx], f"{args.image_folder}/val_epoch_{epoch}_batch_{batch_iter}_prompt_{idx}.png")
                                
             else:
