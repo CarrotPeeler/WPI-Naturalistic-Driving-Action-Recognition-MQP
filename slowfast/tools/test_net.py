@@ -84,18 +84,9 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         frame_agg_threshold = cfg.TAL.CLIP_AGG_THRESHOLD - cfg.DATA.NUM_FRAMES 
 
         # initialize matrix with weighted action probs for each cam view (weights taken from Purdue's M2DAR Submission https://arxiv.org/abs/2305.08877)
-        cam_view_weights = {
-            'Dashboard': np.empty(16),
-            'Rear_view': np.empty(16),
-            'Right_side_window': np.empty(16)
-        }
-
-        with open(os.getcwd() + '/inference/weighted_cam_view_action_probs.csv') as f:
-            for i, line in enumerate(f.readlines()):
-                probs = line.strip().split(',')
-                
-                for j, prob in enumerate(probs):
-                    cam_view_weights[list(cam_view_weights)[j]][i] = prob
+        weights_df = pd.read_csv(os.getcwd() + '/inference/weighted_cam_view_action_probs.csv')
+        cam_view_weights = { col:weights_df[col].to_numpy() for col in weights_df.columns }
+         
 
 
     for cur_iter, (inputs, labels, video_idx, time, meta, proposal) in enumerate(
