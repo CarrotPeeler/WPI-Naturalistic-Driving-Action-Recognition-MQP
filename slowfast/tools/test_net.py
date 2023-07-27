@@ -8,6 +8,7 @@ import os
 import pickle
 import torch
 import sys
+import pandas as pd
 
 import slowfast.utils.checkpoint as cu
 import slowfast.utils.distributed as du
@@ -58,11 +59,13 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         prompter.eval()
 
     # delete existing predictions.txt if exists
-    pred_output = os.getcwd() + "/post_process/predictions.txt"
-    if os.path.exists(pred_output):
-        print("DELETING predictions.txt")
-        os.remove(pred_output)
+    if os.path.exists(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt"):
+        print("DELETING unmerged csv")
+        os.remove(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt")
 
+    if os.path.exists(cfg.TAL.OUTPUT_FILE_PATH):
+        print("DELETING merged csv")
+        os.remove(cfg.TAL.OUTPUT_FILE_PATH)
 
     if cfg.TAL.ENABLE == True:
         start_time = None
@@ -79,7 +82,11 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
         # num of aggregated frames to keep from last iteration
         frame_agg_threshold = cfg.TAL.CLIP_AGG_THRESHOLD - cfg.DATA.NUM_FRAMES 
-        
+
+        # initialize matrix with weighted action probs for each cam view (weights taken from Purdue's M2DAR Submission https://arxiv.org/abs/2305.08877)
+        weights_df = pd.read_csv(os.getcwd() + '/inference/weighted_cam_view_action_probs.csv')
+        cam_view_weights = { col:weights_df[col].to_numpy() for col in weights_df.columns }      
+
 
     for cur_iter, (inputs, labels, video_idx, time, meta, proposal) in enumerate(
         test_loader
@@ -173,17 +180,20 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             if clip_agg_cnt == 0: 
                 # perform first iter setup
                 cam_views = set()
+                vid_names = set()
                         
                 # check that there's no duplicate cam views and video ids + start/end times are matching
                 # also intialize cam view clips for storing aggregated clips 
                 for i in range(cfg.TEST.BATCH_SIZE):
                     cam_view = test_loader.dataset._path_to_videos[video_idx[i]].rpartition('/')[-1].partition('_user')[0] 
+                    vid_name = test_loader.dataset._path_to_videos[video_idx[i]].rpartition('id_')[-1].partition('-')[0]
                     cam_views.add(cam_view)
+                    vid_names.add(vid_name)
                     
                     cam_view_clips[cam_view] = inputs[0][i].permute(1,0,2,3)
 
                 assert len(cam_views) == 3, f"Cam view mismatch for batch {cur_iter}"
-                assert len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for batch {cur_iter}"
+                assert len(vid_names) == len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for batch {cur_iter}"
 
                 # only set start_time here if 1st iter; otherwise, its set when prev_agg_pred changes
                 
@@ -198,12 +208,15 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 end_time = proposal[1][0] if float(proposal[1][0]) > float(end_time) else end_time
 
                 cviews = set()
+                v_names = set()
                         
                 # check that there's no duplicate cam views and video ids + start/end times are matching
                 # Concat clips to their respective batch (based on cam view type) 
                 for j in range(cfg.TEST.BATCH_SIZE):
                     cview = test_loader.dataset._path_to_videos[video_idx[j]].rpartition('/')[-1].partition('_user')[0]
+                    v_name = test_loader.dataset._path_to_videos[video_idx[i]].rpartition('id_')[-1].partition('-')[0]
                     cviews.add(cview)
+                    v_names.add(v_name)
 
                     # fix the aggregation clip size to be constant past the threshold 
                     start_idx = cam_view_clips[cview].shape[0] - frame_agg_threshold if clip_agg_cnt*cfg.DATA.NUM_FRAMES > frame_agg_threshold else 0 
@@ -215,29 +228,29 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                         and cam_view_clips[cview].shape[3] == cfg.DATA.TEST_CROP_SIZE, f"Shape mismatch, got {cam_view_clips[cview].shape}"
 
                 assert len(cviews) == 3, f"Cam view mismatch for next batch {cur_iter}"
-                assert len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for next batch {cur_iter}"
+                assert len(v_names) == len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for next batch {cur_iter}"
 
-            # logger.info(f"CUR ITER: {cur_iter}")
+            logger.info(f"CUR ITER: {cur_iter}")
             
             # PREDICTION STEP: make predictions for each camera angle using identical proposal length and space
-            preds, probs, preds_2, probs_2 = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=False)
+            probs, probs_2 = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=False, cur_iter=cur_iter)
 
             labels = labels.cpu()
             video_idx = video_idx.cpu()
 
             # CONSOLIDATION STEP: Consolidate predictions among the three camera angles into 1 final pred
-            curr_agg_pred, curr_consol_code = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
+            curr_agg_pred, curr_consol_code = consolidate_preds(probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
             
 
             # CORRECTION STEP: correct prediction if necessary
             fix_start_time = False # signal if start time needs adjustment
 
-            # detect new action w/ common pred but prob is low => resample current temporal interval and consolidate again
-            if clip_agg_cnt > 0 and curr_agg_pred != prev_agg_pred and curr_consol_code == -1:
+            # detect new action w/ but prob is low => resample current temporal interval and consolidate again
+            if curr_consol_code == -1:
                 logger.info("Perform Resampling")
-                preds, probs, _, _ = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=True)
+                probs, _ = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=True, cur_iter=cur_iter)
                 
-                curr_agg_pred, curr_consol_code = consolidate_preds(preds, probs, cfg.TAL.FILTERING_THRESHOLD, logger)
+                curr_agg_pred, curr_consol_code = consolidate_preds(probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
 
                 # if final consol code is 0, resampling worked and new action begins 1s later instead of at start of new interval
                 if curr_consol_code == 0:
@@ -248,8 +261,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     fix_start_time = True
 
             # if 2nd pred available, compare against 1st pred to get final pred
-            if len(preds_2) == 3: 
-                agg_pred_2, curr_consol_code_2 = consolidate_preds(preds_2, probs_2, cfg.TAL.FILTERING_THRESHOLD, logger)
+            if len(probs_2) == 3: 
+                agg_pred_2, curr_consol_code_2 = consolidate_preds(probs_2, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
 
                 # invalidate results if curr_agg_pred differs from agg_pred_2 OR one of the preds is invalid
                 if curr_consol_code in [-1,-2] or curr_consol_code_2 in [-1,-2] or curr_agg_pred != agg_pred_2:
