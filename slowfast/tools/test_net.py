@@ -219,9 +219,9 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     v_names.add(v_name)
 
                     # fix the aggregation clip size to be constant past the threshold 
-                    start_idx = cam_view_clips[cview].shape[0] - frame_agg_threshold if clip_agg_cnt*cfg.DATA.NUM_FRAMES > frame_agg_threshold else 0 
+                    # start_idx = cam_view_clips[cview].shape[0] - frame_agg_threshold if clip_agg_cnt*cfg.DATA.NUM_FRAMES > frame_agg_threshold else 0 
 
-                    cam_view_clips[cview] = torch.cat([cam_view_clips[cview][start_idx:], inputs[0][j].permute(1,0,2,3)], dim=0)
+                    cam_view_clips[cview] = torch.cat([cam_view_clips[cview], inputs[0][j].permute(1,0,2,3)], dim=0)
 
                     assert cam_view_clips[cview].shape[1] == 3 \
                         and cam_view_clips[cview].shape[2] == cfg.DATA.TEST_CROP_SIZE \

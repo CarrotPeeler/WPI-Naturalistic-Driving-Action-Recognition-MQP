@@ -43,7 +43,7 @@ def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger
             # input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
 
             # evenly sample half the num of input frames from among last half of frames in clip aggregation pool
-            start_idx_1 = cam_view_clips[cam_view_type].shape[0] - agg_threshold
+            start_idx_1 = 0 # cam_view_clips[cam_view_type].shape[0] - agg_threshold
             end_idx_1 = start_idx_1 + cam_view_clips[cam_view_type].shape[0] - 1 - cfg.DATA.NUM_FRAMES
             sampled_1 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_1, end_idx_1, int(cfg.DATA.NUM_FRAMES*cfg.TAL.AGG_SAMPLING_RATIO))
 
@@ -74,7 +74,7 @@ def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger
 
         elif cam_view_clips[cam_view_type].shape[0] > cfg.DATA.NUM_FRAMES and resample == True:
             # assumes uniform sampling of new proposal failed -> resample new proposal but only select frames from 2nd half of clip
-            start_idx_1 = cam_view_clips[cam_view_type].shape[0] - agg_threshold
+            start_idx_1 = 0 # cam_view_clips[cam_view_type].shape[0] - agg_threshold
             end_idx_1 = start_idx_1 + cam_view_clips[cam_view_type].shape[0] - 1 - cfg.DATA.NUM_FRAMES
             sampled_1 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_1, end_idx_1, int(cfg.DATA.NUM_FRAMES*cfg.TAL.AGG_SAMPLING_RATIO))
 
