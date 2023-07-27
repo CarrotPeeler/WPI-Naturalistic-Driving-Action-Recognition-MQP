@@ -85,8 +85,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
         # initialize matrix with weighted action probs for each cam view (weights taken from Purdue's M2DAR Submission https://arxiv.org/abs/2305.08877)
         weights_df = pd.read_csv(os.getcwd() + '/inference/weighted_cam_view_action_probs.csv')
-        cam_view_weights = { col:weights_df[col].to_numpy() for col in weights_df.columns }
-         
+        cam_view_weights = { col:weights_df[col].to_numpy() for col in weights_df.columns }      
 
 
     for cur_iter, (inputs, labels, video_idx, time, meta, proposal) in enumerate(
@@ -246,8 +245,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             # CORRECTION STEP: correct prediction if necessary
             fix_start_time = False # signal if start time needs adjustment
 
-            # detect new action w/ common pred but prob is low => resample current temporal interval and consolidate again
-            if clip_agg_cnt > 0 and curr_agg_pred != prev_agg_pred and curr_consol_code == -1:
+            # detect new action w/ but prob is low => resample current temporal interval and consolidate again
+            if curr_consol_code == -1:
                 logger.info("Perform Resampling")
                 probs, _ = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=True, cur_iter=cur_iter)
                 
