@@ -133,11 +133,11 @@ def get_merged_segment_idxs(video_df):
                 consec_pred_idxs.append(same_pred_row_idx)
 
                 # fetch future start and current end timestamps
-                # if i < len(same_pred_idxs) - 1:
-                #     next_interval_start = video_df.iloc[[same_pred_idxs[i+1]]]["start_time"].to_list()[0]
-                #     curr_interval_end = video_df.iloc[[same_pred_row_idx]]["end_time"].to_list()[0]
+                if i < len(same_pred_idxs) - 1:
+                    next_interval_start = video_df.iloc[[same_pred_idxs[i+1]]]["start_time"].to_list()[0]
+                    curr_interval_end = video_df.iloc[[same_pred_row_idx]]["end_time"].to_list()[0]
 
-                if(i == len(same_pred_idxs) - 1 or same_pred_idxs[i+1] - same_pred_row_idx != 1): # or next_interval_start - curr_interval_end > 4):
+                if(i == len(same_pred_idxs) - 1 or same_pred_idxs[i+1] - same_pred_row_idx != 1 or next_interval_start < curr_interval_end):
                     row_idx = same_pred_row_idx+1
                     break
 
