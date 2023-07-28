@@ -72,7 +72,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         end_time = None
         video_id = None
         prev_agg_pred = None
-        prev_consol_code = None
+        prev_consol_codes = []
 
         # stores aggregated clips (batches) for each cam view type
         cam_view_clips = {}
@@ -241,10 +241,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             # CONSOLIDATION STEP: Consolidate predictions among the three camera angles into 1 final pred
             curr_agg_pred, curr_consol_code = consolidate_preds(probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
             
-
             # CORRECTION STEP: correct prediction if necessary
             fix_start_time = False # signal if start time needs adjustment
-
             # detect new action w/ but prob is low => resample current temporal interval and consolidate again
             if curr_consol_code == -1:
                 logger.info("Perform Resampling")
@@ -260,16 +258,24 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     # re-evaluated precision of localization for new detected action, adjust start time accordingly
                     fix_start_time = True
 
-            # if 2nd pred available, compare against 1st pred to get final pred
+            # INVALIDATION STEP: check for invalid results if a 2nd pred is available
+            consol_codes = []
             if len(probs_2) == 3: 
                 agg_pred_2, curr_consol_code_2 = consolidate_preds(probs_2, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
 
-                # invalidate results if curr_agg_pred differs from agg_pred_2 OR one of the preds is invalid
-                if curr_consol_code in [-1,-2] or curr_consol_code_2 in [-1,-2] or curr_agg_pred != agg_pred_2:
-                    # NOTE: setting this to -1 invalidates localization for this temporal interval (prev_consol_code must be 0 for valid localization)
-                    curr_consol_code = -1 
+                # one or both preds are below the filtering threshold
+                if curr_consol_code == -1 or curr_consol_code_2 == -1:
+                    consol_codes.append(-1)
+                # preds are not identical
+                if curr_agg_pred != agg_pred_2:
+                    consol_codes.append(-2)
+                # if all checks pass, final code is 0
+                if len(consol_codes) == 0:
+                    consol_codes.append(0)
+            # if no 2nd input available, append whatever code 1st pred receives
             else: 
                 curr_consol_code_2 = None
+                consol_codes.append(curr_consol_code)
 
 
             # ASSESSMENT STEP: check if temporal localization for the current action is done
@@ -281,13 +287,13 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             """
             vid_id_changed = (video_id != proposal[0][0])
             action_changed = (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0) 
-            curr_pred_is_bad = curr_consol_code in [-1, -2]
+            curr_pred_is_bad = any(x in consol_codes for x in [-1,-2])
 
             if vid_id_changed or curr_pred_is_bad or action_changed:
-                logger.info(f"prev code: {prev_consol_code}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
+                logger.info(f"prev code: {prev_consol_codes}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
 
                 # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
-                if prev_consol_code == 0 or clip_agg_cnt > 1:
+                if (0 in prev_consol_codes and len(prev_consol_codes) == 1) or clip_agg_cnt > 1:
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
 
@@ -327,7 +333,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 clip_agg_cnt += 1
 
             # update previous prediction for next batch iter as well as consolidation code
-            prev_consol_code = curr_consol_code
+            prev_consol_codes = consol_codes
             prev_agg_pred = curr_agg_pred
 
         ######################## T A L  E N D ########################

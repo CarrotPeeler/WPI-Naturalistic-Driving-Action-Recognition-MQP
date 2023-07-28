@@ -68,7 +68,7 @@ def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger
             cam_view_probs_2 = cam_view_preds_2.numpy()
             all_cam_view_probs_2[cam_view_type] = cam_view_probs_2
 
-            # if cur_iter >= 57 and cur_iter <= 59:
+            # if cur_iter == 56: #and cur_iter <= 59:
             #     save_image(sampled, f"{cfg.PROMPT.IMAGE_FOLDER}/input_1_no_resample_iter_{cur_iter}.png")
             #     save_image(sampled_3, f"{cfg.PROMPT.IMAGE_FOLDER}/input_2_no_resample_iter_{cur_iter}.png")
 
@@ -87,7 +87,7 @@ def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger
             # aggregated input
             input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
 
-            # if cur_iter >= 57 and cur_iter <= 59:
+            # if cur_iter == 56: #and cur_iter <= 59:
             #     save_image(sampled, f"{cfg.PROMPT.IMAGE_FOLDER}/input_1_resampled_iter_{cur_iter}.png")
 
         cam_view_preds = model(input).cpu()
