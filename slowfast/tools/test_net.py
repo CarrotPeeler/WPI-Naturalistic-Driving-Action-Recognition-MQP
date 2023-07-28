@@ -294,12 +294,23 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
                 # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
                 if (0 in prev_consol_codes and len(prev_consol_codes) == 1) or clip_agg_cnt > 1:
+                    # reliable_segment = True
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
 
+                    # if clip_agg_cnt > 3:
+                    #     segment_probs = predict_short_segment(cfg, model_2, cam_view_clips)
+                    #     segment_preds, segment_codes = zip(*[consolidate_preds(probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs])
+                    #     logger.info(f'{segment_preds, segment_codes}')
+
+                    #     segment_preds = set(segment_preds)
+                    #     if not(len(segment_preds) == 1 and curr_agg_pred in segment_preds and -1 not in segment_codes):
+                    #         reliable_segment = False
+                
+                    # if reliable_segment:
                     with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
                         f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
-                    
+                
                     logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
                 # set start time and end time of newly detected action 

@@ -37,14 +37,9 @@ def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger
             input = [cam_view_clips[cam_view_type].permute(1,0,2,3).unsqueeze(dim=0)]
 
         elif cam_view_clips[cam_view_type].shape[0] > cfg.DATA.NUM_FRAMES and resample == False:
-            # start_idx = 0
-            # end_idx = start_idx + cam_view_clips[cam_view_type].shape[0] - 1
-            # sampled = temporal_sampling(cam_view_clips[cam_view_type], start_idx, end_idx, cfg.DATA.NUM_FRAMES)
-            # input = [sampled.permute(1,0,2,3).unsqueeze(dim=0)]
-
             # evenly sample half the num of input frames from among last half of frames in clip aggregation pool
-            start_idx_1 = 0 # cam_view_clips[cam_view_type].shape[0] - agg_threshold
-            end_idx_1 = start_idx_1 + cam_view_clips[cam_view_type].shape[0] - 1 - cfg.DATA.NUM_FRAMES
+            start_idx_1 = 0 
+            end_idx_1 = cam_view_clips[cam_view_type].shape[0] - 1 - cfg.DATA.NUM_FRAMES
             sampled_1 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_1, end_idx_1, int(cfg.DATA.NUM_FRAMES*cfg.TAL.AGG_SAMPLING_RATIO))
 
             SINGLE_PROP_SAMPLING_RATIO = 1.0 - cfg.TAL.AGG_SAMPLING_RATIO
@@ -74,13 +69,12 @@ def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger
 
         elif cam_view_clips[cam_view_type].shape[0] > cfg.DATA.NUM_FRAMES and resample == True:
             # assumes uniform sampling of new proposal failed -> resample new proposal but only select frames from 2nd half of clip
-            start_idx_1 = 0 # cam_view_clips[cam_view_type].shape[0] - agg_threshold
-            end_idx_1 = start_idx_1 + cam_view_clips[cam_view_type].shape[0] - 1 - cfg.DATA.NUM_FRAMES
+            start_idx_1 = 0 
+            end_idx_1 = cam_view_clips[cam_view_type].shape[0] - 1 - cfg.DATA.NUM_FRAMES
             sampled_1 = temporal_sampling(cam_view_clips[cam_view_type], start_idx_1, end_idx_1, int(cfg.DATA.NUM_FRAMES*cfg.TAL.AGG_SAMPLING_RATIO))
 
             start_idx_2 = cam_view_clips[cam_view_type].shape[0] - int(cfg.DATA.NUM_FRAMES/2)
-            end_idx_2 = start_idx_2 + cam_view_clips[cam_view_type].shape[0] - 1
-            sampled_2 = cam_view_clips[cam_view_type][start_idx_2:end_idx_2]
+            sampled_2 = cam_view_clips[cam_view_type][start_idx_2:]
 
             sampled = torch.cat([sampled_1, sampled_2], dim=0)
 
@@ -97,6 +91,30 @@ def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger
     return all_cam_view_probs, all_cam_view_probs_2
 
 
+# performs predictions over short segment ~6s or less, as a means of strengthening classification confidence
+def predict_short_segment(cfg, model_2, cam_view_clips):
+    dev = 'cuda:1' if cfg.TAL.USE_2_GPUS == True else 'cuda:0'
+
+    all_segment_probs = []
+    num_total_frames = cam_view_clips['Dashboard'].shape[0]
+
+    for start_idx in range(cfg.DATA.NUM_FRAMES//2, num_total_frames, cfg.DATA.NUM_FRAMES):
+        if start_idx + cfg.DATA.NUM_FRAMES <= num_total_frames:
+            all_cam_view_probs = {}
+
+            for cam_view_type in cam_view_clips.keys():
+                sampled = cam_view_clips[cam_view_type][start_idx:start_idx + cfg.DATA.NUM_FRAMES]
+                input = [sampled.permute(1,0,2,3).unsqueeze(dim=0).to(dev)]
+
+                cam_view_preds = model_2(input).cpu()
+                cam_view_probs = cam_view_preds.numpy()
+                all_cam_view_probs[cam_view_type] = cam_view_probs
+
+            all_segment_probs.append(all_cam_view_probs)
+
+    return all_segment_probs
+
+        
 # consolidates predictions from all camera angles for a single proposal
 def consolidate_preds(cam_view_probs:dict, cam_view_weights:dict, filtering_threshold:float, logger):
     consolidated_probs = cam_view_weights['Dashboard'] * cam_view_probs['Dashboard']\
