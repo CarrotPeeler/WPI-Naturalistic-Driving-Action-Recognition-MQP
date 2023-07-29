@@ -308,7 +308,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                         if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
                         segment_probs, segment_sample_idxs = predict_short_segment(cfg, model_2, cam_view_clips)
                         segment_preds, segment_codes, consolidated_segment_prob_mats = zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs])
-                        
+                        consolidated_segment_prob_mats = list(consolidated_segment_prob_mats)
+
                         # reorder mats by temporal idx used for sampling
                         reordered_consolidated_prob_mats = get_reordered_prob_mats(cfg, consolidated_prop_prob_mats, consolidated_segment_prob_mats, segment_sample_idxs)
                         # consolidate all prob mats for all sampled intervals into final pred
