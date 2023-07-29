@@ -87,6 +87,30 @@ _C.CONTRASTIVE.SWAV_QEUE_LEN = 0
 # Wether to run online kNN evaluation during training
 _C.CONTRASTIVE.KNN_ON = True
 
+# ---------------------------------------------------------------------------- #
+# Video-text Contrastive learning options
+# ---------------------------------------------------------------------------- #
+_C.CONTRA = CfgNode()
+
+_C.CONTRA.ENABLE = False
+
+# maximum text token length
+_C.CONTRA.CONTEXT_LENGTH = 77
+
+# the BPE token dict
+_C.CONTRA.vocab_size = 49408
+
+# the text transformer stuff
+_C.CONTRA.transformer_width = 512
+_C.CONTRA.transformer_layers = 12
+_C.CONTRA.transformer_heads = 8  # transformer_width // 64
+
+# use 2-layer MLP head for visual and textual projection instead one linear
+_C.CONTRA.use_MLP = False
+
+# projection joint embedding size
+_C.CONTRA.embed_dim = 512
+
 
 # ---------------------------------------------------------------------------- #
 # Batch norm options
@@ -425,6 +449,9 @@ _C.MODEL.FC_INIT_STD = 0.01
 # Activation layer for the output head.
 _C.MODEL.HEAD_ACT = "softmax"
 
+# for sigmoid, in train we removed, use this option to enable activation func during training
+_C.MODEL.USE_HEAD_ACT_IN_TRAIN = False
+
 # Activation checkpointing enabled or not to save GPU memory.
 _C.MODEL.ACT_CHECKPOINT = False
 
@@ -437,6 +464,13 @@ _C.MODEL.FROZEN_BN = False
 
 # If True, AllReduce gradients are compressed to fp16
 _C.MODEL.FP16_ALLREDUCE = False
+
+# junwei: use multiple classification head, each for a different dataset
+_C.MODEL.USE_MULTI_HEAD = False
+
+# moco copy the heads
+_C.MODEL.MULTI_USE_MOCO = False
+_C.MODEL.MULTI_MOCO_MOMENTUM = 0.9
 
 
 # -----------------------------------------------------------------------------
@@ -554,6 +588,22 @@ _C.MVIT.USE_MEAN_POOLING = False
 
 # If True, use frozen sin cos positional embedding.
 _C.MVIT.USE_FIXED_SINCOS_POS = False
+
+# junwei: with this True, will not add x=x[0] for inputs
+_C.MVIT.DIRECT_INPUT = False
+
+# junwei: MViT version 2:
+# https://arxiv.org/pdf/2112.01526v1.pdf
+_C.MVIT.Q_POOL_RESIDUAL = False  # use query residual pooling
+_C.MVIT.Q_POOL_ALL = False  # use q pooling with stride=1 for all other layers
+# expand the channel dim during attention compute instead of at last MLP
+_C.MVIT.CHANNEL_EXPAND_FRONT = False
+
+# this does not seemed to be used in MViT v2 so the code is removed
+_C.MVIT.POOL_SKIP_USE_CONV = False  # use Conv3D for skip pooling instead of MaxPool
+
+# MoCo v3 says dont use LN before global average if CLS token is not use for ViT
+_C.MVIT.NO_NORM_BEFORE_AVG = False
 
 # -----------------------------------------------------------------------------
 # Masked pretraining options
@@ -955,6 +1005,11 @@ _C.DETECTION.SPATIAL_SCALE_FACTOR = 16
 
 # RoI tranformation resolution.
 _C.DETECTION.ROI_XFORM_RESOLUTION = 7
+
+# junwei: add spatial max pooling before linear proj layer when detection.enable == False
+# this is make classification model without ROIAlign get the same result
+# as the ROIAlign version with a whole image box input
+_C.DETECTION.USE_SPATIAL_MAXPOOL_BEFORE_PROJ = False
 
 
 # -----------------------------------------------------------------------------

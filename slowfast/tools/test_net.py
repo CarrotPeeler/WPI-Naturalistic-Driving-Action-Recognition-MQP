@@ -294,25 +294,25 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
                 # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
                 if (0 in prev_consol_codes and len(prev_consol_codes) == 1) or clip_agg_cnt > 1:
-                    reliable_segment = True
+                    # reliable_segment = True
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
 
                     # re-evaluate short segment (<= ~8s) predictions (not class 0), which may be inaccurate
                     # clip_agg_cnt is incremented at end of iter, so its 1 less than it should be here
-                    if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and curr_agg_pred != 0:
-                        if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
-                        segment_probs = predict_short_segment(cfg, model_2, cam_view_clips)
-                        segment_preds, segment_codes = zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs])
-                        if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f'segs: {segment_preds, segment_codes}')
+                    # if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and prev_agg_pred != 0:
+                    #     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
+                    #     segment_probs = predict_short_segment(cfg, model_2, cam_view_clips)
+                    #     segment_preds, segment_codes = zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs])
+                    #     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f'segs: {segment_preds, segment_codes}')
 
-                        segment_preds = set(segment_preds)
-                        if not(len(segment_preds) == 1 and prev_agg_pred in segment_preds):
-                            reliable_segment = False
+                    #     segment_preds = set(segment_preds)
+                    #     if not(len(segment_preds) == 1 and prev_agg_pred in segment_preds):
+                    #         reliable_segment = False
                 
-                    if reliable_segment:
-                        with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
-                            f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
+                    # if reliable_segment:
+                    with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
+                        f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
                 
                     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 

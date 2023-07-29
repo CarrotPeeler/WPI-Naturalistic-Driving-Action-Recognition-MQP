@@ -71,17 +71,17 @@ def print_incorrect_pred_stats(csv_filepath_arr, model_name, trained_epochs_list
 
 if __name__ == '__main__':  
 
-    inc_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/incorrect_preds/"
-    cor_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/correct_preds/"
-    save_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/checkpoint_stats"
+    inc_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_S_32x3_pretrained200/incorrect_preds/"
+    cor_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_S_32x3_pretrained200/correct_preds/"
+    save_dir = os.getcwd() + "/evaluation/val_preds/MVITv2_S_32x3_pretrained200/checkpoint_stats"
 
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
 
     csv_filepaths = [ #["val_incorrect_pred_probs_mvitv2-b_120_epochs.txt", "val_correct_pred_probs_mvitv2-b_120_epochs.txt"],
                      #["val_incorrect_pred_probs_mvitv2-b_140_epochs.txt", "val_correct_pred_probs_mvitv2-b_140_epochs.txt"],
-                     ["val_incorrect_pred_probs_mvitv2-b_160_epochs.txt", "val_correct_pred_probs_mvitv2-b_160_epochs.txt"],
-                     ["val_incorrect_pred_probs_mvitv2-b_180_epochs.txt", "val_correct_pred_probs_mvitv2-b_180_epochs.txt"],
+                    #  ["val_incorrect_pred_probs_mvitv2-b_160_epochs.txt", "val_correct_pred_probs_mvitv2-b_160_epochs.txt"],
+                    #  ["val_incorrect_pred_probs_mvitv2-b_180_epochs.txt", "val_correct_pred_probs_mvitv2-b_180_epochs.txt"],
                      ["val_incorrect_pred_probs_mvitv2-b_200_epochs.txt", "val_correct_pred_probs_mvitv2-b_200_epochs.txt"]]
     
     for k in range(len(csv_filepaths)):
@@ -90,6 +90,6 @@ if __name__ == '__main__':
 
     print_incorrect_pred_stats(csv_filepath_arr=csv_filepaths,
                                model_name="MViTv2-B",
-                               trained_epochs_list=[160, 180, 200],
+                               trained_epochs_list=[200],
                                save_dir=save_dir)
     
