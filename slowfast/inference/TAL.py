@@ -120,14 +120,17 @@ def predict_short_segment(cfg, model_2, cam_view_clips):
     dev = 'cuda:1' if cfg.TAL.USE_2_GPUS == True else 'cuda:0'
 
     all_segment_probs = []
+    segment_sample_idxs = []
     # do not include the most recently added frames, they may contain a diff action and low probs
     num_total_frames = cam_view_clips['Dashboard'].shape[0] - cfg.DATA.NUM_FRAMES
 
     for start_idx in range(cfg.DATA.NUM_FRAMES//2, num_total_frames, cfg.DATA.NUM_FRAMES):
         all_cam_view_probs = {}
 
+        end_idx = start_idx + cfg.DATA.NUM_FRAMES
+
         for cam_view_type in cam_view_clips.keys():
-            sampled = cam_view_clips[cam_view_type][start_idx:start_idx + cfg.DATA.NUM_FRAMES]
+            sampled = cam_view_clips[cam_view_type][start_idx:end_idx]
             input = [sampled.permute(1,0,2,3).unsqueeze(dim=0).to(dev)]
 
             cam_view_preds = model_2(input).cpu()
@@ -135,8 +138,83 @@ def predict_short_segment(cfg, model_2, cam_view_clips):
             all_cam_view_probs[cam_view_type] = cam_view_probs
 
         all_segment_probs.append(all_cam_view_probs)
+        segment_sample_idxs.append(start_idx)
 
-    return all_segment_probs
+    return all_segment_probs, segment_sample_idxs
+
+
+"""
+Given proposal prob mats for a single localized action interval and prob mats for the short segment re-evaluation,
+as well as their respective starting frame index, re-order the prob mats according to their temporal boundaries
+
+params:
+    non_overlap_prob_mats: prob matrices accumulated from non-overlap sampling
+    overlap_prob_mats: prob matrices obtained from short-seg re-eval (overlap sampling)
+    overlap_sample_idxs: idxs corresponding to the first frame of each sampled overlapping interval
+
+returns:
+    list of prob mats, reordered temporal idx
+"""
+def get_reordered_prob_mats(cfg, non_overlap_prob_mats, overlap_prob_mats, overlap_sample_idxs):
+    # generate start idxs for non-overlapping prob mats
+    non_overlap_sample_idxs = [i*cfg.DATA.NUM_FRAMES for i in range(len(non_overlap_prob_mats))]
+    sample_idxs = non_overlap_sample_idxs + overlap_sample_idxs
+
+    prob_mats = non_overlap_prob_mats + overlap_prob_mats
+
+    _, reordered_prob_mats = (list(t) for t in zip(*sorted(zip(sample_idxs, prob_mats))))
+
+    return reordered_prob_mats
+
+
+"""
+Generates Gaussian weights
+
+params:
+    sigma: sigma term of Gaussian filter
+    length: window size (number of samples to consider for filtering)
+
+returns:
+    NParray of Gaussian weights for a window size of 'length'
+"""
+def generate_gaussian_weights(sigma, length):
+    center = length // 2
+    x = np.linspace(-center, center, length)
+    kernel = np.exp(-x ** 2 / (2 * sigma ** 2))
+    return kernel
+
+
+""" 
+Consolidates multiple action prob matrices by computing the Gaussian weighted average
+
+params:
+    consolidated_prob_mats: a list of prob mats (ordered temporally) for each sampled interval
+    sigma: sigma term in Gaussian filtering equation
+    filtering_threshold: threshold for filtering bad probs
+
+returns:
+    final prediction and validity code determined by Gaussian weighted average
+"""
+def consolidate_cum_preds_with_gaussian(consolidated_prob_mats: list, sigma, filtering_threshold):
+    consolidated_prob_mats = np.vstack(consolidated_prob_mats)
+
+    weights = generate_gaussian_weights(sigma, len(consolidated_prob_mats))
+    weighted_prob_mats = []
+
+    for i, prob_mat in enumerate(consolidated_prob_mats):
+        weighted_prob_mats.append(prob_mat * weights[i])
+
+    gaussian_avged_mat = np.sum(weighted_prob_mats, axis=0) / np.sum(weights, axis=0)
+
+    final_prob = np.max(gaussian_avged_mat)
+    final_pred = np.argmax(gaussian_avged_mat)
+
+    if final_prob < filtering_threshold:
+        code = -1
+    else:
+        code = 0
+
+    return final_pred, code
 
        
 """
@@ -157,7 +235,7 @@ def consolidate_preds(cfg, cam_view_probs:dict, cam_view_weights:dict, filtering
 
     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"AGG pred: {consolidated_pred}, prob: {consolidated_prob:.3f}, code: {consol_code}")
 
-    return consolidated_pred, consol_code
+    return consolidated_pred, consol_code, consolidated_probs
 
 
 """
