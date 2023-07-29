@@ -19,14 +19,20 @@ def add_custom_config(_C):
     # Max number of clips to aggregate at once (MUST be a multiple of cfg.DATA.NUM_FRAMES)
     _C.TAL.CLIP_AGG_THRESHOLD = 64
 
-    # Enables the use of a 2nd GPU for TAL (speeds up inferencing)
-    _C.TAL.USE_2_GPUS = False
-
     # percent of frames to evenly sample among the clip aggregation pool and the single proposal input
     _C.TAL.AGG_SAMPLING_RATIO = 0.5
 
+    # clip threshold for re-evaluation of short segments (inclusive: <=)
+    # for reference, 1 clip is equal to DATA.NUM_FRAMES
+    _C.TAL.RE_EVAL_CLIP_THRESHOLD = 4
+
+    # Enables the use of a 2nd GPU for TAL (speeds up inferencing)
+    _C.TAL.USE_2_GPUS = False
+
     # output file path where results from TAL will be saved
     _C.TAL.OUTPUT_FILE_PATH = './inference/submission_files/sub_file.txt'
+
+    _C.TAL.PRINT_DEBUG_OUTPUT = False
 
     # enable crop prompting for data loaders
     _C.DATA.CROP_PROMPT = False

@@ -25,12 +25,25 @@ def temporal_sampling(frames, start_idx, end_idx, num_samples):
     return frames
 
 
+"""
+Performs prediction step over all three camera views for a given set or aggregation of frames
+
+params:
+    cfg: cfg object with hyperparams
+    model and model_2: both are pytorch models, which use the same checkpoint but run on diff. GPUs
+    cam_view_clips: dict containing batches of frames for each camera view
+    logger: logger object for printing
+    resample: whether to resample current temporal interval 1s later than when it starts
+
+returns:
+    two dicts (1 for aggregated frames, 1 for current temporal interval's frames), each containing 3 prob matrices for each camera view
+"""
 def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger, resample=False, cur_iter=None):
     all_cam_view_probs = {}
     all_cam_view_probs_2 = {}
 
     for cam_view_type in cam_view_clips.keys():
-        if(cam_view_type == "Dashboard"): logger.info(f"NUM FRAMES AGGREGATED: {cam_view_clips[cam_view_type].shape[0]}")
+        if(cam_view_type == "Dashboard") and cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"NUM FRAMES AGGREGATED: {cam_view_clips[cam_view_type].shape[0]}")
 
         # subsample 16 frames from clip agg for each cam angle, then make pred
         if cam_view_clips[cam_view_type].shape[0] == cfg.DATA.NUM_FRAMES:
@@ -91,32 +104,48 @@ def predict_cam_views(cfg, model, model_2, cam_view_clips, agg_threshold, logger
     return all_cam_view_probs, all_cam_view_probs_2
 
 
-# performs predictions over short segment ~6s or less, as a means of strengthening classification confidence
+"""
+Re-performs predictions over short segment ~6s or less, as a means of strengthening classification confidence
+Specifically samples frames from overlapping intervals that have not been sampled and predicted on already
+
+params:
+    cfg: cfg object with hyperparams
+    model_2: model to use for this operation
+    cam_view_clips: dict containing batches of frames for each camera view
+
+returns:
+    list of dicts (1 for each sampled interval), each containing 3 probability matrices, 1 for each camera view
+"""
 def predict_short_segment(cfg, model_2, cam_view_clips):
     dev = 'cuda:1' if cfg.TAL.USE_2_GPUS == True else 'cuda:0'
 
     all_segment_probs = []
-    num_total_frames = cam_view_clips['Dashboard'].shape[0]
+    # do not include the most recently added frames, they may contain a diff action and low probs
+    num_total_frames = cam_view_clips['Dashboard'].shape[0] - cfg.DATA.NUM_FRAMES
 
     for start_idx in range(cfg.DATA.NUM_FRAMES//2, num_total_frames, cfg.DATA.NUM_FRAMES):
-        if start_idx + cfg.DATA.NUM_FRAMES <= num_total_frames:
-            all_cam_view_probs = {}
+        all_cam_view_probs = {}
 
-            for cam_view_type in cam_view_clips.keys():
-                sampled = cam_view_clips[cam_view_type][start_idx:start_idx + cfg.DATA.NUM_FRAMES]
-                input = [sampled.permute(1,0,2,3).unsqueeze(dim=0).to(dev)]
+        for cam_view_type in cam_view_clips.keys():
+            sampled = cam_view_clips[cam_view_type][start_idx:start_idx + cfg.DATA.NUM_FRAMES]
+            input = [sampled.permute(1,0,2,3).unsqueeze(dim=0).to(dev)]
 
-                cam_view_preds = model_2(input).cpu()
-                cam_view_probs = cam_view_preds.numpy()
-                all_cam_view_probs[cam_view_type] = cam_view_probs
+            cam_view_preds = model_2(input).cpu()
+            cam_view_probs = cam_view_preds.numpy()
+            all_cam_view_probs[cam_view_type] = cam_view_probs
 
-            all_segment_probs.append(all_cam_view_probs)
+        all_segment_probs.append(all_cam_view_probs)
 
     return all_segment_probs
 
-        
-# consolidates predictions from all camera angles for a single proposal
-def consolidate_preds(cam_view_probs:dict, cam_view_weights:dict, filtering_threshold:float, logger):
+       
+"""
+Consolidates predictions from all camera angles for a single proposal
+
+returns:
+    the final prediction and the code indicating whether it is valid (passes threshold) or invalid
+"""
+def consolidate_preds(cfg, cam_view_probs:dict, cam_view_weights:dict, filtering_threshold:float, logger):
     consolidated_probs = cam_view_weights['Dashboard'] * cam_view_probs['Dashboard']\
                        + cam_view_weights['Rear_view'] * cam_view_probs['Rear_view']\
                        + cam_view_weights['Right_side_window'] * cam_view_probs['Right_side_window']
@@ -126,7 +155,7 @@ def consolidate_preds(cam_view_probs:dict, cam_view_weights:dict, filtering_thre
 
     consol_code = -1 if consolidated_prob < filtering_threshold else 0
 
-    logger.info(f"AGG pred: {consolidated_pred}, prob: {consolidated_prob:.3f}, code: {consol_code}")
+    if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"AGG pred: {consolidated_pred}, prob: {consolidated_prob:.3f}, code: {consol_code}")
 
     return consolidated_pred, consol_code
 

@@ -230,7 +230,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 assert len(cviews) == 3, f"Cam view mismatch for next batch {cur_iter}"
                 assert len(v_names) == len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for next batch {cur_iter}"
 
-            logger.info(f"CUR ITER: {cur_iter}")
+            if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"CUR ITER: {cur_iter}")
             
             # PREDICTION STEP: make predictions for each camera angle using identical proposal length and space
             probs, probs_2 = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=False, cur_iter=cur_iter)
@@ -239,16 +239,16 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             video_idx = video_idx.cpu()
 
             # CONSOLIDATION STEP: Consolidate predictions among the three camera angles into 1 final pred
-            curr_agg_pred, curr_consol_code = consolidate_preds(probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
+            curr_agg_pred, curr_consol_code = consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
             
             # CORRECTION STEP: correct prediction if necessary
             fix_start_time = False # signal if start time needs adjustment
             # detect new action w/ but prob is low => resample current temporal interval and consolidate again
             if curr_consol_code == -1:
-                logger.info("Perform Resampling")
+                if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform Resampling")
                 probs, _ = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=True, cur_iter=cur_iter)
                 
-                curr_agg_pred, curr_consol_code = consolidate_preds(probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
+                curr_agg_pred, curr_consol_code = consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
 
                 # if final consol code is 0, resampling worked and new action begins 1s later instead of at start of new interval
                 if curr_consol_code == 0:
@@ -261,7 +261,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             # INVALIDATION STEP: check for invalid results if a 2nd pred is available
             consol_codes = []
             if len(probs_2) == 3: 
-                agg_pred_2, curr_consol_code_2 = consolidate_preds(probs_2, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
+                agg_pred_2, curr_consol_code_2 = consolidate_preds(cfg, probs_2, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
 
                 # one or both preds are below the filtering threshold
                 if curr_consol_code == -1 or curr_consol_code_2 == -1:
@@ -290,28 +290,31 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             curr_pred_is_bad = any(x in consol_codes for x in [-1,-2])
 
             if vid_id_changed or curr_pred_is_bad or action_changed:
-                logger.info(f"prev code: {prev_consol_codes}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
+                if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"prev code: {prev_consol_codes}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
 
                 # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
                 if (0 in prev_consol_codes and len(prev_consol_codes) == 1) or clip_agg_cnt > 1:
-                    # reliable_segment = True
+                    reliable_segment = True
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
 
-                    # if clip_agg_cnt > 3:
-                    #     segment_probs = predict_short_segment(cfg, model_2, cam_view_clips)
-                    #     segment_preds, segment_codes = zip(*[consolidate_preds(probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs])
-                    #     logger.info(f'{segment_preds, segment_codes}')
+                    # re-evaluate short segment (<= ~8s) predictions (not class 0), which may be inaccurate
+                    # clip_agg_cnt is incremented at end of iter, so its 1 less than it should be here
+                    if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and curr_agg_pred != 0:
+                        if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
+                        segment_probs = predict_short_segment(cfg, model_2, cam_view_clips)
+                        segment_preds, segment_codes = zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs])
+                        if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f'segs: {segment_preds, segment_codes}')
 
-                    #     segment_preds = set(segment_preds)
-                    #     if not(len(segment_preds) == 1 and curr_agg_pred in segment_preds and -1 not in segment_codes):
-                    #         reliable_segment = False
+                        segment_preds = set(segment_preds)
+                        if not(len(segment_preds) == 1 and prev_agg_pred in segment_preds):
+                            reliable_segment = False
                 
-                    # if reliable_segment:
-                    with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
-                        f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
+                    if reliable_segment:
+                        with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
+                            f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
                 
-                    logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
+                    if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
                 # set start time and end time of newly detected action 
                 start_time = proposal[1][0]
