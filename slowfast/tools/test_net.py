@@ -291,9 +291,9 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             vid_id_changed = (video_id != proposal[0][0])
             # action change only triggered if prev code is valid
             action_changed = (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0) 
-            curr_pred_is_bad = any(x in consol_codes for x in [-1,-2])
+            curr_pred_is_bad = any(x in consol_codes for x in [-2]) #TODO removed -1
 
-            if vid_id_changed or curr_pred_is_bad or action_changed:
+            if vid_id_changed or curr_pred_is_bad or action_changed: 
                 if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"prev code: {prev_consol_codes}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
 
                 # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
@@ -301,7 +301,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     # reliable_segment = True
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
-
+                    #TODO:
                     # re-evaluate short segment (<= ~8s) predictions (not class 0), which may be inaccurate
                     # clip_agg_cnt is incremented at end of iter, so its 1 less than it should be here
                     # if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and prev_agg_pred != 0:
@@ -346,7 +346,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 del cam_view_clips
                 cam_view_clips = {}
                 # empty past prop prob mats 
-                consolidated_prop_prob_mats = []
+                #TODO:consolidated_prop_prob_mats = []
             
                 # re-add this iteration's frames from the clip 
                 for b in range(cfg.TEST.BATCH_SIZE):
@@ -363,7 +363,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 clip_agg_cnt += 1
 
                 # add curr proposal probs to ongoing tally
-                consolidated_prop_prob_mats.append(consolidated_probs_2)
+                #TODO:consolidated_prop_prob_mats.append(consolidated_probs_2)
 
             # update previous prediction for next batch iter as well as consolidation code
             prev_consol_codes = consol_codes
