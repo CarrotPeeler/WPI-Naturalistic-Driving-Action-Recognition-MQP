@@ -242,7 +242,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             video_idx = video_idx.cpu()
 
             # CONSOLIDATION STEP: Consolidate predictions among the three camera angles into 1 final pred
-            curr_agg_pred, curr_consol_code, _ = consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
+            curr_agg_pred, curr_consol_code, consolidated_probs = consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
             
             # CORRECTION STEP: correct prediction if necessary
             fix_start_time = False # signal if start time needs adjustment
@@ -265,7 +265,6 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             consol_codes = []
             if len(probs_2) == 3: 
                 agg_pred_2, curr_consol_code_2, consolidated_probs_2 = consolidate_preds(cfg, probs_2, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
-                consolidated_prop_prob_mats.append(consolidated_probs_2)
 
                 # one or both preds are below the filtering threshold
                 if curr_consol_code == -1 or curr_consol_code_2 == -1:
@@ -290,6 +289,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 - there are issues predicting over the current temporal interval => toss results and reset aggregation of clips 
             """
             vid_id_changed = (video_id != proposal[0][0])
+            # action change only triggered if prev code is valid
             action_changed = (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0) 
             curr_pred_is_bad = any(x in consol_codes for x in [-1,-2])
 
@@ -297,33 +297,36 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"prev code: {prev_consol_codes}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
 
                 # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
-                if (0 in prev_consol_codes and len(prev_consol_codes) == 1) or clip_agg_cnt > 1:
-                    reliable_segment = True
+                if 0 in prev_consol_codes or clip_agg_cnt > 1:
+                    # reliable_segment = True
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
 
                     # re-evaluate short segment (<= ~8s) predictions (not class 0), which may be inaccurate
                     # clip_agg_cnt is incremented at end of iter, so its 1 less than it should be here
-                    if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and prev_agg_pred != 0:
-                        if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
-                        segment_probs, segment_sample_idxs = predict_short_segment(cfg, model_2, cam_view_clips)
-                        segment_preds, segment_codes, consolidated_segment_prob_mats = zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs])
-                        consolidated_segment_prob_mats = list(consolidated_segment_prob_mats)
+                    # if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and prev_agg_pred != 0:
+                    #     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
+                    #     segment_probs, segment_sample_idxs = predict_short_segment(cfg, model_2, cam_view_clips)
+                    #     segment_preds, segment_codes, consolidated_segment_prob_mats = zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs])
+                    #     consolidated_segment_prob_mats = list(consolidated_segment_prob_mats)
 
-                        # reorder mats by temporal idx used for sampling
-                        reordered_consolidated_prob_mats = get_reordered_prob_mats(cfg, consolidated_prop_prob_mats, consolidated_segment_prob_mats, segment_sample_idxs)
-                        # consolidate all prob mats for all sampled intervals into final pred
-                        final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(reordered_consolidated_prob_mats, sigma=1, filtering_threshold=cfg.TAL.FILTERING_THRESHOLD)
+                    #     # reorder mats by temporal idx used for sampling
+                    #     reordered_consolidated_prob_mats = get_reordered_prob_mats(cfg, consolidated_prop_prob_mats, consolidated_segment_prob_mats, segment_sample_idxs)
+                    #     # consolidate all prob mats for all sampled intervals into final pred
+                    #     final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(cfg, reordered_consolidated_prob_mats, 1, cfg.TAL.FILTERING_THRESHOLD, logger)
 
-                        if cfg.TAL.PRINT_DEBUG_OUTPUT: 
-                            logger.info(f'segs: {segment_preds, segment_codes} final: {final_pred, final_pred_code}')
+                    #     if cfg.TAL.PRINT_DEBUG_OUTPUT: 
+                    #         logger.info(f'segs: {segment_preds, segment_codes}, final: {final_pred, final_pred_code}')
 
-                        if final_pred != prev_agg_pred:
-                            reliable_segment = False
+                    #     # if re-eval pred code is valid, use final_pred
+                    #     # if final_pred_code == 0 or len(set(segment_preds)) == 1:
+                    #     prev_agg_pred = final_pred
+                    #     # elif final_pred_code != 0 and len(set(segment_preds)) > 1:
+                    #     #     reliable_segment = False
                 
-                    if reliable_segment:
-                        with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
-                            f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
+                    # if reliable_segment:
+                    with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
+                        f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
                 
                     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
@@ -342,6 +345,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 # reset all clip aggregation variables
                 del cam_view_clips
                 cam_view_clips = {}
+                # empty past prop prob mats 
                 consolidated_prop_prob_mats = []
             
                 # re-add this iteration's frames from the clip 
@@ -357,6 +361,9 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
                 # increment count for num clips concatenated consecutively
                 clip_agg_cnt += 1
+
+                # add curr proposal probs to ongoing tally
+                consolidated_prop_prob_mats.append(consolidated_probs_2)
 
             # update previous prediction for next batch iter as well as consolidation code
             prev_consol_codes = consol_codes

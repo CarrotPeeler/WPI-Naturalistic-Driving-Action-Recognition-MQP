@@ -195,7 +195,7 @@ params:
 returns:
     final prediction and validity code determined by Gaussian weighted average
 """
-def consolidate_cum_preds_with_gaussian(consolidated_prob_mats: list, sigma, filtering_threshold):
+def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats: list, sigma, filtering_threshold, logger):
     consolidated_prob_mats = np.vstack(consolidated_prob_mats)
 
     weights = generate_gaussian_weights(sigma, len(consolidated_prob_mats))
@@ -213,6 +213,8 @@ def consolidate_cum_preds_with_gaussian(consolidated_prob_mats: list, sigma, fil
         code = -1
     else:
         code = 0
+
+    if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"mats: {consolidated_prob_mats}, Gaussian mat: {gaussian_avged_mat}, final prob: {final_prob:.3f}")
 
     return final_pred, code
 
