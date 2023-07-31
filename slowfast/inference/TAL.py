@@ -123,22 +123,23 @@ def predict_short_segment(cfg, model_2, cam_view_clips):
     segment_sample_idxs = []
     # do not include the most recently added frames, they may contain a diff action and low probs
     num_total_frames = cam_view_clips['Dashboard'].shape[0] - cfg.DATA.NUM_FRAMES
+    sample_stride = cfg.DATA.NUM_FRAMES//4
 
-    for start_idx in range(cfg.DATA.NUM_FRAMES//2, num_total_frames, cfg.DATA.NUM_FRAMES):
+    for start_idx in range(sample_stride, num_total_frames, sample_stride):
         all_cam_view_probs = {}
-
         end_idx = start_idx + cfg.DATA.NUM_FRAMES
 
-        for cam_view_type in cam_view_clips.keys():
-            sampled = cam_view_clips[cam_view_type][start_idx:end_idx]
-            input = [sampled.permute(1,0,2,3).unsqueeze(dim=0).to(dev)]
+        if start_idx % cfg.DATA.NUM_FRAMES != 0:
+            for cam_view_type in cam_view_clips.keys():
+                sampled = cam_view_clips[cam_view_type][start_idx:end_idx]
+                input = [sampled.permute(1,0,2,3).unsqueeze(dim=0).to(dev)]
 
-            cam_view_preds = model_2(input).cpu()
-            cam_view_probs = cam_view_preds.numpy()
-            all_cam_view_probs[cam_view_type] = cam_view_probs
+                cam_view_preds = model_2(input).cpu()
+                cam_view_probs = cam_view_preds.numpy()
+                all_cam_view_probs[cam_view_type] = cam_view_probs
 
-        all_segment_probs.append(all_cam_view_probs)
-        segment_sample_idxs.append(start_idx)
+            all_segment_probs.append(all_cam_view_probs)
+            segment_sample_idxs.append(start_idx)
 
     return all_segment_probs, segment_sample_idxs
 
@@ -215,6 +216,23 @@ def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats: list, sigma
         code = 0
 
     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"mats: {consolidated_prob_mats}, Gaussian mat: {gaussian_avged_mat}, final prob: {final_prob:.3f}")
+
+    return final_pred, code
+
+
+def consolidate_cum_preds_with_mean(cfg, consolidated_prob_mats: list, filtering_threshold, logger):
+    consolidated_prob_mats = np.vstack(consolidated_prob_mats)
+    avged_mat = consolidated_prob_mats.mean(axis=0)
+
+    final_prob = np.max(avged_mat)
+    final_pred = np.argmax(avged_mat)
+
+    if final_prob < filtering_threshold:
+        code = -1
+    else:
+        code = 0
+
+    if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"mats: {consolidated_prob_mats}, mat: {avged_mat}, final prob: {final_prob:.3f}")
 
     return final_pred, code
 
