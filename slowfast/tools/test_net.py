@@ -87,6 +87,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         weights_df = pd.read_csv(os.getcwd() + '/inference/weighted_cam_view_action_probs.csv')
         cam_view_weights = { col:weights_df[col].to_numpy() for col in weights_df.columns }  
 
+        short_seg_filtering_thresholds = pd.read_csv(os.getcwd() + '/inference/weighted_action_filter_gaussian_probs.csv', names=['Probs'])['Probs'].to_list()
+
         # stores all prob mats for single proposals
         consolidated_prop_prob_mats = [] 
 
@@ -313,7 +315,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                         # reorder mats by temporal idx used for sampling
                         reordered_consolidated_prob_mats = get_reordered_prob_mats(cfg, consolidated_prop_prob_mats, consolidated_segment_prob_mats, segment_sample_idxs)
                         # consolidate all prob mats for all sampled intervals into final pred
-                        final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(cfg, reordered_consolidated_prob_mats, 1, cfg.TAL.FILTERING_THRESHOLD, logger)
+                        final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(cfg, reordered_consolidated_prob_mats, 3, short_seg_filtering_thresholds, logger)
 
                         if cfg.TAL.PRINT_DEBUG_OUTPUT: 
                             logger.info(f'segs: {segment_preds, segment_codes}, final: {final_pred, final_pred_code}')
@@ -350,7 +352,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 del cam_view_clips
                 cam_view_clips = {}
                 # empty past prop prob mats 
-                consolidated_prop_prob_mats = [] #TODO
+                consolidated_prop_prob_mats = [consolidated_probs_2] #TODO
             
                 # re-add this iteration's frames from the clip 
                 for b in range(cfg.TEST.BATCH_SIZE):
@@ -367,7 +369,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 clip_agg_cnt += 1
 
                 # add curr proposal probs to ongoing tally
-                consolidated_prop_prob_mats.append(consolidated_probs_2 if clip_agg_cnt > 1 else consolidated_probs) #TODO
+                if clip_agg_cnt > 1: consolidated_prop_prob_mats.append(consolidated_probs_2) #TODO
 
             # update previous prediction for next batch iter as well as consolidation code
             prev_consol_codes = consol_codes

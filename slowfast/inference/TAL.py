@@ -191,12 +191,12 @@ Consolidates multiple action prob matrices by computing the Gaussian weighted av
 params:
     consolidated_prob_mats: a list of prob mats (ordered temporally) for each sampled interval
     sigma: sigma term in Gaussian filtering equation
-    filtering_threshold: threshold for filtering bad probs
+    filtering_threshold: list of thresholds for each action id for filtering bad probs 
 
 returns:
     final prediction and validity code determined by Gaussian weighted average
 """
-def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats: list, sigma, filtering_threshold, logger):
+def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats: list, sigma, filtering_thresholds, logger):
     consolidated_prob_mats = np.vstack(consolidated_prob_mats)
 
     weights = generate_gaussian_weights(sigma, len(consolidated_prob_mats))
@@ -210,7 +210,7 @@ def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats: list, sigma
     final_prob = np.max(gaussian_avged_mat)
     final_pred = np.argmax(gaussian_avged_mat)
 
-    if final_prob < filtering_threshold:
+    if final_prob < filtering_thresholds[final_pred]:
         code = -1
     else:
         code = 0
@@ -219,15 +219,17 @@ def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats: list, sigma
 
     return final_pred, code
 
-
-def consolidate_cum_preds_with_mean(cfg, consolidated_prob_mats: list, filtering_threshold, logger):
+"""
+Same as Gaussian method but applies equal weight to all sampled interval probs
+"""
+def consolidate_cum_preds_with_mean(cfg, consolidated_prob_mats: list, filtering_thresholds, logger):
     consolidated_prob_mats = np.vstack(consolidated_prob_mats)
     avged_mat = consolidated_prob_mats.mean(axis=0)
 
     final_prob = np.max(avged_mat)
     final_pred = np.argmax(avged_mat)
 
-    if final_prob < filtering_threshold:
+    if final_prob < filtering_thresholds[final_pred]:
         code = -1
     else:
         code = 0
