@@ -1,6 +1,7 @@
 # Naturalistic-Driving-Action-Recognition-MQP
 
 ## Repository for Developing Video Classification/Action Recognition Models for the AI City Track Challenge #3 (2023)
+More information about this particular challenge can be found [(here)](https://www.aicitychallenge.org/2023-challenge-tracks/)
  
 Completed as part of my Major Qualifying Project for Worcester Polytechnic Institute (Summer 2023)
 
@@ -30,7 +31,7 @@ sudo chmod 777 {path to torchvision repo}
 ### Setup
 - NOTE: setup uses 2 NVIDIA A5000 RTX GPUs with 24GB VRAM each, and 32GB RAM (inferencing most likely works with)
 - Download the data for track #3 [here](https://www.aicitychallenge.org/2023-data-and-evaluation/)
-- Download the checkpoint [`(link)`](https://dl.fbaipublicfiles.com/pyslowfast/model_zoo/mvitv2/pysf_video_models/MViTv2_B_32x3_k400_f304025456.pyth) from the MODEL_ZOO.md and place file in checkpoints folder (must edit the checkpoint path in slowfast config)
+- Download the checkpoint [(link)](https://dl.fbaipublicfiles.com/pyslowfast/model_zoo/mvitv2/pysf_video_models/MViTv2_B_32x3_k400_f304025456.pyth) from the MODEL_ZOO.md and place file in checkpoints folder (must edit the checkpoint path in slowfast config)
 - create an empty folder within the repo where the video clips will be dumped 
 - in prepare_data.py, edit the following to where you saved the A1 data folder and where you created the empty folder
 ```python
@@ -54,7 +55,7 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_mixup_aug_unprompted.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
 ```
 
-### Inference
+### Inference/TAL
 - edit the config in slowfast/slowfast/configs (MVITv2_B_32x3_inf.yaml)
     - for Temporal Action Localization (TAL), USE_2_GPUS can be set to True if you have 2 GPUs available
     - make sure checkpoint file points to correct file path
@@ -65,12 +66,16 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_mixup_aug_unprompted.yaml D
 python3 inference/prepare_loc_data.py --cfg configs/MVITv2_B_32x3_inf.yaml < /dev/null > inference/ffmpeg_loc_log.txt 2>&1 &
 ```
 - make sure correct model checkpoint .pyth file is in slowfast/checkpoints folder
-- then run inferencing:
+- then perform inference:
 for MViTv2:
 ```console
 python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_DIR .
 ```
-- then in post_process folder, run post_process.py to obtain the post_processed_data.txt used for submission to the evaluation server
+- Temporal Action Localization (TAL) is simultaneously performed during inference to obtain localization results 
+- Once inference is complete, the text file with finalized localization results will be located in ~/slowfast/inference/sub_file.txt
+
+### Results
+After submitting TAL results to the track #3 evaluation server for the AI City challenge [(link)](https://www.aicitychallenge.org/2023-evaluation-system/), the above methods net a final score of __.
 
 <!-- ### TODO
 - before splitting videos into clips using ffmpeg, 
