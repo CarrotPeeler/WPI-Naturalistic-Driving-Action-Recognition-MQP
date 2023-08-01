@@ -309,13 +309,12 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and prev_agg_pred != 0:
                         if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
                         segment_probs, segment_sample_idxs = predict_short_segment(cfg, model_2, cam_view_clips)
-                        segment_preds, segment_codes, consolidated_segment_prob_mats = zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs])
-                        consolidated_segment_prob_mats = list(consolidated_segment_prob_mats)
+                        segment_preds, segment_codes, consolidated_segment_prob_mats = (list(t) for t in zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs]))
 
                         # reorder mats by temporal idx used for sampling
                         reordered_consolidated_prob_mats = get_reordered_prob_mats(cfg, consolidated_prop_prob_mats, consolidated_segment_prob_mats, segment_sample_idxs)
                         # consolidate all prob mats for all sampled intervals into final pred
-                        final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(cfg, reordered_consolidated_prob_mats, 3, short_seg_filtering_thresholds, logger)
+                        final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(cfg, reordered_consolidated_prob_mats, segment_preds, 3, short_seg_filtering_thresholds, logger)
 
                         if cfg.TAL.PRINT_DEBUG_OUTPUT: 
                             logger.info(f'segs: {segment_preds, segment_codes}, final: {final_pred, final_pred_code}')

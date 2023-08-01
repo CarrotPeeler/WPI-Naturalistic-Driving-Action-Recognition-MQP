@@ -2,6 +2,22 @@ import numpy as np
 from scipy.stats import mode
 
 
+"""
+Fetches true positive intervals which are annotated in the filter calibration log file
+"""
+def fetch_tp(log_file):
+    tp_intervals = []
+
+    with open(log_file, "r") as f:
+        lines = f.readlines()
+        for i, line in enumerate(lines):
+            if 'final prob:' in line and 'tp' in line:
+                vid_id_str = lines[i+2].partition('vid_id: ')[-1].partition(',')[0].strip()
+                timestamp_str = lines[i+2].partition('stamps: ')[-1].strip()
+                tp_intervals.append((vid_id_str, timestamp_str))
+
+    return tp_intervals
+
 
 """
 Given an stdout.log from inference, collects all prediction probabilities and sorts them by class
@@ -11,7 +27,7 @@ Only gathers probabilities for scenarios in TAL where both agg and single propos
 params:
     inf_log: string path of stdout.log file containing pred prob outputs from inference
 """
-def gather_inf_class_probs(inf_log:str):
+def gather_inf_class_probs(inf_log:str, tp_intervals, eval_type='Gaussian'):
     truepos_probs_by_class = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
     truepos_misclassifications_by_class = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
     
@@ -24,10 +40,19 @@ def gather_inf_class_probs(inf_log:str):
             if 'final prob:' in line:
                 prob = float(line.partition('final prob: ')[-1].partition(' tp')[0].strip())
                 class_idx = int(lines[i+1].partition('final: (')[-1].partition(',')[0])
-                misclasses_str = lines[i+1].partition('segs: ((')[-1].partition('),')[0].split(', ')
+
+                if eval_type == 'Gaussian':
+                    misclasses_str = lines[i+1].partition('segs: ((')[-1].partition('),')[0].split(', ')
+                elif eval_type == 'Mean':
+                    misclasses_str = lines[i+1].partition('segs: ([')[-1].partition('],')[0].split(', ')
+
                 misclasses = [int(x) for x in misclasses_str if x != class_idx]
+
+                vid_id_str = lines[i+2].partition('vid_id: ')[-1].partition(',')[0].strip()
+                timestamp_str = lines[i+2].partition('stamps: ')[-1].strip()
+                interval_str = vid_id_str + ',' + timestamp_str
                 
-                if 'tp' in line:
+                if any(interval_str == (interval[0] + ',' + interval[1]) for interval in tp_intervals):
                     truepos_probs_by_class[class_idx].append(prob)
                     truepos_misclassifications_by_class[class_idx] += misclasses
                 else:
@@ -60,8 +85,11 @@ def print_class_stats(truepos_probs_by_class, truepos_misclass_by_class, falsepo
 
 
 if __name__ == '__main__':  
-    log_path = 'inference/submission_files/logs/stdout_re_eval_filter_calibration.log' # Probs consolidated via Gaussian weighted average
+    anno_log_path = 'inference/submission_files/logs/stdout_re_eval_filter_calibration.log'
+    # log_path = 'inference/submission_files/logs/stdout_re_eval_filter_calibration.log' # Probs consolidated via Gaussian weighted average
+    log_path = 'inference/submission_files/logs/stdout_short_seg_mean_filter.log'
 
-    truepos_probs_by_class, truepos_misclass_by_class, falsepos_probs_by_class, falsepos_misclass_by_class = gather_inf_class_probs(log_path)
+    tp_intervals = fetch_tp(anno_log_path)
+    truepos_probs_by_class, truepos_misclass_by_class, falsepos_probs_by_class, falsepos_misclass_by_class = gather_inf_class_probs(log_path, tp_intervals, eval_type='Mean')
     print_class_stats(truepos_probs_by_class, truepos_misclass_by_class, falsepos_probs_by_class, falsepos_misclass_by_class)
 
