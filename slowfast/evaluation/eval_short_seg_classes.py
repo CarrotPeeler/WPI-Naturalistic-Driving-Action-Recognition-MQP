@@ -6,19 +6,24 @@ from ast import literal_eval
 """
 Fetches true positive intervals which are annotated in the filter calibration log file
 """
-def fetch_tp(log_file):
+def fetch_tp_fp(log_file):
     tp_intervals = []
+    fp_intervals = []
 
     with open(log_file, "r") as f:
         lines = f.readlines()
         for i, line in enumerate(lines):
-            if 'final prob:' in line and 'tp' in line:
+            if 'final prob:' in line:
                 class_idx = lines[i+1].partition('final: (')[-1].partition(',')[0]
                 vid_id_str = lines[i+2].partition('vid_id: ')[-1].partition(',')[0].strip()
                 timestamp_str = lines[i+2].partition('stamps: ')[-1].strip()
-                tp_intervals.append((vid_id_str, timestamp_str, class_idx))
 
-    return tp_intervals
+                if 'tp' in line:
+                    tp_intervals.append((vid_id_str, timestamp_str, class_idx))
+                else:
+                    fp_intervals.append((vid_id_str, timestamp_str, class_idx))
+
+    return tp_intervals, fp_intervals
 
 
 """
@@ -29,7 +34,7 @@ Only gathers probabilities for scenarios in TAL where both agg and single propos
 params:
     inf_log: string path of stdout.log file containing pred prob outputs from inference
 """
-def gather_inf_class_probs(inf_log:str, tp_intervals, eval_type='[]'):
+def gather_inf_class_probs(inf_log:str, tp_intervals, fp_intervals, eval_type='[]'):
     truepos_probs_by_class = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
     truepos_misclassifications_by_class = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
     
@@ -68,7 +73,7 @@ def gather_inf_class_probs(inf_log:str, tp_intervals, eval_type='[]'):
 
                     for _interval in tp_intervals:
                         if interval_str == (_interval[0] + ',' + _interval[1]) and int(_interval[2]) != class_idx:
-                            print(f'{interval_str}: {_interval[2]} changed to {class_idx}\n')
+                            print(f'True Positive, {interval_str}: {_interval[2]} changed to {class_idx}\n')
 
                     if class_idx != original_pred:
                         print(f'True Positive, {interval_str}: re-eval corrected {original_pred} to {class_idx}')
@@ -77,6 +82,10 @@ def gather_inf_class_probs(inf_log:str, tp_intervals, eval_type='[]'):
                     falsepos_probs_by_class[class_idx].append(prob)
                     falsepos_misclassifications_by_class[class_idx] += misclasses
                     falsepos_seg_lengths.append(seg_length)
+
+                    for _interval in fp_intervals:
+                        if interval_str == (_interval[0] + ',' + _interval[1]) and int(_interval[2]) != class_idx:
+                            print(f'False Positive, {interval_str}: {_interval[2]} changed to {class_idx}\n')
 
                     if class_idx != original_pred:
                         print(f'False Positive, {interval_str}: re-eval corrected {original_pred} to {class_idx}')
@@ -117,9 +126,9 @@ def print_class_stats(truepos_probs_by_class, truepos_misclass_by_class, falsepo
 if __name__ == '__main__':  
     anno_log_path = 'inference/submission_files/logs/stdout_re_eval_filter_calibration.log'
     # log_path = 'inference/submission_files/logs/stdout_re_eval_filter_calibration.log' # Probs consolidated via Gaussian weighted average
-    log_path = 'inference/submission_files/logs/pretrained200_gaussian_stride_4.log'
+    log_path = 'inference/submission_files/logs/pre200_pure_gaussian_stride_4_noise_filter.log'
 
-    tp_intervals = fetch_tp(anno_log_path)
-    truepos_probs_by_class, truepos_misclass_by_class, falsepos_probs_by_class, falsepos_misclass_by_class = gather_inf_class_probs(log_path, tp_intervals, eval_type='[]')
+    tp_intervals, fp_intervals = fetch_tp_fp(anno_log_path)
+    truepos_probs_by_class, truepos_misclass_by_class, falsepos_probs_by_class, falsepos_misclass_by_class = gather_inf_class_probs(log_path, tp_intervals, fp_intervals, eval_type='[]')
     print_class_stats(truepos_probs_by_class, truepos_misclass_by_class, falsepos_probs_by_class, falsepos_misclass_by_class)
 

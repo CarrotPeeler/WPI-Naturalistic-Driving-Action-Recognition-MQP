@@ -110,13 +110,13 @@ Specifically samples frames from overlapping intervals that have not been sample
 
 params:
     cfg: cfg object with hyperparams
-    model_2: model to use for this operation
+    model: model to use for this operation
     cam_view_clips: dict containing batches of frames for each camera view
 
 returns:
     list of dicts (1 for each sampled interval), each containing 3 probability matrices, 1 for each camera view
 """
-def predict_short_segment(cfg, model_2, cam_view_clips):
+def predict_short_segment(cfg, model, cam_view_clips):
     dev = 'cuda:1' if cfg.TAL.USE_2_GPUS == True else 'cuda:0'
 
     all_segment_probs = []
@@ -125,21 +125,21 @@ def predict_short_segment(cfg, model_2, cam_view_clips):
     num_total_frames = cam_view_clips['Dashboard'].shape[0] - cfg.DATA.NUM_FRAMES
     sample_stride = cfg.DATA.NUM_FRAMES//4
 
-    for start_idx in range(sample_stride, num_total_frames, sample_stride):
+    for start_idx in range(0, num_total_frames, sample_stride):
         all_cam_view_probs = {}
         end_idx = start_idx + cfg.DATA.NUM_FRAMES
 
-        if start_idx % cfg.DATA.NUM_FRAMES != 0:
-            for cam_view_type in cam_view_clips.keys():
-                sampled = cam_view_clips[cam_view_type][start_idx:end_idx]
-                input = [sampled.permute(1,0,2,3).unsqueeze(dim=0).to(dev)]
+        # if start_idx % cfg.DATA.NUM_FRAMES != 0:
+        for cam_view_type in cam_view_clips.keys():
+            sampled = cam_view_clips[cam_view_type][start_idx:end_idx]
+            input = [sampled.permute(1,0,2,3).unsqueeze(dim=0).to(dev)]
 
-                cam_view_preds = model_2(input).cpu()
-                cam_view_probs = cam_view_preds.numpy()
-                all_cam_view_probs[cam_view_type] = cam_view_probs
+            cam_view_preds = model(input).cpu()
+            cam_view_probs = cam_view_preds.numpy()
+            all_cam_view_probs[cam_view_type] = cam_view_probs
 
-            all_segment_probs.append(all_cam_view_probs)
-            segment_sample_idxs.append(start_idx)
+        all_segment_probs.append(all_cam_view_probs)
+        segment_sample_idxs.append(start_idx)
 
     return all_segment_probs, segment_sample_idxs
 
@@ -185,6 +185,25 @@ def generate_gaussian_weights(sigma, length):
     return kernel
 
 
+"""
+Removes all action intervals that do not repeat consecutively and occur in between two actions of the same type
+Also removes class 0 instances to better detect class 4
+"""
+def filter_noisy_actions(prev_pred, prob_mats):
+    for i, prob_mat in enumerate(prob_mats):
+        if np.array(prob_mat).argmax() == 0:
+            del prob_mats[i]
+
+        elif i > 0 and i + 1 < len(prob_mats):
+            past = np.array(prob_mats[i-1]).argmax()
+            present = np.array(prob_mat).argmax()
+            future = np.array(prob_mats[i+1]).argmax()
+
+            if past != present and present != future and past == future and present != prev_pred:
+                del prob_mats[i]
+
+    return prob_mats
+
 """ 
 Consolidates multiple action prob matrices by computing the Gaussian weighted average
 
@@ -196,13 +215,13 @@ params:
 returns:
     final prediction and validity code determined by Gaussian weighted average
 """
-def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats:list, segment_preds, sigma, filtering_thresholds, logger):
-    consolidated_prob_mats = np.vstack(consolidated_prob_mats)
+def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats:list, prev_agg_pred, segment_preds, sigma, filtering_thresholds, logger):
+    prob_mats = np.vstack(filter_noisy_actions(prev_agg_pred, consolidated_prob_mats))
 
-    weights = generate_gaussian_weights(sigma, len(consolidated_prob_mats))
+    weights = generate_gaussian_weights(sigma, len(prob_mats))
     weighted_prob_mats = []
 
-    for i, prob_mat in enumerate(consolidated_prob_mats):
+    for i, prob_mat in enumerate(prob_mats):
         weighted_prob_mats.append(prob_mat * weights[i])
 
     gaussian_avged_mat = np.sum(weighted_prob_mats, axis=0) / np.sum(weights, axis=0)
@@ -211,11 +230,13 @@ def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats:list, segmen
     final_pred = np.argmax(gaussian_avged_mat)
 
     code = 0
-    # check for false positives below threshold as well as ones above threshold that don't follow special case rules for classes 5 and 6
-    if final_prob < filtering_thresholds[final_pred]:# or final_pred == 6 and any(pred not in [0,6] for pred in set(segment_preds)):
+    # check for false positives below threshold or special cases (hints of false positives among high passing probs)
+    if final_prob < filtering_thresholds[final_pred]\
+        or (final_pred in [3,6] and any(pred not in [0,3,6] for pred in set(segment_preds)))\
+        or (final_pred in [2,5] and any(pred not in [0,2,5] for pred in set(segment_preds))):
         code = -1
 
-    if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"mats: {consolidated_prob_mats}, Gaussian mat: {gaussian_avged_mat}, final prob: {final_prob:.3f}")
+    if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"mats: {prob_mats}, Gaussian mat: {gaussian_avged_mat}, final prob: {final_prob:.3f}")
 
     return final_pred, code
 
