@@ -49,9 +49,10 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
     # Enable eval mode.
     model = models[0]
     model_2 = models[1]
+    model_3 = models[2]
 
-    model.eval()
-    model_2.eval()
+    for mod in models:
+        mod.eval()
 
     test_meter.iter_tic()
 
@@ -308,7 +309,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     # clip_agg_cnt is incremented at end of iter, so its 1 less than it should be here
                     if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and prev_agg_pred != 0:
                         if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
-                        segment_probs, segment_sample_idxs = predict_short_segment(cfg, model_2, cam_view_clips)
+                        segment_probs, segment_sample_idxs = predict_short_segment(cfg, model_3, cam_view_clips)
                         segment_preds, segment_codes, consolidated_segment_prob_mats = (list(t) for t in zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs]))
 
                         # reorder mats by temporal idx used for sampling
@@ -465,8 +466,10 @@ def test(cfg):
 
         if cfg.TAL.ENABLE == True and cfg.TAL.USE_2_GPUS == True:
             model_2 = build_model(cfg, 1)
+            model_3 = build_model(cfg, 1)
         else:
             model_2 = model
+            model_3 = build_model(cfg, 0)
 
         flops, params = 0.0, 0.0
         if du.is_master_proc() and cfg.LOG_MODEL_INFO:
@@ -492,6 +495,9 @@ def test(cfg):
 
         if cfg.TAL.ENABLE == True and cfg.TAL.USE_2_GPUS == True:
             cu.load_test_checkpoint(cfg, model_2)
+        
+        cfg.TRAIN.CHECKPOINT_FILE_PATH = 'checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/checkpoint_epoch_00200.pyth'
+        cu.load_test_checkpoint(cfg, model_3)
 
         # Create video testing loaders.
         test_loader = loader.construct_loader(cfg, "test")
@@ -559,7 +565,7 @@ def test(cfg):
             writer = None
 
         # # Perform multi-view test on the entire dataset.
-        test_meter = perform_test(test_loader, [model, model_2], test_meter, cfg, writer, prompter)
+        test_meter = perform_test(test_loader, [model, model_2, model_3], test_meter, cfg, writer, prompter)
         test_meters.append(test_meter)
         if writer is not None:
             writer.close()
