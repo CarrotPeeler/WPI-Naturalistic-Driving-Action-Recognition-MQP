@@ -13,9 +13,10 @@ def fetch_tp(log_file):
         lines = f.readlines()
         for i, line in enumerate(lines):
             if 'final prob:' in line and 'tp' in line:
+                class_idx = lines[i+1].partition('final: (')[-1].partition(',')[0]
                 vid_id_str = lines[i+2].partition('vid_id: ')[-1].partition(',')[0].strip()
                 timestamp_str = lines[i+2].partition('stamps: ')[-1].strip()
-                tp_intervals.append((vid_id_str, timestamp_str))
+                tp_intervals.append((vid_id_str, timestamp_str, class_idx))
 
     return tp_intervals
 
@@ -44,6 +45,7 @@ def gather_inf_class_probs(inf_log:str, tp_intervals, eval_type='[]'):
             if 'final prob:' in line:
                 prob = float(line.partition('final prob: ')[-1].partition(' tp')[0].strip())
                 class_idx = int(lines[i+1].partition('final: (')[-1].partition(',')[0])
+                original_pred = int(lines[i+2].partition('pred: ')[-1].partition(',')[0])
 
                 if eval_type == '()':
                     misclasses_str = lines[i+1].partition('segs: ((')[-1].partition('),')[0].split(', ')
@@ -59,14 +61,25 @@ def gather_inf_class_probs(inf_log:str, tp_intervals, eval_type='[]'):
                 interval = literal_eval(interval_str)
                 seg_length = interval[1][1] - interval[1][0]
                 
-                if any(interval_str == (interval[0] + ',' + interval[1]) for interval in tp_intervals):
+                if any(interval_str == (interval_[0] + ',' + interval_[1]) for interval_ in tp_intervals):
                     truepos_probs_by_class[class_idx].append(prob)
                     truepos_misclassifications_by_class[class_idx] += misclasses
                     truepos_seg_lengths.append(seg_length)
+
+                    for _interval in tp_intervals:
+                        if interval_str == (_interval[0] + ',' + _interval[1]) and int(_interval[2]) != class_idx:
+                            print(f'{interval_str}: {_interval[2]} changed to {class_idx}\n')
+
+                    if class_idx != original_pred:
+                        print(f'True Positive, {interval_str}: re-eval corrected {original_pred} to {class_idx}')
+                
                 else:
                     falsepos_probs_by_class[class_idx].append(prob)
                     falsepos_misclassifications_by_class[class_idx] += misclasses
                     falsepos_seg_lengths.append(seg_length)
+
+                    if class_idx != original_pred:
+                        print(f'False Positive, {interval_str}: re-eval corrected {original_pred} to {class_idx}')
 
     truepos_seg_lengths = np.array(truepos_seg_lengths)
     falsepos_seg_lengths = np.array(falsepos_seg_lengths)

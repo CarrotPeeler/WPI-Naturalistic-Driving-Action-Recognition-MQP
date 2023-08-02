@@ -157,3 +157,16 @@ Class 15:
 	Common Misclassifications: {0, 4, 5, 6, 7, 11, 12, 14, 15}
 	[0.461, 0.441, 0.41, 0.355, 0.299, 0.272, 0.207]
 
+1,(192, 196): 12 changed to 4
+
+True Positive, 1,(192, 196): re-eval corrected 12 to 4 <<<
+False Positive, 2,(347, 354): re-eval corrected 6 to 0 <<<
+False Positive, 2,(362, 364): re-eval corrected 4 to 6
+False Positive, 4,(381, 386): re-eval corrected 1 to 3 <<<
+False Positive, 6,(74, 81): re-eval corrected 11 to 0 <<<
+False Positive, 9,(160, 165): re-eval corrected 5 to 15 <<<
+False Positive, 9,(183, 187): re-eval corrected 12 to 5 <<<
+False Positive, 9,(484, 489): re-eval corrected 12 to 15
+False Positive, 10,(334, 339): re-eval corrected 5 to 0 <<<
+False Positive, 10,(409, 413): re-eval corrected 4 to 5
+False Positive, 10,(448, 452): re-eval corrected 4 to 15
