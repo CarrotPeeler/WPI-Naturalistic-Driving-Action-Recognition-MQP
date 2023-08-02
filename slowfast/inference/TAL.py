@@ -187,11 +187,19 @@ def generate_gaussian_weights(sigma, length):
 
 """
 Removes all action intervals that do not repeat consecutively and occur in between two actions of the same type
-Also removes class 0 instances to better detect class 4
+Classes which the model is very sensitive to (4, 11, 12) have special filtering conditions to improve classification confidence
+    > conditions based on common mistakes model makes
 """
-def filter_noisy_actions(prev_pred, prob_mats):
+def filter_noisy_actions(prev_pred, prob_mats, segment_preds):
     for i, prob_mat in enumerate(prob_mats):
-        if np.array(prob_mat).argmax() == 0:
+        if prev_pred == 4 and np.array(prob_mat).argmax() == 0:
+            del prob_mats[i]
+            del segment_preds[i]
+
+        elif prev_pred == 11 and np.array(prob_mat).argmax() == 12:
+            del prob_mats[i]
+
+        elif prev_pred == 12 and np.array(prob_mat).argmax() in [4,11]:
             del prob_mats[i]
 
         elif i > 0 and i + 1 < len(prob_mats):
@@ -202,7 +210,6 @@ def filter_noisy_actions(prev_pred, prob_mats):
             if past != present and present != future and past == future and present != prev_pred:
                 del prob_mats[i]
 
-    return prob_mats
 
 """ 
 Consolidates multiple action prob matrices by computing the Gaussian weighted average
@@ -216,7 +223,8 @@ returns:
     final prediction and validity code determined by Gaussian weighted average
 """
 def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats:list, prev_agg_pred, segment_preds, sigma, filtering_thresholds, logger):
-    prob_mats = np.vstack(filter_noisy_actions(prev_agg_pred, consolidated_prob_mats))
+    filter_noisy_actions(prev_agg_pred, consolidated_prob_mats, segment_preds)
+    prob_mats = np.vstack(consolidated_prob_mats)
 
     weights = generate_gaussian_weights(sigma, len(prob_mats))
     weighted_prob_mats = []
@@ -233,7 +241,8 @@ def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats:list, prev_a
     # check for false positives below threshold or special cases (hints of false positives among high passing probs)
     if final_prob < filtering_thresholds[final_pred]\
         or (final_pred in [3,6] and any(pred not in [0,3,6] for pred in set(segment_preds)))\
-        or (final_pred in [2,5] and any(pred not in [0,2,5] for pred in set(segment_preds))):
+        or (final_pred in [2,5] and any(pred not in [0,2,5] for pred in set(segment_preds)))\
+        or final_pred == 4 and len(set(segment_preds)) > 2:
         code = -1
 
     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"mats: {prob_mats}, Gaussian mat: {gaussian_avged_mat}, final prob: {final_prob:.3f}")
