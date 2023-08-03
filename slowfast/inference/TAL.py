@@ -186,6 +186,23 @@ def generate_gaussian_weights(sigma, length):
 
 
 """
+Given list of prob matrices, computes the Gaussian Weighted Mean matrix
+"""
+def apply_gaussian_weights(mats, sigma):
+    prob_mats = np.vstack(mats)
+
+    weights = generate_gaussian_weights(sigma, len(prob_mats))
+    weighted_prob_mats = []
+
+    for i, prob_mat in enumerate(prob_mats):
+        weighted_prob_mats.append(prob_mat * weights[i])
+
+    gaussian_avged_mat = np.sum(weighted_prob_mats, axis=0) / np.sum(weights, axis=0)
+
+    return gaussian_avged_mat
+
+
+"""
 Removes all action intervals that do not repeat consecutively and occur in between two actions of the same type
 Classes which the model is very sensitive to (4, 11, 12) have special filtering conditions to improve classification confidence
     > conditions based on common mistakes model makes
@@ -200,13 +217,13 @@ def filter_noisy_actions(prev_pred, prob_mats, segment_preds):
             
             idxs_to_filter.append(i)
 
-        elif i > 0 and i + 1 < len(prob_mats):
-            past = np.array(prob_mats[i-1]).argmax()
-            present = np.array(prob_mats[i]).argmax()
-            future = np.array(prob_mats[i+1]).argmax()
+        # elif i > 0 and i + 1 < len(prob_mats):
+        #     past = np.array(prob_mats[i-1]).argmax()
+        #     present = np.array(prob_mats[i]).argmax()
+        #     future = np.array(prob_mats[i+1]).argmax()
 
-            if past != present and present != future and past == future and present != prev_pred:
-                idxs_to_filter.append(i)
+        #     if past != present and present != future and past == future and present != prev_pred:
+        #         idxs_to_filter.append(i)
     
     filtered_prob_mats = [prob_mats[j] for j in range(len(prob_mats)) if j not in idxs_to_filter]
     filtered_segment_preds = [segment_preds[j] for j in range(len(prob_mats)) if j not in idxs_to_filter]
@@ -227,15 +244,8 @@ returns:
 """
 def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats:list, prev_agg_pred, segment_preds, sigma, filtering_thresholds, logger):
     prob_mats, segment_preds = filter_noisy_actions(prev_agg_pred, consolidated_prob_mats, segment_preds)
-    prob_mats = np.vstack(prob_mats)
 
-    weights = generate_gaussian_weights(sigma, len(prob_mats))
-    weighted_prob_mats = []
-
-    for i, prob_mat in enumerate(prob_mats):
-        weighted_prob_mats.append(prob_mat * weights[i])
-
-    gaussian_avged_mat = np.sum(weighted_prob_mats, axis=0) / np.sum(weights, axis=0)
+    gaussian_avged_mat = apply_gaussian_weights(prob_mats, sigma)
 
     final_prob = np.max(gaussian_avged_mat)
     final_pred = np.argmax(gaussian_avged_mat)
@@ -250,7 +260,7 @@ def consolidate_cum_preds_with_gaussian(cfg, consolidated_prob_mats:list, prev_a
 
     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"mats: {prob_mats}, Gaussian mat: {gaussian_avged_mat}, final prob: {final_prob:.3f}")
 
-    return final_pred, code
+    return final_pred, code, final_prob
 
 """
 Same as Gaussian method but applies equal weight to all sampled interval probs
@@ -337,7 +347,7 @@ params:
     path_to_txt: path to txt file storing unmerged submission results
 """
 def post_process_merge(path_to_txt, submission_filepath):
-    df = pd.read_csv(path_to_txt, sep=" ", names=['video_id', 'pred', 'start_time', 'end_time'])
+    df = pd.read_csv(path_to_txt, sep=" ", names=['video_id', 'pred', 'start_time', 'end_time', 'prob'])
 
     # get merged idxs
     merged_idxs = get_merged_segment_idxs(df)
@@ -350,6 +360,32 @@ def post_process_merge(path_to_txt, submission_filepath):
         activity_id = merge_start_row["pred"].to_list()[0]
         start_time = merge_start_row["start_time"].to_list()[0]
         end_time = merge_end_row["end_time"].to_list()[0]
+        mean_prob = df.iloc[merged_idx_tuple[0]:merged_idx_tuple[1]+1]['prob'].mean()
 
-        with open(submission_filepath, "a+") as f:
-                f.writelines(f"{video_id} {activity_id} {start_time} {end_time}\n")
+        with open(submission_filepath.rpartition('.')[0] + "_merged.txt", "a+") as f:
+                f.writelines(f"{video_id} {activity_id} {start_time} {end_time} {mean_prob}\n")
+
+
+"""
+Parses each video id and elects only 1 action candidate per action id to remain
+
+params:
+    path_to_merged_txt: file path to merged submission file
+"""
+def elect_action_candidates(cfg, path_to_merged_txt, submission_filepath):
+    df = pd.read_csv(path_to_merged_txt, sep=" ", names=['video_id', 'pred', 'start_time', 'end_time', 'prob'])
+
+    for video_id in df["video_id"].unique():
+        video_id_df = df.loc[df['video_id'] == video_id]
+
+        for action_id in video_id_df['pred'].unique():
+            action_id_df = video_id_df.loc[video_id_df['pred'] == action_id]
+
+            if action_id_df.shape[0] > 1:
+                action_id_df['score'] = action_id_df['prob'] + (action_id_df['end_time'] - action_id_df['start_time']) * cfg.TAL.CANDIDATE_BONUS_SCORE_PER_SEC
+                loser_idxs = action_id_df.index[action_id_df['score'] != action_id_df['score'].max()].to_list()
+
+                df.drop(loser_idxs,inplace=True)
+
+    df.to_csv(submission_filepath, index=False, header=False, sep=' ')
+

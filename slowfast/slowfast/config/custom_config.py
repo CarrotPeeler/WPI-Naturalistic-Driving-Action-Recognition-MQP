@@ -26,6 +26,10 @@ def add_custom_config(_C):
     # for reference, 1 clip is equal to DATA.NUM_FRAMES
     _C.TAL.RE_EVAL_CLIP_THRESHOLD = 4
 
+    _C.TAL.GAUSSIAN_SIGMA = 3
+
+    _C.TAL.CANDIDATE_BONUS_SCORE_PER_SEC = 0.01
+
     # Enables the use of a 2nd GPU for TAL (speeds up inferencing)
     _C.TAL.USE_2_GPUS = False
 

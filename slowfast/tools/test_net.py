@@ -300,23 +300,32 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"prev code: {prev_consol_codes}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
 
                 # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
-                if 0 in prev_consol_codes or clip_agg_cnt > 1: #TODO
+                if 0 in prev_consol_codes or clip_agg_cnt > 1:
                     reliable_segment = True
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
-                    #TODO:
+                    
                     # re-evaluate short segment (<= ~8s) predictions (not class 0), which may be inaccurate
                     # clip_agg_cnt is incremented at end of iter, so its 1 less than it should be here
                     if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and prev_agg_pred != 0:
                         if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
                         segment_probs, segment_sample_idxs = predict_short_segment(cfg, model_3, cam_view_clips)
-                        segment_preds, segment_codes, consolidated_segment_prob_mats = (list(t) for t in zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs]))
+                        segment_preds, segment_codes, consolidated_segment_prob_mats = (list(t) for t in zip(*[consolidate_preds(cfg, 
+                                                                                                                                 probs, 
+                                                                                                                                 cam_view_weights, 
+                                                                                                                                 cfg.TAL.FILTERING_THRESHOLD, 
+                                                                                                                                 logger) for probs in segment_probs]))
 
                         # reorder mats by temporal idx used for sampling
                         # reordered_consolidated_prob_mats = get_reordered_prob_mats(cfg, consolidated_prop_prob_mats, consolidated_segment_prob_mats, segment_sample_idxs)
+                        
                         # consolidate all prob mats for all sampled intervals into final pred
-                        # final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(cfg, reordered_consolidated_prob_mats, segment_preds, 3, short_seg_filtering_thresholds, logger)
-                        final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(cfg, consolidated_segment_prob_mats, prev_agg_pred, segment_preds, 3, short_seg_filtering_thresholds, logger)
+                        final_pred, final_pred_code, final_prob = consolidate_cum_preds_with_gaussian(cfg, 
+                                                                                                      consolidated_segment_prob_mats, 
+                                                                                                      prev_agg_pred, segment_preds, 
+                                                                                                      cfg.TAL.GAUSSIAN_SIGMA, 
+                                                                                                      short_seg_filtering_thresholds, 
+                                                                                                      logger)
 
                         if cfg.TAL.PRINT_DEBUG_OUTPUT: 
                             logger.info(f'segs: {segment_preds, segment_codes}, final: {final_pred, final_pred_code}')
@@ -326,14 +335,15 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                             prev_agg_pred = final_pred
                         else:
                             reliable_segment = False
-                        # if final_pred_code == 0 or len(set(segment_preds)) == 1:
-                        #     prev_agg_pred = final_pred
-                        # elif final_pred_code != 0 and len(set(segment_preds)) > 1:
-                        #     reliable_segment = False
+
+                    else:
+                        # for longer intervals, apply gaussian weights to interval probs
+                        gaussian_avged_mat = apply_gaussian_weights(consolidated_prop_prob_mats, cfg.TAL.GAUSSIAN_SIGMA)
+                        final_prob = np.max(gaussian_avged_mat)
                 
                     if reliable_segment:
                         with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
-                            f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
+                            f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time} {final_prob}\n")
                 
                     if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
@@ -353,7 +363,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 del cam_view_clips
                 cam_view_clips = {}
                 # empty past prop prob mats 
-                # consolidated_prop_prob_mats = [consolidated_probs_2] #TODO
+                consolidated_prop_prob_mats = [consolidated_probs_2] #TODO
             
                 # re-add this iteration's frames from the clip 
                 for b in range(cfg.TEST.BATCH_SIZE):
@@ -370,7 +380,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 clip_agg_cnt += 1
 
                 # add curr proposal probs to ongoing tally
-                # if clip_agg_cnt > 1: consolidated_prop_prob_mats.append(consolidated_probs_2) #TODO
+                if clip_agg_cnt > 1: consolidated_prop_prob_mats.append(consolidated_probs_2) #TODO
+                elif cur_iter == 0: consolidated_prop_prob_mats.append(consolidated_probs)
 
             # update previous prediction for next batch iter as well as consolidation code
             prev_consol_codes = consol_codes
