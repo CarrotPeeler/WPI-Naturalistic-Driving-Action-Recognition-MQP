@@ -4,6 +4,8 @@ import pandas as pd
 from scipy import stats
 from torchvision.utils import save_image
 
+pd.options.mode.chained_assignment = None  # default='warn'
+
 
 def temporal_sampling(frames, start_idx, end_idx, num_samples):
     """
@@ -217,13 +219,15 @@ def filter_noisy_actions(prev_pred, prob_mats, segment_preds):
             
             idxs_to_filter.append(i)
 
-        # elif i > 0 and i + 1 < len(prob_mats):
-        #     past = np.array(prob_mats[i-1]).argmax()
-        #     present = np.array(prob_mats[i]).argmax()
-        #     future = np.array(prob_mats[i+1]).argmax()
+        elif i > 0 and i + 1 < len(prob_mats):
+            past = np.array(prob_mats[i-1]).argmax()
+            present = np.array(prob_mats[i]).argmax()
+            future = np.array(prob_mats[i+1]).argmax()
 
-        #     if past != present and present != future and past == future and present != prev_pred:
-        #         idxs_to_filter.append(i)
+            present_cnt = sum(present == x for x in segment_preds)
+
+            if past != present and present != future and past == future and present != prev_pred and present_cnt == 1:
+                idxs_to_filter.append(i)
     
     filtered_prob_mats = [prob_mats[j] for j in range(len(prob_mats)) if j not in idxs_to_filter]
     filtered_segment_preds = [segment_preds[j] for j in range(len(prob_mats)) if j not in idxs_to_filter]
@@ -388,14 +392,14 @@ def elect_action_candidates(path_to_merged_txt, submission_filepath, bonus_per_s
 
                 df.drop(loser_idxs,inplace=True)
 
+    df.drop('prob', axis=1, inplace=True)
     df.to_csv(submission_filepath, index=False, header=False, sep=' ')
 
 
-def generate_submission_file(cfg):
-    post_process_merge(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", 
-                       cfg.TAL.OUTPUT_FILE_PATH)
+def generate_submission_file(submission_filepath, bonus_per_sec):
+    post_process_merge(submission_filepath.rpartition('.')[0] + "_unmerged.txt", 
+                       submission_filepath)
     
-    elect_action_candidates(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", 
-                            cfg.TAL.OUTPUT_FILE_PATH, 
-                            cfg.TAL.CANDIDATE_BONUS_SCORE_PER_SEC)
-
+    elect_action_candidates(submission_filepath.rpartition('.')[0] + "_merged.txt", 
+                            submission_filepath, 
+                            bonus_per_sec)

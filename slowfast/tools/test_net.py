@@ -438,7 +438,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         test_meter.finalize_metrics()
     else:
         # generate submission specific results for the evaluation server
-        generate_submission_file(cfg)
+        generate_submission_file(cfg.TAL.OUTPUT_FILE_PATH, cfg.TAL.CANDIDATE_BONUS_SCORE_PER_SEC)
     
     logger.info("Inferencing complete.")
 
