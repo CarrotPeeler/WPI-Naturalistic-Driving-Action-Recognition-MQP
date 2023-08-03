@@ -437,8 +437,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
         test_meter.finalize_metrics()
     else:
-        # merge unmerged segments
-        post_process_merge(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", cfg.TAL.OUTPUT_FILE_PATH)
+        # generate submission specific results for the evaluation server
+        generate_submission_file(cfg)
     
     logger.info("Inferencing complete.")
 

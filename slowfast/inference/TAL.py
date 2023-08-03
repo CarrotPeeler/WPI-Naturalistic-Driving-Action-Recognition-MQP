@@ -371,8 +371,9 @@ Parses each video id and elects only 1 action candidate per action id to remain
 
 params:
     path_to_merged_txt: file path to merged submission file
+    bonus_per_sec: score granted per each second of an action interval
 """
-def elect_action_candidates(cfg, path_to_merged_txt, submission_filepath):
+def elect_action_candidates(path_to_merged_txt, submission_filepath, bonus_per_sec):
     df = pd.read_csv(path_to_merged_txt, sep=" ", names=['video_id', 'pred', 'start_time', 'end_time', 'prob'])
 
     for video_id in df["video_id"].unique():
@@ -382,10 +383,19 @@ def elect_action_candidates(cfg, path_to_merged_txt, submission_filepath):
             action_id_df = video_id_df.loc[video_id_df['pred'] == action_id]
 
             if action_id_df.shape[0] > 1:
-                action_id_df['score'] = action_id_df['prob'] + (action_id_df['end_time'] - action_id_df['start_time']) * cfg.TAL.CANDIDATE_BONUS_SCORE_PER_SEC
+                action_id_df['score'] = action_id_df['prob'] + (action_id_df['end_time'] - action_id_df['start_time']) * bonus_per_sec
                 loser_idxs = action_id_df.index[action_id_df['score'] != action_id_df['score'].max()].to_list()
 
                 df.drop(loser_idxs,inplace=True)
 
     df.to_csv(submission_filepath, index=False, header=False, sep=' ')
+
+
+def generate_submission_file(cfg):
+    post_process_merge(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", 
+                       cfg.TAL.OUTPUT_FILE_PATH)
+    
+    elect_action_candidates(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", 
+                            cfg.TAL.OUTPUT_FILE_PATH, 
+                            cfg.TAL.CANDIDATE_BONUS_SCORE_PER_SEC)
 
