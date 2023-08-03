@@ -312,8 +312,8 @@ if __name__ == '__main__':
 
     classes_to_match = [11, 12]
 
-    save_dir_preds = '/evaluation/val_preds/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200'
-    save_dir_graph = '/evaluation/graphs/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200'
+    save_dir_preds = '/evaluation/val_preds/MVITv2_S_32x3_pretrained200'
+    save_dir_graph = '/evaluation/graphs/MVITv2_S_32x3_pretrained200'
 
     if not os.path.exists(os.getcwd() + save_dir_graph):
         os.mkdir(os.getcwd() + save_dir_graph)
@@ -325,7 +325,7 @@ if __name__ == '__main__':
         cfg = assert_and_infer_cfg(cfg)
 
     args.image_size = cfg.DATA.TRAIN_CROP_SIZE
-    cfg.TRAIN.BATCH_SIZE = 4
+    # cfg.TRAIN.BATCH_SIZE = 4
 
     checkpoint = int(cfg.TRAIN.CHECKPOINT_FILE_PATH.rpartition('_')[-1].partition('.')[0])
 

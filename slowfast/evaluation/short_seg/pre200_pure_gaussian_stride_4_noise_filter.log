@@ -1,0 +1,203 @@
+Class 0:
+	True Positive:
+	Mean = 0.526, Median = 0.526, Mode = 0.500, Max = 0.526, Min = 0.526, Frequency = 1
+	Common Misclassifications: {0, 4}
+	[0.526]
+
+	False Positive:
+	Mean = 0.395, Median = 0.406, Mode = 0.400, Max = 0.516, Min = 0.215, Frequency = 6
+	Common Misclassifications: {0, 4, 5, 6, 11, 12, 15}
+	[0.516, 0.435, 0.419, 0.393, 0.39, 0.215]
+
+Class 1:
+	True Positive:
+	Mean = 0.763, Median = 0.812, Mode = 0.800, Max = 0.888, Min = 0.48, Frequency = 8
+	Common Misclassifications: {1, 4, 5, 12, 15}
+	[0.888, 0.835, 0.834, 0.814, 0.81, 0.797, 0.648, 0.48]
+
+	False Positive:
+	Mean = 0.304, Median = 0.304, Mode = 0.300, Max = 0.304, Min = 0.304, Frequency = 1
+	Common Misclassifications: {0, 1, 14}
+	[0.304]
+
+Class 2:
+	False Positive:
+	Mean = 0.384, Median = 0.320, Mode = 0.300, Max = 0.544, Min = 0.289, Frequency = 3
+	Common Misclassifications: {2, 4, 12, 13, 14}
+	[0.544, 0.32, 0.289]
+
+Class 3:
+	True Positive:
+	Mean = 0.703, Median = 0.615, Mode = 0.600, Max = 0.886, Min = 0.607, Frequency = 3
+	Common Misclassifications: {0, 3, 6}
+	[0.886, 0.615, 0.607]
+
+	False Positive:
+	Mean = 0.601, Median = 0.668, Mode = 0.700, Max = 0.687, Min = 0.449, Frequency = 3
+	Common Misclassifications: {1, 3, 14}
+	[0.687, 0.668, 0.449]
+
+Class 4:
+	True Positive:
+	Mean = 0.699, Median = 0.728, Mode = 0.700, Max = 0.826, Min = 0.449, Frequency = 10
+	Common Misclassifications: {0, 2, 4, 5, 8, 9, 10, 11, 12, 13}
+	[0.826, 0.821, 0.759, 0.751, 0.73, 0.725, 0.716, 0.534, 0.449]
+
+	False Positive:
+	Mean = 0.520, Median = 0.507, Mode = 0.500, Max = 0.777, Min = 0.329, Frequency = 13
+	Common Misclassifications: {0, 1, 4, 5, 6, 8, 10, 13, 15}
+	[0.777, 0.68, 0.65, 0.593, 0.59, 0.569, 0.535, 0.507, 0.484, 0.478, 0.438, 0.404, 0.4, 0.329]
+
+Class 5:
+	True Positive:
+	Mean = 0.765, Median = 0.800, Mode = 0.800, Max = 0.854, Min = 0.558, Frequency = 5
+	Common Misclassifications: {2, 5}
+	[0.854, 0.822, 0.8, 0.791, 0.733, 0.558]
+
+	False Positive:
+	Mean = 0.502, Median = 0.500, Mode = 0.600, Max = 0.733, Min = 0.188, Frequency = 9
+	Common Misclassifications: {0, 4, 5, 7, 10, 11, 14, 15}
+	[0.647, 0.642, 0.625, 0.5, 0.457, 0.371, 0.354, 0.188]
+
+Class 6:
+	True Positive:
+	Mean = 0.820, Median = 0.864, Mode = 0.900, Max = 0.901, Min = 0.658, Frequency = 9
+	Common Misclassifications: {0, 3, 6}
+	[0.901, 0.888, 0.887, 0.867, 0.864, 0.837, 0.788, 0.694, 0.658]
+
+	False Positive:
+	Mean = 0.439, Median = 0.425, Mode = 0.400, Max = 0.501, Min = 0.388, Frequency = 6
+	Common Misclassifications: {0, 3, 4, 6, 11, 13, 14}
+	[0.501, 0.49, 0.437, 0.413, 0.403, 0.388]
+
+Class 7:
+	True Positive:
+	Mean = 0.699, Median = 0.716, Mode = 0.700, Max = 0.879, Min = 0.468, Frequency = 9
+	Common Misclassifications: {0, 4, 7, 10, 13}
+	[0.879, 0.806, 0.791, 0.735, 0.716, 0.709, 0.687, 0.504, 0.468]
+Class 8:
+	True Positive:
+	Mean = 0.715, Median = 0.748, Mode = 0.900, Max = 0.9, Min = 0.463, Frequency = 4
+	Common Misclassifications: {8, 4}
+	[0.9, 0.871, 0.626, 0.542]
+
+	False Positive:
+	[0.463]
+Class 9:
+	True Positive:
+	Mean = 0.685, Median = 0.741, Mode = 0.500, Max = 0.892, Min = 0.452, Frequency = 7
+	Common Misclassifications: {0, 4, 5, 9, 10, 15}
+	[0.892, 0.819, 0.768, 0.741, 0.649, 0.477, 0.452, 0.413]
+
+Class 10:
+	True Positive:
+	Mean = 0.656, Median = 0.784, Mode = 0.800, Max = 0.848, Min = 0.319, Frequency = 8
+	Common Misclassifications: {0, 4, 6, 7, 9, 10, 15}
+	[0.848, 0.834, 0.824, 0.791, 0.778, 0.464, 0.393, 0.319]
+
+	False Positive:
+	Mean = 0.290, Median = 0.290, Mode = 0.200, Max = 0.34, Min = 0.24, Frequency = 2
+	Common Misclassifications: {4, 5, 8, 10, 14, 15}
+	[0.34, 0.24]
+
+Class 11:
+	True Positive:
+	Mean = 0.569, Median = 0.522, Mode = 0.400, Max = 0.791, Min = 0.44, Frequency = 4
+	Common Misclassifications: {0, 4, 11, 12, 15}
+	[0.791, 0.558, 0.486, 0.44]
+
+	False Positive:
+	Mean = 0.557, Median = 0.449, Mode = 0.400, Max = 0.798, Min = 0.424, Frequency = 3
+	Common Misclassifications: {0, 11, 12, 13, 15}
+	[0.798, 0.449, 0.424]
+
+Class 12:
+	True Positive:
+	Mean = 0.683, Median = 0.730, Mode = 0.700, Max = 0.753, Min = 0.527, Frequency = 5
+	Common Misclassifications: {0, 4, 7, 11, 12, 13, 15}
+	[0.753, 0.74, 0.73, 0.666, 0.527]
+
+	False Positive:
+	Mean = 0.604, Median = 0.613, Mode = 0.300, Max = 0.846, Min = 0.334, Frequency = 7
+	Common Misclassifications: {0, 4, 6, 11, 12, 14}
+	[0.846, 0.839, 0.705, 0.613, 0.545, 0.344, 0.334]
+
+Class 13:
+	True Positive:
+	Mean = 0.741, Median = 0.756, Mode = 0.800, Max = 0.882, Min = 0.582, Frequency = 9
+	Common Misclassifications: {0, 4, 5, 12, 13, 14}
+	[0.882, 0.847, 0.788, 0.776, 0.756, 0.732, 0.662, 0.64, 0.582]
+
+	False Positive:
+	Mean = 0.330, Median = 0.351, Mode = 0.400, Max = 0.445, Min = 0.193, Frequency = 3
+	Common Misclassifications: {0, 4, 12, 13}
+	[0.445, 0.351, 0.193]
+
+Class 14:
+	True Positive:
+	Mean = 0.722, Median = 0.766, Mode = 0.800, Max = 0.797, Min = 0.604, Frequency = 3
+	Common Misclassifications: {1, 3, 14}
+	[0.797, 0.766, 0.604]
+
+	False Positive:
+	Mean = 0.442, Median = 0.442, Mode = 0.400, Max = 0.455, Min = 0.428, Frequency = 2
+	Common Misclassifications: {0, 1, 3, 4, 5, 13, 14}
+	[0.455, 0.428]
+
+Class 15:
+	True Positive:
+	Mean = 0.724, Median = 0.791, Mode = 0.800, Max = 0.805, Min = 0.575, Frequency = 3
+	Common Misclassifications: {0, 4, 15}
+	[0.805, 0.791, 0.575, 0.524]
+
+	False Positive:
+	Mean = 0.384, Median = 0.386, Mode = 0.400, Max = 0.524, Min = 0.283, Frequency = 6
+	Common Misclassifications: {0, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15}
+	[0.424, 0.415, 0.358, 0.299, 0.283]
+
+True Positive, 1,(192, 196): 12 changed to 4
+
+True Positive, 1,(192, 196): re-eval corrected 12 to 4
+False Positive, 2,(172, 179): 15 changed to 0
+
+False Positive, 2,(172, 179): re-eval corrected 15 to 0
+False Positive, 2,(347, 354): 6 changed to 0
+
+False Positive, 2,(347, 354): re-eval corrected 6 to 0
+False Positive, 2,(362, 364): re-eval corrected 4 to 6
+False Positive, 2,(424, 428): re-eval corrected 15 to 0
+False Positive, 4,(381, 386): 1 changed to 3
+
+False Positive, 6,(74, 81): 11 changed to 0
+
+False Positive, 6,(74, 81): re-eval corrected 11 to 0
+False Positive, 6,(230, 234): 0 changed to 4
+
+False Positive, 8,(36, 40): 12 changed to 13
+
+False Positive, 8,(36, 40): re-eval corrected 12 to 13
+False Positive, 9,(89, 93): 4 changed to 10
+
+False Positive, 9,(89, 93): re-eval corrected 4 to 10
+False Positive, 9,(160, 165): 5 changed to 15
+
+False Positive, 9,(160, 165): re-eval corrected 5 to 15
+False Positive, 9,(183, 187): 12 changed to 5
+
+False Positive, 9,(183, 187): re-eval corrected 12 to 5
+False Positive, 9,(398, 403): 10 changed to 9
+
+False Positive, 9,(398, 403): re-eval corrected 10 to 9
+False Positive, 9,(422, 428): 13 changed to 2
+
+False Positive, 9,(422, 428): re-eval corrected 13 to 2
+False Positive, 9,(458, 465): 0 changed to 15
+
+False Positive, 10,(221, 226): 5 changed to 8
+
+False Positive, 10,(334, 339): 5 changed to 0
+
+False Positive, 10,(334, 339): re-eval corrected 5 to 0
+False Positive, 10,(409, 413): re-eval corrected 4 to 5
+False Positive, 10,(448, 452): re-eval corrected 4 to 15
+

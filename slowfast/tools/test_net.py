@@ -49,9 +49,10 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
     # Enable eval mode.
     model = models[0]
     model_2 = models[1]
+    model_3 = models[2]
 
-    model.eval()
-    model_2.eval()
+    for mod in models:
+        mod.eval()
 
     test_meter.iter_tic()
 
@@ -72,7 +73,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         end_time = None
         video_id = None
         prev_agg_pred = None
-        prev_consol_code = None
+        prev_consol_codes = []
 
         # stores aggregated clips (batches) for each cam view type
         cam_view_clips = {}
@@ -85,7 +86,12 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
 
         # initialize matrix with weighted action probs for each cam view (weights taken from Purdue's M2DAR Submission https://arxiv.org/abs/2305.08877)
         weights_df = pd.read_csv(os.getcwd() + '/inference/weighted_cam_view_action_probs.csv')
-        cam_view_weights = { col:weights_df[col].to_numpy() for col in weights_df.columns }      
+        cam_view_weights = { col:weights_df[col].to_numpy() for col in weights_df.columns }  
+
+        short_seg_filtering_thresholds = pd.read_csv(os.getcwd() + '/inference/weighted_action_filter_gaussian_probs.csv', names=['Probs'])['Probs'].to_list()
+
+        # stores all prob mats for single proposals
+        consolidated_prop_prob_mats = [] 
 
 
     for cur_iter, (inputs, labels, video_idx, time, meta, proposal) in enumerate(
@@ -219,9 +225,9 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     v_names.add(v_name)
 
                     # fix the aggregation clip size to be constant past the threshold 
-                    start_idx = cam_view_clips[cview].shape[0] - frame_agg_threshold if clip_agg_cnt*cfg.DATA.NUM_FRAMES > frame_agg_threshold else 0 
+                    # start_idx = cam_view_clips[cview].shape[0] - frame_agg_threshold if clip_agg_cnt*cfg.DATA.NUM_FRAMES > frame_agg_threshold else 0 
 
-                    cam_view_clips[cview] = torch.cat([cam_view_clips[cview][start_idx:], inputs[0][j].permute(1,0,2,3)], dim=0)
+                    cam_view_clips[cview] = torch.cat([cam_view_clips[cview], inputs[0][j].permute(1,0,2,3)], dim=0)
 
                     assert cam_view_clips[cview].shape[1] == 3 \
                         and cam_view_clips[cview].shape[2] == cfg.DATA.TEST_CROP_SIZE \
@@ -230,7 +236,7 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 assert len(cviews) == 3, f"Cam view mismatch for next batch {cur_iter}"
                 assert len(v_names) == len(set(proposal[0])) == len(set(proposal[1])) == len(set(proposal[2])) == 1, f"Proposal mismatch for next batch {cur_iter}"
 
-            logger.info(f"CUR ITER: {cur_iter}")
+            if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"CUR ITER: {cur_iter}")
             
             # PREDICTION STEP: make predictions for each camera angle using identical proposal length and space
             probs, probs_2 = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=False, cur_iter=cur_iter)
@@ -239,18 +245,16 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             video_idx = video_idx.cpu()
 
             # CONSOLIDATION STEP: Consolidate predictions among the three camera angles into 1 final pred
-            curr_agg_pred, curr_consol_code = consolidate_preds(probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
+            curr_agg_pred, curr_consol_code, consolidated_probs = consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
             
-
             # CORRECTION STEP: correct prediction if necessary
             fix_start_time = False # signal if start time needs adjustment
-
             # detect new action w/ but prob is low => resample current temporal interval and consolidate again
             if curr_consol_code == -1:
-                logger.info("Perform Resampling")
+                if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform Resampling")
                 probs, _ = predict_cam_views(cfg, model, model_2, cam_view_clips, frame_agg_threshold, logger, resample=True, cur_iter=cur_iter)
                 
-                curr_agg_pred, curr_consol_code = consolidate_preds(probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
+                curr_agg_pred, curr_consol_code, _ = consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
 
                 # if final consol code is 0, resampling worked and new action begins 1s later instead of at start of new interval
                 if curr_consol_code == 0:
@@ -260,16 +264,24 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                     # re-evaluated precision of localization for new detected action, adjust start time accordingly
                     fix_start_time = True
 
-            # if 2nd pred available, compare against 1st pred to get final pred
+            # INVALIDATION STEP: check for invalid results if a 2nd pred is available
+            consol_codes = []
             if len(probs_2) == 3: 
-                agg_pred_2, curr_consol_code_2 = consolidate_preds(probs_2, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
+                agg_pred_2, curr_consol_code_2, consolidated_probs_2 = consolidate_preds(cfg, probs_2, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger)
 
-                # invalidate results if curr_agg_pred differs from agg_pred_2 OR one of the preds is invalid
-                if curr_consol_code in [-1,-2] or curr_consol_code_2 in [-1,-2] or curr_agg_pred != agg_pred_2:
-                    # NOTE: setting this to -1 invalidates localization for this temporal interval (prev_consol_code must be 0 for valid localization)
-                    curr_consol_code = -1 
+                # one or both preds are below the filtering threshold
+                if curr_consol_code == -1 or curr_consol_code_2 == -1:
+                    consol_codes.append(-1)
+                # preds are not identical
+                if curr_agg_pred != agg_pred_2:
+                    consol_codes.append(-2)
+                # if all checks pass, final code is 0
+                if len(consol_codes) == 0:
+                    consol_codes.append(0)
+            # if no 2nd input available, append whatever code 1st pred receives
             else: 
                 curr_consol_code_2 = None
+                consol_codes.append(curr_consol_code)
 
 
             # ASSESSMENT STEP: check if temporal localization for the current action is done
@@ -280,21 +292,50 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 - there are issues predicting over the current temporal interval => toss results and reset aggregation of clips 
             """
             vid_id_changed = (video_id != proposal[0][0])
+            # action change only triggered if prev code is valid
             action_changed = (curr_agg_pred != prev_agg_pred and clip_agg_cnt > 0) 
-            curr_pred_is_bad = curr_consol_code in [-1, -2]
+            curr_pred_is_bad = any(x in consol_codes for x in [-2]) #TODO removed -1
 
-            if vid_id_changed or curr_pred_is_bad or action_changed:
-                logger.info(f"prev code: {prev_consol_code}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
+            if vid_id_changed or curr_pred_is_bad or action_changed: 
+                if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"prev code: {prev_consol_codes}, cur code: {curr_consol_code}, cur code_2: {curr_consol_code_2}, bad pred: {curr_pred_is_bad}")
 
                 # if vid or action changed and prev pred is valid, record the temporal interval of the prev action
-                if prev_consol_code == 0 or clip_agg_cnt > 1:
+                if 0 in prev_consol_codes or clip_agg_cnt > 1: #TODO
+                    reliable_segment = True
                     start_time = int(float(start_time)//1)
                     end_time = int(float(end_time)//1)
+                    #TODO:
+                    # re-evaluate short segment (<= ~8s) predictions (not class 0), which may be inaccurate
+                    # clip_agg_cnt is incremented at end of iter, so its 1 less than it should be here
+                    if clip_agg_cnt > 0 and clip_agg_cnt <= cfg.TAL.RE_EVAL_CLIP_THRESHOLD - 1 and prev_agg_pred != 0:
+                        if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info("Perform short segment re-evaluation")
+                        segment_probs, segment_sample_idxs = predict_short_segment(cfg, model_3, cam_view_clips)
+                        segment_preds, segment_codes, consolidated_segment_prob_mats = (list(t) for t in zip(*[consolidate_preds(cfg, probs, cam_view_weights, cfg.TAL.FILTERING_THRESHOLD, logger) for probs in segment_probs]))
 
-                    with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
-                        f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
-                    
-                    logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
+                        # reorder mats by temporal idx used for sampling
+                        # reordered_consolidated_prob_mats = get_reordered_prob_mats(cfg, consolidated_prop_prob_mats, consolidated_segment_prob_mats, segment_sample_idxs)
+                        # consolidate all prob mats for all sampled intervals into final pred
+                        # final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(cfg, reordered_consolidated_prob_mats, segment_preds, 3, short_seg_filtering_thresholds, logger)
+                        final_pred, final_pred_code = consolidate_cum_preds_with_gaussian(cfg, consolidated_segment_prob_mats, prev_agg_pred, segment_preds, 3, short_seg_filtering_thresholds, logger)
+
+                        if cfg.TAL.PRINT_DEBUG_OUTPUT: 
+                            logger.info(f'segs: {segment_preds, segment_codes}, final: {final_pred, final_pred_code}')
+
+                        # if re-eval pred code is valid, use final_pred
+                        if final_pred_code == 0:
+                            prev_agg_pred = final_pred
+                        else:
+                            reliable_segment = False
+                        # if final_pred_code == 0 or len(set(segment_preds)) == 1:
+                        #     prev_agg_pred = final_pred
+                        # elif final_pred_code != 0 and len(set(segment_preds)) > 1:
+                        #     reliable_segment = False
+                
+                    if reliable_segment:
+                        with open(cfg.TAL.OUTPUT_FILE_PATH.rpartition('.')[0] + "_unmerged.txt", "a+") as f:
+                            f.writelines(f"{video_id} {prev_agg_pred} {start_time} {end_time}\n")
+                
+                    if cfg.TAL.PRINT_DEBUG_OUTPUT: logger.info(f"vid_id: {video_id}, pred: {prev_agg_pred}, stamps: {(start_time, end_time)}")
 
                 # set start time and end time of newly detected action 
                 start_time = proposal[1][0]
@@ -311,6 +352,8 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 # reset all clip aggregation variables
                 del cam_view_clips
                 cam_view_clips = {}
+                # empty past prop prob mats 
+                # consolidated_prop_prob_mats = [consolidated_probs_2] #TODO
             
                 # re-add this iteration's frames from the clip 
                 for b in range(cfg.TEST.BATCH_SIZE):
@@ -326,8 +369,11 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 # increment count for num clips concatenated consecutively
                 clip_agg_cnt += 1
 
+                # add curr proposal probs to ongoing tally
+                # if clip_agg_cnt > 1: consolidated_prop_prob_mats.append(consolidated_probs_2) #TODO
+
             # update previous prediction for next batch iter as well as consolidation code
-            prev_consol_code = curr_consol_code
+            prev_consol_codes = consol_codes
             prev_agg_pred = curr_agg_pred
 
         ######################## T A L  E N D ########################
@@ -421,8 +467,10 @@ def test(cfg):
 
         if cfg.TAL.ENABLE == True and cfg.TAL.USE_2_GPUS == True:
             model_2 = build_model(cfg, 1)
+            model_3 = build_model(cfg, 1)
         else:
             model_2 = model
+            model_3 = build_model(cfg, 0)
 
         flops, params = 0.0, 0.0
         if du.is_master_proc() and cfg.LOG_MODEL_INFO:
@@ -448,6 +496,9 @@ def test(cfg):
 
         if cfg.TAL.ENABLE == True and cfg.TAL.USE_2_GPUS == True:
             cu.load_test_checkpoint(cfg, model_2)
+        
+        cfg.TRAIN.CHECKPOINT_FILE_PATH = 'checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/checkpoint_epoch_00200.pyth'
+        cu.load_test_checkpoint(cfg, model_3)
 
         # Create video testing loaders.
         test_loader = loader.construct_loader(cfg, "test")
@@ -515,7 +566,7 @@ def test(cfg):
             writer = None
 
         # # Perform multi-view test on the entire dataset.
-        test_meter = perform_test(test_loader, [model, model_2], test_meter, cfg, writer, prompter)
+        test_meter = perform_test(test_loader, [model, model_2, model_3], test_meter, cfg, writer, prompter)
         test_meters.append(test_meter)
         if writer is not None:
             writer.close()
