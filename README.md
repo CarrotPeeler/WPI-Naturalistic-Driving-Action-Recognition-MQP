@@ -79,7 +79,7 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_inf.yaml DATA.PATH_TO_DATA_
 - Once inference is complete, the text file with finalized localization results will be located in ~/slowfast/inference/sub_file.txt
 
 ### Results
-After submitting TAL results to the track #3 evaluation server for the AI City challenge [(link)](https://www.aicitychallenge.org/2023-evaluation-system/), the above methods net a final score of __.
+After submitting TAL results to the track #3 evaluation server for the AI City challenge [(link)](https://www.aicitychallenge.org/2023-evaluation-system/), the above methods net a final score of **0.5711**. Although this project was completed just after the 2023 challenge ended, this score would rank 9th overall on the public leaderboards. 
 
 <!-- ### TODO
 - before splitting videos into clips using ffmpeg, 
