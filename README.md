@@ -54,6 +54,10 @@ python3 prepare_data.py < /dev/null > ffmpeg_log.txt 2>&1 &
 ```console
 python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_mixup_aug_unprompted.yaml DATA.PATH_TO_DATA_DIR . < /dev/null > train_log.txt 2>&1 & 
 ```
+To increase the robustness of classification, two checkpoints are used for inference/TAL:
+    - 200 epoch checkpoint
+    - 2nd checkpoint achieved by using the above 200 epoch checkpoint to train the model for another 200 epochs 
+        - simply replace the TRAIN.CHECKPOINT_FILE_PATH with the path to the 200 epoch checkpoint, everything else is the same
 
 ### Inference/TAL
 - edit the config in slowfast/slowfast/configs (MVITv2_B_32x3_inf.yaml)
@@ -65,7 +69,7 @@ python3 tools/run_net.py --cfg configs/MVITv2_B_32x3_mixup_aug_unprompted.yaml D
 ```console
 python3 inference/prepare_loc_data.py --cfg configs/MVITv2_B_32x3_inf.yaml < /dev/null > inference/ffmpeg_loc_log.txt 2>&1 &
 ```
-- make sure correct model checkpoint .pyth file is in slowfast/checkpoints folder
+- make sure correct model checkpoints (.pyth files) are in slowfast/checkpoints folder
 - then perform inference:
 for MViTv2:
 ```console
