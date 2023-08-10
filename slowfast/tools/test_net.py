@@ -70,11 +70,6 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         os.remove(cfg.TAL.OUTPUT_FILE_PATH)
 
     if cfg.TAL.ENABLE == True:
-        # for recording FPS metric
-        time_per_iter_sum = 0
-        t_cnt = 0
-        video_avg_time_per_iter = []
-
         start_time = None
         end_time = None
         video_id = None
@@ -99,11 +94,14 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         # stores all prob mats for single proposals
         consolidated_prop_prob_mats = [] 
 
+        # for recording FPS metric
+        video_exec_times = []
+        start_t = ti.time()
+
 
     for cur_iter, (inputs, labels, video_idx, time, meta, proposal) in enumerate(
         test_loader
     ):
-        start_t = ti.time()
         if cfg.NUM_GPUS:
             # Transfer the data to the current GPU device.
             if isinstance(inputs, (list,)):
@@ -380,9 +378,12 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
                 clip_agg_cnt = 1
 
                 if vid_id_changed:
-                    video_avg_time_per_iter.append(time_per_iter_sum/t_cnt)
-                    time_per_iter_sum = 0
-                    t_cnt = 0
+                    end_t = ti.time()
+                    elapsed_t = end_t - start_t
+                    video_exec_times.append(elapsed_t)
+
+                    # reset start time for next video
+                    start_t = ti.time()
 
             else: 
                 # continue localization for current action pred
@@ -421,11 +422,6 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
             )
 
         test_meter.log_iter_stats(cur_iter)
-
-        end_t = ti.time()
-        time_per_iter_sum += (end_t - start_t)
-        t_cnt += 1
-
         test_meter.iter_tic()
 
     if cfg.TAL.ENABLE == False:
@@ -455,10 +451,10 @@ def perform_test(test_loader, models, test_meter, cfg, writer=None, prompter=Non
         # generate submission specific results for the evaluation server
         generate_submission_file(cfg.TAL.OUTPUT_FILE_PATH, cfg.TAL.CANDIDATE_BONUS_SCORE_PER_SEC)
 
-        video_avg_time_per_iter = np.array(video_avg_time_per_iter)
-        video_avg_time_per_iter_final = video_avg_time_per_iter.sum()/10.0
+        video_exec_times = np.array(video_exec_times)
+        avg_video_exec_time = video_exec_times.sum()/10.0
 
-        logger.info(f"AVERAGE EXECUTION TIME PER ITER ACROSS 10 VIDEOS: {video_avg_time_per_iter_final}")
+        logger.info(f"AVERAGE EXECUTION TIME ACROSS 10 VIDEOS: {avg_video_exec_time}")
     
     logger.info("Inferencing complete.")
 

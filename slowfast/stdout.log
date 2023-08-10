@@ -1,5 +1,5 @@
-[08/09 23:27:55][INFO] test_net.py:  493: Test with config:
-[08/09 23:27:55][INFO] test_net.py:  494: AUG:
+[08/09 23:48:36][INFO] test_net.py:  489: Test with config:
+[08/09 23:48:36][INFO] test_net.py:  490: AUG:
   AA_TYPE: rand-m7-n4-mstd0.5-inc1
   COLOR_JITTER: 0.4
   ENABLE: False
@@ -416,7 +416,7 @@ X3D:
   DIM_C5: 2048
   SCALE_RES2: False
   WIDTH_FACTOR: 1.0
-[08/09 23:27:59][INFO] misc.py:  185: Model:
+[08/09 23:48:40][INFO] misc.py:  185: Model:
 MViT(
   (patch_embed): PatchEmbed(
     (proj): Conv3d(3, 96, kernel_size=(3, 7, 7), stride=(2, 4, 4), padding=(1, 3, 3))
@@ -916,35 +916,35 @@ MViT(
     (act): Softmax(dim=1)
   )
 )
-[08/09 23:27:59][INFO] misc.py:  187: Params: 50,897,872
-[08/09 23:27:59][INFO] misc.py:  188: Mem: 0.19084501266479492 MB
-[08/09 23:28:01][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[08/09 23:28:01][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[08/09 23:28:01][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[08/09 23:28:01][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
-[08/09 23:28:01][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
-[08/09 23:28:01][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[08/09 23:28:01][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[08/09 23:28:01][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[08/09 23:28:01][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
-[08/09 23:28:01][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+[08/09 23:48:40][INFO] misc.py:  187: Params: 50,897,872
+[08/09 23:48:40][INFO] misc.py:  188: Mem: 0.19084501266479492 MB
+[08/09 23:48:43][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[08/09 23:48:43][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[08/09 23:48:43][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[08/09 23:48:43][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
+[08/09 23:48:43][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
+[08/09 23:48:43][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[08/09 23:48:43][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[08/09 23:48:43][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[08/09 23:48:43][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
+[08/09 23:48:43][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
 blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
-[08/09 23:28:01][INFO] misc.py:  190: Flops: 92.53320168 G
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
-[08/09 23:28:03][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+[08/09 23:48:43][INFO] misc.py:  190: Flops: 92.53320168 G
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
+[08/09 23:48:45][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
 blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
-[08/09 23:28:03][INFO] misc.py:  191: Activations: 356.738832 M
-[08/09 23:28:03][INFO] misc.py:  196: nvidia-smi
-[08/09 23:28:03][INFO] misc.py:  185: Model:
+[08/09 23:48:45][INFO] misc.py:  191: Activations: 356.738832 M
+[08/09 23:48:45][INFO] misc.py:  196: nvidia-smi
+[08/09 23:48:45][INFO] misc.py:  185: Model:
 MViT(
   (patch_embed): PatchEmbed(
     (proj): Conv3d(3, 96, kernel_size=(3, 7, 7), stride=(2, 4, 4), padding=(1, 3, 3))
@@ -1444,37 +1444,43 @@ MViT(
     (act): Softmax(dim=1)
   )
 )
-[08/09 23:28:03][INFO] misc.py:  187: Params: 50,897,872
-[08/09 23:28:03][INFO] misc.py:  188: Mem: 2.4974565505981445 MB
-[08/09 23:28:05][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[08/09 23:28:05][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[08/09 23:28:05][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[08/09 23:28:05][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
-[08/09 23:28:05][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
-[08/09 23:28:05][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[08/09 23:28:05][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[08/09 23:28:05][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[08/09 23:28:05][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
-[08/09 23:28:05][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+[08/09 23:48:45][INFO] misc.py:  187: Params: 50,897,872
+[08/09 23:48:45][INFO] misc.py:  188: Mem: 2.4974565505981445 MB
+[08/09 23:48:47][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[08/09 23:48:47][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[08/09 23:48:47][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[08/09 23:48:47][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
+[08/09 23:48:47][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
+[08/09 23:48:47][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[08/09 23:48:47][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[08/09 23:48:47][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[08/09 23:48:47][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
+[08/09 23:48:47][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
 blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
-[08/09 23:28:05][INFO] misc.py:  190: Flops: 92.53320168 G
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
-[08/09 23:28:06][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+[08/09 23:48:47][INFO] misc.py:  190: Flops: 92.53320168 G
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::layer_norm encountered 121 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::mul encountered 729 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::div encountered 102 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::sub encountered 144 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::add_ encountered 72 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::add encountered 144 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::softmax encountered 25 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::gelu encountered 24 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::max_pool3d encountered 3 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  499: Unsupported operator aten::mean encountered 1 time(s)
+[08/09 23:48:48][WARNING] jit_analysis.py:  511: The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
 blocks.1.drop_path, blocks.10.drop_path, blocks.11.drop_path, blocks.12.drop_path, blocks.13.drop_path, blocks.14.drop_path, blocks.15.drop_path, blocks.16.drop_path, blocks.17.drop_path, blocks.18.drop_path, blocks.19.drop_path, blocks.2.drop_path, blocks.20.drop_path, blocks.21.drop_path, blocks.22.drop_path, blocks.23.drop_path, blocks.3.drop_path, blocks.4.drop_path, blocks.5.drop_path, blocks.6.drop_path, blocks.7.drop_path, blocks.8.drop_path, blocks.9.drop_path
-[08/09 23:28:07][INFO] misc.py:  191: Activations: 356.738832 M
-[08/09 23:28:07][INFO] misc.py:  196: nvidia-smi
-[08/09 23:28:07][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted/checkpoint_epoch_00200.pyth.
-[08/09 23:28:07][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted/checkpoint_epoch_00200.pyth.
-[08/09 23:28:07][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/checkpoint_epoch_00200.pyth.
-[08/09 23:28:08][INFO] kinetics.py:   93: Constructing Kinetics test...
-[08/09 23:28:08][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 7095 skip_rows 0) from test.csv 
-[08/09 23:28:08][INFO] test_net.py:  536: Testing model for 2365 iterations
+[08/09 23:48:48][INFO] misc.py:  191: Activations: 356.738832 M
+[08/09 23:48:48][INFO] misc.py:  196: nvidia-smi
+[08/09 23:48:49][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted/checkpoint_epoch_00200.pyth.
+[08/09 23:48:49][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted/checkpoint_epoch_00200.pyth.
+[08/09 23:48:49][INFO] checkpoint.py:  223: Loading network weights from checkpoints/mvitv2-b32x3/MVITv2_B_32x3_mixup_aug_unprompted_pretrained200/checkpoint_epoch_00200.pyth.
+[08/09 23:48:50][INFO] kinetics.py:   93: Constructing Kinetics test...
+[08/09 23:48:50][INFO] kinetics.py:  169: Constructing kinetics dataloader (size: 7095 skip_rows 0) from test.csv 
+[08/09 23:48:50][INFO] test_net.py:  532: Testing model for 2365 iterations
+[08/09 23:52:38][INFO] logging.py:  101: json_stats: {"cur_iter": "500", "eta": "0:08:24", "split": "test_iter", "time_diff": 0.27024}
+[08/09 23:56:25][INFO] logging.py:  101: json_stats: {"cur_iter": "1000", "eta": "0:09:12", "split": "test_iter", "time_diff": 0.40482}
+[08/09 23:59:51][INFO] logging.py:  101: json_stats: {"cur_iter": "1500", "eta": "0:03:55", "split": "test_iter", "time_diff": 0.27227}
+[08/10 00:03:25][INFO] logging.py:  101: json_stats: {"cur_iter": "2000", "eta": "0:02:32", "split": "test_iter", "time_diff": 0.41603}
+[08/10 00:06:35][INFO] test_net.py:  457: AVERAGE EXECUTION TIME ACROSS 10 VIDEOS: 94.35819237232208
+[08/10 00:06:35][INFO] test_net.py:  459: Inferencing complete.
