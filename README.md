@@ -3,11 +3,14 @@
 ## Repository for Developing Video Classification/Action Recognition Models for the AI City Track Challenge #3 (2023)
 More information about this particular challenge can be found [(here)](https://www.aicitychallenge.org/2023-challenge-tracks/)
 
-For an in-depth explanation of the system architecture, please refer to the paper inside this repo (paper.pdf).
+For an in-depth explanation of the system architecture, please refer to the paper inside this repo (paper.pdf)
  
 Completed as part of my Major Qualifying Project for Worcester Polytechnic Institute (Summer 2023)
 
 ### Requirements
+This repo uses [PySlowFast](https://github.com/facebookresearch/SlowFast) as the codebase. 
+
+Install the following: 
 - Python >= 3.8.10, pytorch == 1.13.1+c117, pandas, tqdm, scikit-learn, decord, tensorrt (may have to upgrade pip3 first)
 - FFmpeg >= 4.2.7 
 - GNU Parallel 
