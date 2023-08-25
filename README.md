@@ -2,6 +2,8 @@
 
 ## Repository for Developing Video Classification/Action Recognition Models for the AI City Track Challenge #3 (2023)
 More information about this particular challenge can be found [(here)](https://www.aicitychallenge.org/2023-challenge-tracks/)
+
+For an in-depth explanation of the system architecture, please refer to the paper inside this repo (paper.pdf).
  
 Completed as part of my Major Qualifying Project for Worcester Polytechnic Institute (Summer 2023)
 
